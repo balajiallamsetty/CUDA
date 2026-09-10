@@ -1,0 +1,20 @@
+.state {
+  text-align: center;
+  padding: var(--space-7) var(--space-4);
+  border: 1px dashed var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-elevated);
+}
+
+.state h3 {
+  margin-bottom: var(--space-2);
+}
+
+.state p {
+  margin-bottom: var(--space-4);
+}
+
+.error {
+  border-color: #f3c4c0;
+  background: var(--color-danger-soft);
+}

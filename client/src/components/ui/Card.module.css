@@ -1,0 +1,15 @@
+.card {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-line-soft);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+
+.card h3 {
+  margin-bottom: var(--space-2);
+}
+
+.card p:last-child {
+  margin-bottom: 0;
+}

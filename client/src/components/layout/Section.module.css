@@ -1,0 +1,39 @@
+.section {
+  padding: var(--space-8) 0;
+}
+
+.default {
+  background: transparent;
+}
+
+.muted {
+  background: var(--color-surface);
+}
+
+.elevated {
+  background: var(--color-surface-elevated);
+}
+
+.ink {
+  background: var(--color-ink);
+  color: #fff;
+}
+
+.ink h2,
+.ink p,
+.ink .eyebrow {
+  color: #fff;
+}
+
+.ink p {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.ink .eyebrow {
+  color: #9fd9c5;
+}
+
+.header {
+  margin-bottom: var(--space-6);
+  max-width: 40rem;
+}

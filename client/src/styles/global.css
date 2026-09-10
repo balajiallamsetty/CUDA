@@ -1,0 +1,121 @@
+@import './tokens.css';
+
+#root {
+  min-height: 100vh;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+}
+
+.page-hero {
+  padding: calc(var(--nav-height) + var(--space-8)) 0 var(--space-8);
+  background: var(--gradient-soft);
+  background-image: var(--pattern-dots);
+  background-size: 18px 18px;
+}
+
+.page-hero--brand {
+  background: var(--gradient-hero);
+  color: #fff;
+}
+
+.page-hero--brand h1,
+.page-hero--brand h2,
+.page-hero--brand p {
+  color: #fff;
+}
+
+.page-hero--brand p {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: var(--space-3);
+}
+
+.page-hero--brand .eyebrow {
+  color: #9fd9c5;
+}
+
+.lead {
+  font-size: var(--text-lg);
+  max-width: 42rem;
+}
+
+.grid-2 {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: 1fr;
+}
+
+.grid-3 {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: 1fr;
+}
+
+.grid-4 {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 900px) {
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.muted {
+  color: var(--color-muted);
+}
+
+.prose-block h3 {
+  margin-top: var(--space-5);
+}
+
+.list-clean {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list-clean li {
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-line-soft);
+  color: var(--color-slate);
+}
+
+.list-clean li:last-child {
+  border-bottom: none;
+}

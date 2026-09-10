@@ -1,0 +1,55 @@
+.hero {
+  min-height: calc(100vh - var(--nav-height));
+  display: flex;
+  align-items: center;
+}
+
+.hero h1 {
+  max-width: 16ch;
+  margin-bottom: var(--space-5);
+}
+
+.hero .lead {
+  margin-bottom: var(--space-6);
+}
+
+.whyItem h3 {
+  margin-bottom: var(--space-2);
+}
+
+.audience {
+  padding: var(--space-5);
+  border-top: 2px solid var(--color-accent);
+  background: var(--color-surface-elevated);
+  font-weight: 600;
+  font-size: var(--text-lg);
+}
+
+.clickCard {
+  display: block;
+  color: inherit;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.clickCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.sectionAction {
+  margin-top: var(--space-5);
+}
+
+.futureList li {
+  color: rgba(255, 255, 255, 0.8);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  padding: 0.85rem 0;
+}
+
+.finalCta {
+  background: var(--gradient-soft);
+}
+
+.finalInner {
+  max-width: 40rem;
+}

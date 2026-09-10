@@ -1,0 +1,65 @@
+.footer {
+  background: var(--color-ink);
+  color: rgba(255, 255, 255, 0.78);
+  padding: var(--space-8) 0 var(--space-6);
+  margin-top: auto;
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: 1fr;
+  margin-bottom: var(--space-7);
+}
+
+.brand {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: var(--space-3);
+}
+
+.copy {
+  max-width: 28rem;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.heading {
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.list a:hover {
+  color: #fff;
+}
+
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: var(--text-sm);
+}
+
+.bottom p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+}

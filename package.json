@@ -1,0 +1,30 @@
+{
+  "name": "vignak",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Vignak Solutions — Phase 1 foundation (modular monolith)",
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "concurrently -n client,server -c cyan,magenta \"npm run dev -w client\" \"npm run dev -w server\"",
+    "dev:client": "npm run dev -w client",
+    "dev:server": "npm run dev -w server",
+    "build": "npm run build -w client",
+    "test": "npm run test -w server && npm run test -w client",
+    "test:server": "npm run test -w server",
+    "test:client": "npm run test -w client",
+    "test:e2e": "npx playwright test",
+    "lint": "npm run lint -w client && npm run lint -w server",
+    "seed:admin": "npm run seed:admin -w server"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
