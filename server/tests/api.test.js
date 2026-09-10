@@ -47,6 +47,7 @@ describe('Phase 2 API', () => {
   it('health works', async () => {
     const res = await request(app).get('/api/health');
     expect(res.status).toBe(200);
+    expect(res.body.status).toBe('ok');
   });
 
   it('creates leads and lists them for sales', async () => {

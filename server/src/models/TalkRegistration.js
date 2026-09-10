@@ -23,5 +23,6 @@ const talkRegistrationSchema = new mongoose.Schema(
 );
 
 talkRegistrationSchema.index({ talk: 1, email: 1 }, { unique: true });
+talkRegistrationSchema.index({ talk: 1, createdAt: -1 });
 
 export const TalkRegistration = mongoose.model('TalkRegistration', talkRegistrationSchema);

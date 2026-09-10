@@ -1,21 +1,16 @@
-# Database (Phase 2)
+# Database (Phase 3)
 
-## Models
+MongoDB Atlas via Mongoose. Key collections: User, Lead, Inquiry, Project, Talk, Speaker, TalkRegistration, ServiceOffering, SiteSettings, AuditLog, PasswordResetToken.
 
-| Model | Notes |
-|-------|-------|
-| User | Roles, isActive, passwordChangedAt, passwordHash select:false |
-| Lead | assignedTo, archived, notes[], statusHistory[] |
-| Inquiry | assignedTo, archived |
-| Project | archived, text index, unique slug |
-| Speaker | designation, organization, socialLinks, archived |
-| Talk | archived, speaker ref |
-| TalkRegistration | unique (talk, email) |
-| AuditLog | action/actor metadata |
-| PasswordResetToken | tokenHash, expiresAt, usedAt |
-| ServiceOffering | slug, order, published |
-| SiteSettings | public contact fields |
+## Indexes (representative)
 
-## Indexes
+- Lead: `{ assignedTo, archived, createdAt }`, `{ archived, status, createdAt }`, `{ service, archived, createdAt }`, text search
+- Project: `{ published, archived, createdAt }`
+- Talk / Speaker: published/archived + text
+- TalkRegistration: `{ talk, email }` unique; `{ talk, createdAt }`
+- Inquiry: `{ assignedTo, archived, createdAt }`
+- AuditLog: `{ actorEmail, createdAt }`, `{ actor, createdAt }`
 
-Status/archived/assignedTo/query text indexes on leads, inquiries, projects, talks. Unique slugs on Project/Talk/ServiceOffering.
+## Query hygiene
+
+Admin list filters go through `safeQuery` (scalars/enums/ObjectIds only). Lead list omits `notes` / `statusHistory` / `meta` and populates `assignedTo` only.

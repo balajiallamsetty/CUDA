@@ -1,10 +1,16 @@
 import Container from '../components/layout/Container';
 import Section from '../components/layout/Section';
 import { SITE } from '../constants/site';
+import PageMeta from '../components/common/PageMeta';
 
 export default function TermsPage() {
   return (
     <>
+      <PageMeta
+        title="Terms of Use"
+        description={`Guidelines for using the ${SITE.legalName} website and related services.`}
+        path="/terms"
+      />
       <section className="page-hero">
         <Container>
           <p className="eyebrow">Legal</p>

@@ -3,10 +3,16 @@ import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Container from '../components/layout/Container';
 import Section from '../components/layout/Section';
+import PageMeta from '../components/common/PageMeta';
 
 export default function CustomizedPage() {
   return (
     <>
+      <PageMeta
+        title="Customized"
+        description="Branded gifts and conference kits from Vignak — cohesive materials for institutions and organizers."
+        path="/customized"
+      />
       <section className="page-hero">
         <Container>
           <p className="eyebrow">Customized</p>

@@ -14,6 +14,7 @@ import { Input, Textarea, Select } from '../components/ui/Field';
 import { useToast } from '../components/ui/Toast';
 import { createLead } from '../services/api';
 import { validateEmail, validateRequired } from '../utils/validation';
+import PageMeta from '../components/common/PageMeta';
 
 const initial = {
   name: '',
@@ -74,6 +75,11 @@ export default function StartProjectPage() {
 
   return (
     <>
+      <PageMeta
+        title="Start a Project"
+        description="Share your project brief with Vignak Solutions — websites, custom apps, gifts, kits, and talks."
+        path="/start-project"
+      />
       <section className="page-hero">
         <Container>
           <p className="eyebrow">Start a Project</p>

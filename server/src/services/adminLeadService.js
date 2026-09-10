@@ -1,7 +1,8 @@
-import { ROLES, LEAD_STATUSES } from '@vignak/shared';
+import { ROLES, LEAD_STATUSES, LEAD_STATUS_VALUES, LEAD_SERVICE_VALUES } from '@vignak/shared';
 import { Lead } from '../models/Lead.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { parsePagination, buildMeta, parseSort } from '../utils/pagination.js';
+import { asEnum, asObjectId, asSearchText, assertScalar } from '../utils/safeQuery.js';
 import { writeAuditLog } from './auditService.js';
 
 function staffLeadScope(user, filter = {}) {
@@ -16,21 +17,32 @@ export async function listLeads(query, user) {
   const sort = parseSort(query, ['createdAt', 'status', 'name'], '-createdAt');
 
   const filter = staffLeadScope(user, {});
-  if (query.archived === 'true') filter.archived = true;
-  else if (query.archived !== 'all') filter.archived = false;
+  const archivedFlag = assertScalar(query.archived, 'archived');
+  if (archivedFlag === 'true') filter.archived = true;
+  else if (archivedFlag !== 'all') filter.archived = false;
 
-  if (query.status) filter.status = query.status;
-  if (query.service) filter.service = query.service;
-  if (query.assignedTo) filter.assignedTo = query.assignedTo;
-  if (query.q) filter.$text = { $search: query.q };
+  const status = asEnum(query.status, LEAD_STATUS_VALUES, 'status');
+  if (status) filter.status = status;
+
+  const service = asEnum(query.service, LEAD_SERVICE_VALUES, 'service');
+  if (service) filter.service = service;
+
+  // STAFF must never override assignedTo via query (IDOR)
+  if (user.role !== ROLES.STAFF) {
+    const assignedTo = asObjectId(query.assignedTo, 'assignedTo');
+    if (assignedTo) filter.assignedTo = assignedTo;
+  }
+
+  const q = asSearchText(query.q);
+  if (q) filter.$text = { $search: q };
 
   const [items, total] = await Promise.all([
     Lead.find(filter)
+      .select('-notes -statusHistory -meta')
       .sort(sort)
       .skip(skip)
       .limit(limit)
       .populate('assignedTo', 'name email role')
-      .populate('notes.author', 'name email')
       .lean(),
     Lead.countDocuments(filter),
   ]);

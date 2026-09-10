@@ -2,7 +2,7 @@
   "name": "vignak",
   "version": "1.0.0",
   "private": true,
-  "description": "Vignak Solutions — Phase 1 foundation (modular monolith)",
+  "description": "Vignak Solutions — Phase 3 production-hardened modular monolith",
   "workspaces": [
     "client",
     "server",

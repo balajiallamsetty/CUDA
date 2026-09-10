@@ -137,3 +137,25 @@ export const userUpdateValidators = [
   body('role').optional().isIn(ROLE_VALUES),
   body('isActive').optional().isBoolean(),
 ];
+
+export const inquiryUpdateValidators = [
+  body('status').optional().isIn(['NEW', 'READ', 'REPLIED', 'ARCHIVED']),
+  body('assignedTo').optional({ nullable: true }).isMongoId(),
+  body('archived').optional().isBoolean(),
+];
+
+export const settingsValidators = [
+  body('publicContactEmail').optional({ checkFalsy: true }).isEmail().normalizeEmail(),
+  body('publicPhone').optional({ checkFalsy: true }).trim().isLength({ max: 40 }),
+  body('companyName').optional({ checkFalsy: true }).trim().isLength({ max: 160 }),
+];
+
+export const serviceValidators = [
+  body('title').trim().notEmpty().withMessage('Title is required').isLength({ max: 160 }),
+  body('summary').trim().notEmpty().withMessage('Summary is required').isLength({ max: 500 }),
+  body('body').optional({ checkFalsy: true }).isLength({ max: 8000 }),
+  body('slug').optional({ checkFalsy: true }).trim().isSlug(),
+  body('order').optional().isInt({ min: 0, max: 1000 }),
+  body('published').optional().isBoolean(),
+  body('id').optional().isMongoId(),
+];

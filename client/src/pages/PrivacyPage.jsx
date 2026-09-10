@@ -1,10 +1,16 @@
 import Container from '../components/layout/Container';
 import Section from '../components/layout/Section';
 import { SITE } from '../constants/site';
+import PageMeta from '../components/common/PageMeta';
 
 export default function PrivacyPage() {
   return (
     <>
+      <PageMeta
+        title="Privacy Policy"
+        description={`How ${SITE.legalName} handles information you share through our website and forms.`}
+        path="/privacy"
+      />
       <section className="page-hero">
         <Container>
           <p className="eyebrow">Legal</p>

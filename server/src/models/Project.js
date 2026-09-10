@@ -23,5 +23,6 @@ const projectSchema = new mongoose.Schema(
 
 projectSchema.index({ title: 'text', client: 'text', description: 'text' });
 projectSchema.index({ published: 1, archived: 1, featured: 1 });
+projectSchema.index({ published: 1, archived: 1, createdAt: -1 });
 
 export const Project = mongoose.model('Project', projectSchema);

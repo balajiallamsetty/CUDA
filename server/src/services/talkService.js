@@ -1,21 +1,35 @@
+import mongoose from 'mongoose';
+import { TALK_STATUSES, TALK_STATUS_VALUES } from '@vignak/shared';
 import { Speaker } from '../models/Speaker.js';
 import { Talk } from '../models/Talk.js';
 import { TalkRegistration } from '../models/TalkRegistration.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { parsePagination, buildMeta, parseSort } from '../utils/pagination.js';
 import { uniqueSlug } from '../utils/slugify.js';
+import { asEnum, asSearchText, assertScalar, pickFields } from '../utils/safeQuery.js';
 import { writeAuditLog } from './auditService.js';
-import { TALK_STATUSES } from '@vignak/shared';
-import mongoose from 'mongoose';
+
+const SPEAKER_FIELDS = [
+  'name', 'bio', 'image', 'title', 'designation', 'organization', 'socialLinks', 'archived',
+];
+const TALK_FIELDS = [
+  'title', 'description', 'speaker', 'date', 'location', 'status',
+  'registrationOpen', 'videoUrl', 'coverImage', 'published', 'archived', 'slug',
+];
+const SPEAKER_POPULATE = 'name title designation organization image';
 
 export async function listSpeakers(query = {}) {
-  const filter = query.archived === 'true' ? { archived: true } : { archived: false };
-  if (query.q) filter.$text = { $search: query.q };
-  return Speaker.find(filter).sort({ name: 1 }).lean();
+  const filter = assertScalar(query.archived, 'archived') === 'true'
+    ? { archived: true }
+    : { archived: false };
+  const q = asSearchText(query.q);
+  if (q) filter.$text = { $search: q };
+  return Speaker.find(filter).sort({ name: 1 }).limit(100).lean();
 }
 
 export async function createSpeaker(payload, user, meta = {}) {
-  const speaker = await Speaker.create(payload);
+  const data = pickFields(payload, SPEAKER_FIELDS);
+  const speaker = await Speaker.create(data);
   await writeAuditLog({
     action: 'SPEAKER_CREATED',
     actor: user._id,
@@ -31,7 +45,7 @@ export async function createSpeaker(payload, user, meta = {}) {
 export async function updateSpeaker(id, payload, user, meta = {}) {
   const speaker = await Speaker.findById(id);
   if (!speaker) throw new AppError('Speaker not found', 404);
-  Object.assign(speaker, payload);
+  Object.assign(speaker, pickFields(payload, SPEAKER_FIELDS));
   await speaker.save();
   await writeAuditLog({
     action: 'SPEAKER_UPDATED',
@@ -49,29 +63,38 @@ export async function listAdminTalks(query) {
   const { page, limit, skip } = parsePagination(query);
   const sort = parseSort(query, ['createdAt', 'date', 'status'], '-date');
   const filter = {};
-  if (query.archived === 'true') filter.archived = true;
-  else if (query.archived !== 'all') filter.archived = false;
-  if (query.status) filter.status = query.status;
-  if (query.published === 'true') filter.published = true;
-  if (query.published === 'false') filter.published = false;
-  if (query.q) filter.$text = { $search: query.q };
+  const archivedFlag = assertScalar(query.archived, 'archived');
+  if (archivedFlag === 'true') filter.archived = true;
+  else if (archivedFlag !== 'all') filter.archived = false;
+  const status = asEnum(query.status, TALK_STATUS_VALUES, 'status');
+  if (status) filter.status = status;
+  if (assertScalar(query.published, 'published') === 'true') filter.published = true;
+  if (assertScalar(query.published, 'published') === 'false') filter.published = false;
+  const q = asSearchText(query.q);
+  if (q) filter.$text = { $search: q };
 
   const [items, total] = await Promise.all([
-    Talk.find(filter).sort(sort).skip(skip).limit(limit).populate('speaker').lean(),
+    Talk.find(filter)
+      .sort(sort)
+      .skip(skip)
+      .limit(limit)
+      .populate('speaker', SPEAKER_POPULATE)
+      .lean(),
     Talk.countDocuments(filter),
   ]);
   return { items, meta: buildMeta({ page, limit, total }) };
 }
 
 export async function getAdminTalk(id) {
-  const talk = await Talk.findById(id).populate('speaker');
+  const talk = await Talk.findById(id).populate('speaker', SPEAKER_POPULATE);
   if (!talk) throw new AppError('Talk not found', 404);
   return talk;
 }
 
 export async function createTalk(payload, user, meta = {}) {
-  const slug = await uniqueSlug(Talk, payload.slug || payload.title);
-  const talk = await Talk.create({ ...payload, slug });
+  const data = pickFields(payload, TALK_FIELDS);
+  const slug = await uniqueSlug(Talk, data.slug || data.title);
+  const talk = await Talk.create({ ...data, slug });
   await writeAuditLog({
     action: 'TALK_CREATED',
     actor: user._id,
@@ -87,15 +110,10 @@ export async function createTalk(payload, user, meta = {}) {
 export async function updateTalk(id, payload, user, meta = {}) {
   const talk = await Talk.findById(id);
   if (!talk) throw new AppError('Talk not found', 404);
-  const fields = [
-    'title', 'description', 'speaker', 'date', 'location', 'status',
-    'registrationOpen', 'videoUrl', 'coverImage', 'published', 'archived',
-  ];
-  fields.forEach((key) => {
-    if (Object.prototype.hasOwnProperty.call(payload, key)) talk[key] = payload[key];
-  });
-  if (payload.slug || payload.title) {
-    talk.slug = await uniqueSlug(Talk, payload.slug || payload.title || talk.title, talk._id);
+  const data = pickFields(payload, TALK_FIELDS);
+  Object.assign(talk, data);
+  if (data.slug || data.title) {
+    talk.slug = await uniqueSlug(Talk, data.slug || data.title || talk.title, talk._id);
   }
   if (talk.status === TALK_STATUSES.REGISTRATION_OPEN) talk.registrationOpen = true;
   await talk.save();
@@ -107,7 +125,7 @@ export async function updateTalk(id, payload, user, meta = {}) {
     resourceId: talk._id.toString(),
     ip: meta.ip,
     userAgent: meta.userAgent,
-    metadata: payload,
+    metadata: data,
   });
   return getAdminTalk(id);
 }
@@ -124,15 +142,18 @@ export async function listTalkRegistrations(talkId, query) {
   return { items, meta: buildMeta({ page, limit, total }), talk };
 }
 
-export async function listPublicTalks() {
+export async function listPublicTalks({ limit = 50 } = {}) {
   return Talk.find({ published: true, archived: false })
     .sort({ date: -1 })
-    .populate('speaker')
+    .limit(Math.min(limit, 100))
+    .populate('speaker', SPEAKER_POPULATE)
     .lean();
 }
 
 export async function getPublicTalkBySlug(slug) {
-  return Talk.findOne({ slug, published: true, archived: false }).populate('speaker').lean();
+  return Talk.findOne({ slug, published: true, archived: false })
+    .populate('speaker', SPEAKER_POPULATE)
+    .lean();
 }
 
 export async function registerForTalk(idOrSlug, payload, meta = {}) {

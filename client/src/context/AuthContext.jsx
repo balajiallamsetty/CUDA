@@ -9,22 +9,40 @@ export function AuthProvider({ children }) {
   const [permissions, setPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const clearSession = useCallback(() => {
+    setUser(null);
+    setPermissions([]);
+  }, []);
+
   const refresh = useCallback(async () => {
     try {
       const res = await api.getMe();
       setUser(res.data.user);
       setPermissions(res.data.permissions || permissionsForRole(res.data.user.role));
     } catch {
-      setUser(null);
-      setPermissions([]);
+      clearSession();
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [clearSession]);
 
   useEffect(() => {
     refresh();
   }, [refresh]);
+
+  useEffect(() => {
+    api.setUnauthorizedHandler(async () => {
+      clearSession();
+      if (
+        typeof window !== 'undefined'
+        && window.location.pathname.startsWith('/admin')
+        && !window.location.pathname.includes('/login')
+      ) {
+        window.location.assign('/admin/login');
+      }
+    });
+    return () => api.setUnauthorizedHandler(null);
+  }, [clearSession]);
 
   const login = useCallback(async (email, password) => {
     const res = await api.login({ email, password });
@@ -37,10 +55,9 @@ export function AuthProvider({ children }) {
     try {
       await api.logout();
     } finally {
-      setUser(null);
-      setPermissions([]);
+      clearSession();
     }
-  }, []);
+  }, [clearSession]);
 
   const can = useCallback((permission) => permissions.includes(permission), [permissions]);
 

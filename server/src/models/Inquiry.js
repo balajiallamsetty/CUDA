@@ -25,6 +25,7 @@ const inquirySchema = new mongoose.Schema(
 
 inquirySchema.index({ email: 1, createdAt: -1 });
 inquirySchema.index({ archived: 1, createdAt: -1 });
+inquirySchema.index({ assignedTo: 1, archived: 1, createdAt: -1 });
 inquirySchema.index({ subject: 'text', message: 'text', name: 'text', email: 'text' });
 
 export const Inquiry = mongoose.model('Inquiry', inquirySchema);

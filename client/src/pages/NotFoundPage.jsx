@@ -1,10 +1,16 @@
 import { Link } from 'react-router-dom';
 import Button from '../components/ui/Button';
 import Container from '../components/layout/Container';
+import PageMeta from '../components/common/PageMeta';
 
 export default function NotFoundPage() {
   return (
     <Container>
+      <PageMeta
+        title="Page not found"
+        description="The page you requested does not exist or has moved."
+        path="/404"
+      />
       <div style={{ padding: '6rem 0', maxWidth: 520 }}>
         <p className="eyebrow">404</p>
         <h1>Page not found</h1>

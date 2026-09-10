@@ -7,6 +7,7 @@ import Section from '../components/layout/Section';
 import { Loading } from '../components/ui/Loading';
 import { ErrorState } from '../components/ui/States';
 import { getProjectBySlug } from '../services/portfolioService';
+import PageMeta from '../components/common/PageMeta';
 
 export default function PortfolioDetailPage() {
   const { slug } = useParams();
@@ -42,6 +43,11 @@ export default function PortfolioDetailPage() {
 
   return (
     <>
+      <PageMeta
+        title={project.title}
+        description={project.description?.slice(0, 160) || 'Portfolio project from Vignak Solutions.'}
+        path={`/portfolio/${project.slug || slug}`}
+      />
       <section className="page-hero">
         <Container>
           <Badge>{project.category}</Badge>

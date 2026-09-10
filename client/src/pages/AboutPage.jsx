@@ -3,10 +3,16 @@ import Button from '../components/ui/Button';
 import Container from '../components/layout/Container';
 import Section from '../components/layout/Section';
 import Card from '../components/ui/Card';
+import PageMeta from '../components/common/PageMeta';
 
 export default function AboutPage() {
   return (
     <>
+      <PageMeta
+        title="About"
+        description="Learn about Vignak Solutions — connecting technology with human progress through digital systems and meaningful conversations."
+        path="/about"
+      />
       <section className="page-hero">
         <Container>
           <p className="eyebrow">About Vignak</p>

@@ -8,6 +8,7 @@ import { useToast } from '../components/ui/Toast';
 import { createContact } from '../services/api';
 import { validateEmail, validateRequired } from '../utils/validation';
 import { SITE } from '../constants/site';
+import PageMeta from '../components/common/PageMeta';
 
 const initial = {
   name: '',
@@ -24,6 +25,14 @@ export default function ContactPage() {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+
+  const meta = (
+    <PageMeta
+      title="Contact"
+      description={`Contact ${SITE.legalName} — questions, partnerships, and general inquiries.`}
+      path="/contact"
+    />
+  );
 
   function onChange(e) {
     const { name, value } = e.target;
@@ -63,6 +72,7 @@ export default function ContactPage() {
 
   return (
     <>
+      {meta}
       <section className="page-hero">
         <Container>
           <p className="eyebrow">Contact</p>

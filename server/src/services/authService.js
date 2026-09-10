@@ -5,6 +5,8 @@ import { AppError } from '../middleware/errorHandler.js';
 import { writeAuditLog } from './auditService.js';
 import { clearAuthCookie, setAuthCookie, signToken } from '../middleware/auth.js';
 import { env } from '../config/env.js';
+import { isSmtpConfigured, sendMail } from '../utils/mailer.js';
+import { logger } from '../utils/logger.js';
 
 const GENERIC_RESET_MESSAGE =
   'If an account exists for that email, password reset instructions have been sent.';
@@ -12,6 +14,7 @@ const GENERIC_RESET_MESSAGE =
 export async function loginUser({ email, password }, meta = {}) {
   const user = await User.findOne({ email: email.toLowerCase() }).select('+passwordHash');
   if (!user || !user.isActive) {
+    logger.warn('login_failed', { email, reason: 'unknown_user' });
     await writeAuditLog({
       action: 'AUTH_LOGIN_FAILED',
       actorEmail: email,
@@ -24,6 +27,7 @@ export async function loginUser({ email, password }, meta = {}) {
 
   const match = await user.comparePassword(password);
   if (!match) {
+    logger.warn('login_failed', { email: user.email, reason: 'bad_password' });
     await writeAuditLog({
       action: 'AUTH_LOGIN_FAILED',
       actor: user._id,
@@ -77,17 +81,31 @@ function hashToken(raw) {
   return crypto.createHash('sha256').update(raw).digest('hex');
 }
 
-/** Pluggable mailer: logs reset link in development; production needs SMTP. */
+/** Deliver reset link via SMTP when configured; log in development. */
 export async function sendPasswordResetEmail(email, resetUrl) {
-  if (env.isProd) {
-    console.info(`[mailer] Password reset requested for ${email} (configure SMTP to deliver).`);
-  } else {
-    console.info(`[mailer:dev] Password reset for ${email}: ${resetUrl}`);
-  }
+  await sendMail({
+    to: email,
+    subject: 'Vignak password reset',
+    text: `Reset your password using this link (expires in 1 hour):\n\n${resetUrl}\n`,
+  });
 }
 
 export async function requestPasswordReset(email, meta = {}) {
   const normalized = String(email || '').toLowerCase().trim();
+
+  // Production fail-closed: no token without SMTP (still generic response)
+  if (env.isProd && !isSmtpConfigured()) {
+    await writeAuditLog({
+      action: 'AUTH_PASSWORD_RESET_REQUESTED',
+      actorEmail: normalized,
+      ip: meta.ip,
+      userAgent: meta.userAgent,
+      success: false,
+      metadata: { reason: 'smtp_not_configured' },
+    });
+    return { message: GENERIC_RESET_MESSAGE };
+  }
+
   const user = await User.findOne({ email: normalized, isActive: true });
 
   if (user) {

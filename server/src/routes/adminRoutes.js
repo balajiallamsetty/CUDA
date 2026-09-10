@@ -10,6 +10,9 @@ import {
   leadNoteValidators,
   userCreateValidators,
   userUpdateValidators,
+  inquiryUpdateValidators,
+  settingsValidators,
+  serviceValidators,
 } from '../validators/index.js';
 import * as admin from '../controllers/adminController.js';
 
@@ -39,7 +42,13 @@ router.post(
 
 router.get('/inquiries', authorizePermission(PERMISSIONS.INQUIRIES_READ), admin.listInquiries);
 router.get('/inquiries/:id', authorizePermission(PERMISSIONS.INQUIRIES_READ), admin.getInquiry);
-router.patch('/inquiries/:id', authorizePermission(PERMISSIONS.INQUIRIES_WRITE), admin.patchInquiry);
+router.patch(
+  '/inquiries/:id',
+  authorizePermission(PERMISSIONS.INQUIRIES_WRITE),
+  inquiryUpdateValidators,
+  validateRequest,
+  admin.patchInquiry,
+);
 
 router.get('/projects', authorizePermission(PERMISSIONS.PROJECTS_READ), admin.listProjects);
 router.get('/projects/:id', authorizePermission(PERMISSIONS.PROJECTS_READ), admin.getProject);
@@ -113,9 +122,21 @@ router.patch(
 );
 
 router.get('/settings', authorizePermission(PERMISSIONS.SETTINGS_READ), admin.getSettings);
-router.patch('/settings', authorizePermission(PERMISSIONS.SETTINGS_WRITE), admin.patchSettings);
+router.patch(
+  '/settings',
+  authorizePermission(PERMISSIONS.SETTINGS_WRITE),
+  settingsValidators,
+  validateRequest,
+  admin.patchSettings,
+);
 router.get('/audit-logs', authorizePermission(PERMISSIONS.AUDIT_READ), admin.listAuditLogs);
 router.get('/services', authorizePermission(PERMISSIONS.SERVICES_READ), admin.listServices);
-router.post('/services', authorizePermission(PERMISSIONS.SERVICES_WRITE), admin.upsertService);
+router.post(
+  '/services',
+  authorizePermission(PERMISSIONS.SERVICES_WRITE),
+  serviceValidators,
+  validateRequest,
+  admin.upsertService,
+);
 
 export default router;

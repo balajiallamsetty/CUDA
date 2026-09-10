@@ -1,4 +1,4 @@
-# API Reference (Phase 2)
+# API Reference (Phase 3)
 
 Base URL (local): `http://localhost:5000`
 
@@ -16,12 +16,13 @@ Errors: `{ "success": false, "message": "...", "errors": [{ "field", "message" }
 
 | Method | Path | Auth | Notes |
 |--------|------|------|-------|
-| GET | `/api/health` | No | DB health |
+| GET | `/api/health` | No | Liveness only (no DB detail) |
+| GET | `/api/ready` | No | Readiness; 503 if DB down |
 | POST | `/api/leads` | No | Start-a-project lead |
 | POST | `/api/contact` | No | Contact inquiry |
-| GET | `/api/projects` | No | Published portfolio (`?featured=true`) |
+| GET | `/api/projects` | No | Published portfolio (capped; `?featured=true`) |
 | GET | `/api/projects/:slug` | No | Project detail |
-| GET | `/api/talks` | No | Published talks |
+| GET | `/api/talks` | No | Published talks (capped) |
 | GET | `/api/talks/:slug` | No | Talk detail |
 | POST | `/api/talks/:id/register` | No | Register (rate-limited, honeypot) |
 | GET | `/api/services` | No | Published service offerings |
@@ -33,9 +34,9 @@ Errors: `{ "success": false, "message": "...", "errors": [{ "field", "message" }
 | POST | `/api/auth/login` | No | Sets cookie |
 | POST | `/api/auth/logout` | Optional | Clears cookie + audit |
 | GET | `/api/auth/me` | Yes | Session + permissions |
-| POST | `/api/auth/forgot-password` | No | Anti-enumeration message |
+| POST | `/api/auth/forgot-password` | No | Anti-enumeration; prod without SMTP creates no token |
 | POST | `/api/auth/reset-password` | No | `{ token, password }` |
-| POST | `/api/auth/change-password` | Yes | `{ currentPassword, newPassword }` |
+| POST | `/api/auth/change-password` | Yes | Invalidates prior JWTs via `passwordChangedAt` |
 
 ## Admin (staff roles + permission checks)
 
@@ -55,6 +56,6 @@ Errors: `{ "success": false, "message": "...", "errors": [{ "field", "message" }
 | GET | `/api/admin/audit-logs` | `audit:read` |
 | GET/POST | `/api/admin/services` | `services:*` |
 
-List endpoints accept `page`, `limit`, `q`, and resource-specific filters (`status`, `archived`, `published`, etc.).
+List query filters must be scalars; operator objects are rejected with 400.
 
-OpenAPI UI is available in non-production at `/api/docs` when the server mounts Swagger.
+OpenAPI UI is available in non-production at `/api/docs`.

@@ -1,14 +1,49 @@
 const API_BASE = import.meta.env.VITE_API_URL || '';
+const DEFAULT_TIMEOUT_MS = 30000;
+
+let unauthorizedHandler = null;
+let handlingUnauthorized = false;
+
+/** Register once from AuthProvider — clears session on admin 401 */
+export function setUnauthorizedHandler(handler) {
+  unauthorizedHandler = handler;
+}
+
+function isAdminPath(path) {
+  return typeof path === 'string' && path.startsWith('/api/admin');
+}
 
 async function request(path, options = {}) {
-  const res = await fetch(`${API_BASE}${path}`, {
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers || {}),
-    },
-    ...options,
-  });
+  const { timeoutMs = DEFAULT_TIMEOUT_MS, ...fetchOptions } = options;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  let res;
+  try {
+    res = await fetch(`${API_BASE}${path}`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(fetchOptions.headers || {}),
+      },
+      ...fetchOptions,
+      signal: controller.signal,
+    });
+  } catch (err) {
+    clearTimeout(timer);
+    if (err?.name === 'AbortError') {
+      const timeoutError = new Error('Request timed out. Please try again.');
+      timeoutError.status = 0;
+      timeoutError.code = 'TIMEOUT';
+      throw timeoutError;
+    }
+    const networkError = new Error('Network error. Check your connection and try again.');
+    networkError.status = 0;
+    networkError.code = 'NETWORK';
+    throw networkError;
+  } finally {
+    clearTimeout(timer);
+  }
 
   let data = null;
   try {
@@ -18,6 +53,14 @@ async function request(path, options = {}) {
   }
 
   if (!res.ok) {
+    if (res.status === 401 && isAdminPath(path) && unauthorizedHandler && !handlingUnauthorized) {
+      handlingUnauthorized = true;
+      try {
+        await unauthorizedHandler();
+      } finally {
+        handlingUnauthorized = false;
+      }
+    }
     const error = new Error(data?.message || 'Request failed');
     error.status = res.status;
     error.details = data?.errors || null;

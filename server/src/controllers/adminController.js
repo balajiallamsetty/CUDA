@@ -70,7 +70,7 @@ export async function postLeadNote(req, res, next) {
 
 export async function listInquiries(req, res, next) {
   try {
-    const result = await inquiryService.listInquiries(req.query);
+    const result = await inquiryService.listInquiries(req.query, req.user);
     res.json({ success: true, data: result.items, meta: result.meta });
   } catch (err) {
     next(err);
@@ -79,7 +79,7 @@ export async function listInquiries(req, res, next) {
 
 export async function getInquiry(req, res, next) {
   try {
-    const inquiry = await inquiryService.getInquiryById(req.params.id);
+    const inquiry = await inquiryService.getInquiryById(req.params.id, req.user);
     res.json({ success: true, data: inquiry });
   } catch (err) {
     next(err);

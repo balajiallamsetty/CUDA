@@ -1,7 +1,8 @@
-import { ROLES } from '@vignak/shared';
+import { ROLES, ROLE_VALUES } from '@vignak/shared';
 import { User } from '../models/User.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { parsePagination, buildMeta, parseSort } from '../utils/pagination.js';
+import { asEnum, asSearchText, assertScalar, escapeRegex } from '../utils/safeQuery.js';
 import { writeAuditLog } from './auditService.js';
 
 function assertCanManageRole(actor, targetRole, previousRole = null) {
@@ -20,13 +21,16 @@ export async function listUsers(query) {
   const { page, limit, skip } = parsePagination(query);
   const sort = parseSort(query, ['createdAt', 'name', 'role'], '-createdAt');
   const filter = {};
-  if (query.role) filter.role = query.role;
-  if (query.isActive === 'true') filter.isActive = true;
-  if (query.isActive === 'false') filter.isActive = false;
-  if (query.q) {
+  const role = asEnum(query.role, ROLE_VALUES, 'role');
+  if (role) filter.role = role;
+  if (assertScalar(query.isActive, 'isActive') === 'true') filter.isActive = true;
+  if (assertScalar(query.isActive, 'isActive') === 'false') filter.isActive = false;
+  const q = asSearchText(query.q);
+  if (q) {
+    const safe = escapeRegex(q);
     filter.$or = [
-      { name: new RegExp(query.q, 'i') },
-      { email: new RegExp(query.q, 'i') },
+      { name: new RegExp(safe, 'i') },
+      { email: new RegExp(safe, 'i') },
     ];
   }
 

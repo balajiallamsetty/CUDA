@@ -1,25 +1,25 @@
-# Architecture (Phase 2)
+# Architecture (Phase 3)
 
 Vignak remains a **modular monolith** monorepo:
 
-- `client/` — public site + admin dashboard (React/Vite)
+- `client/` — public site + admin dashboard (React/Vite, route-level code splitting)
 - `server/` — Express REST API
 - `shared/` — enums + permission matrix
-- `docs/` — implementation docs
+- `docs/` — implementation + production docs
 - `tests/e2e/` — Playwright flows
+- `.github/workflows/ci.yml` — lint, test, build, audit, e2e
 
 ## Layering
 
 Routes → Middleware (auth, permission, validation, rate limit) → Controllers → Services → Models → MongoDB Atlas
 
-## Phase 2 additions
+## Phase 3 hardening (no new products)
 
-- Full admin CRM/CMS under `/api/admin/*` with permission middleware
-- Public content APIs for projects, talks, services, talk registration
-- Password reset token architecture
-- Admin UI shell with role-filtered navigation
-- SEO helpers (`PageMeta`, robots.txt, static sitemap)
+- Security: lead IDOR fix, safe query helpers, session invalidation on password change, mass-assignment allowlists, inquiry scope, SMTP fail-closed reset, prod JWT secret enforcement
+- Performance: compound indexes, lean lead lists, capped public lists, React.lazy + `react-vendor` chunk
+- Observability: structured logger, `/api/health` vs `/api/ready`, prod error redaction
+- Ops: deployment / backup / checklist docs, production audit artifact
 
 ## Out of scope
 
-Joy Box, Phase 3 ecosystem products, file uploads/CDN, production SMTP delivery (reset links logged in development).
+Joy Box, microservices, Redis/CDN, image upload pipeline, auto-deploy to production.

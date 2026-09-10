@@ -63,6 +63,9 @@ const leadSchema = new mongoose.Schema(
 leadSchema.index({ email: 1, createdAt: -1 });
 leadSchema.index({ status: 1, createdAt: -1 });
 leadSchema.index({ archived: 1, createdAt: -1 });
+leadSchema.index({ assignedTo: 1, archived: 1, createdAt: -1 });
+leadSchema.index({ archived: 1, status: 1, createdAt: -1 });
+leadSchema.index({ service: 1, archived: 1, createdAt: -1 });
 leadSchema.index({ name: 'text', email: 'text', organization: 'text', description: 'text' });
 
 export const Lead = mongoose.model('Lead', leadSchema);

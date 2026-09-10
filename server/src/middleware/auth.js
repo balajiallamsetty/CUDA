@@ -37,6 +37,15 @@ export function clearAuthCookie(res) {
   });
 }
 
+function assertSessionStillValid(user, payload) {
+  if (user.passwordChangedAt && payload.iat) {
+    const changedMs = new Date(user.passwordChangedAt).getTime();
+    if (payload.iat * 1000 < changedMs) {
+      throw new AppError('Session expired. Please sign in again.', 401);
+    }
+  }
+}
+
 export async function authenticate(req, res, next) {
   try {
     const token = req.cookies?.[COOKIE_NAME];
@@ -56,6 +65,7 @@ export async function authenticate(req, res, next) {
       throw new AppError('Authentication required', 401);
     }
 
+    assertSessionStillValid(user, payload);
     req.user = user;
     return next();
   } catch (err) {
@@ -63,14 +73,20 @@ export async function authenticate(req, res, next) {
   }
 }
 
-/** Attach user if cookie valid; never fail. Used for logout audit. */
 export async function optionalAuthenticate(req, res, next) {
   try {
     const token = req.cookies?.[COOKIE_NAME];
     if (!token) return next();
     const payload = jwt.verify(token, env.jwtSecret);
     const user = await User.findById(payload.sub);
-    if (user && user.isActive) req.user = user;
+    if (user && user.isActive) {
+      try {
+        assertSessionStillValid(user, payload);
+        req.user = user;
+      } catch {
+        // treat as logged out
+      }
+    }
   } catch {
     // ignore
   }

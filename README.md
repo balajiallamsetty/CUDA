@@ -1,106 +1,74 @@
 # Vignak Solutions
 
-Phase 1 foundation for **Vignak Solutions** — a modular monolith connecting technology, experiences, and communities.
-
-This repository contains the public website, lead/contact APIs, portfolio & Vignak Talks architecture, and an authentication foundation for future admin tooling.
+**Phase 3** production hardening for the Vignak Solutions modular monolith — public site, admin CRM/CMS, and REST API.
 
 ## Technology stack
 
 | Layer | Technology |
 |-------|------------|
-| Frontend | React (JSX), Vite, React Router |
+| Frontend | React (JSX), Vite, React Router (lazy routes) |
 | Backend | Node.js, Express.js |
 | Database | MongoDB Atlas, Mongoose |
-| Auth | JWT in HttpOnly cookies, bcrypt |
-| Testing | Jest + Supertest, Vitest + React Testing Library, Playwright |
-| Structure | npm workspaces monorepo (modular monolith) |
+| Auth | JWT in HttpOnly cookies, bcrypt, `passwordChangedAt` session kill |
+| Testing | Jest + Supertest, Vitest + RTL, Playwright |
+| CI | GitHub Actions (lint → test → build → audit → e2e) |
 
 ## Repository layout
 
 ```
 vignak/
-├── client/     # React public site
+├── client/     # Public site + admin UI
 ├── server/     # Express REST API
-├── shared/     # Shared enums/constants
-├── docs/       # Architecture & development docs
-└── tests/      # Playwright e2e tests
+├── shared/     # Enums + permission matrix
+├── docs/       # Architecture, security, deployment, audit
+└── tests/      # Playwright e2e
 ```
-
-## Prerequisites
-
-- Node.js 18+
-- npm 9+
-- A MongoDB Atlas cluster (or local MongoDB for development)
 
 ## Local setup
 
-1. Clone the repository and install dependencies from the root:
-
 ```bash
 npm install
-```
-
-2. Copy environment defaults and fill in secrets locally (never commit `.env`):
-
-```bash
-cp .env.example server/.env
-```
-
-On Windows PowerShell:
-
-```powershell
-Copy-Item .env.example server/.env
-```
-
-3. Edit `server/.env` with your `MONGODB_URI`, `JWT_SECRET`, and `CLIENT_URL`.
-
-4. Start both apps:
-
-```bash
+cp .env.example server/.env   # PowerShell: Copy-Item .env.example server/.env
+# edit MONGODB_URI, JWT_SECRET (32+), CLIENT_URL
+npm run seed:admin            # optional
 npm run dev
 ```
 
 - Client: http://localhost:5173  
-- API: http://localhost:5000  
+- API: http://localhost:5000 (`/api/health`, `/api/ready`)
 
 ## Environment variables
 
-See [`.env.example`](.env.example):
+See [`.env.example`](.env.example). Production **hard-fails** without a strong `JWT_SECRET`, `MONGODB_URI`, and `CLIENT_URL`. Optional `SMTP_*` enables password-reset email; without SMTP in production, forgot-password does **not** create tokens (fail closed).
 
-| Variable | Purpose |
-|----------|---------|
-| `PORT` | API port (default `5000`) |
-| `NODE_ENV` | `development` or `production` |
-| `MONGODB_URI` | MongoDB Atlas connection string |
-| `JWT_SECRET` | Secret for signing auth tokens |
-| `JWT_EXPIRES_IN` | Token lifetime (e.g. `7d`) |
-| `CLIENT_URL` | Frontend origin for CORS/cookies |
-| `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAME` | Used only by the optional seed script |
-
-## Development commands
+## Commands
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Run client + server together |
-| `npm run dev:client` | Vite only |
-| `npm run dev:server` | Express only |
-| `npm run build` | Production build of the client |
-| `npm test` | Run server + client unit/integration tests |
-| `npm run lint` | Lint client and server |
-| `npm run seed:admin` | Create an admin user from env credentials |
-| `npm run test:e2e` | Playwright smoke tests |
+| `npm run dev` | Client + server |
+| `npm run build` | Production client build |
+| `npm test` | Server + client tests |
+| `npm run lint` | Lint |
+| `npm run test:e2e` | Playwright |
+| `npm run seed:admin` / `seed:content` | Seed helpers |
 
 ## Documentation
 
 - [Architecture](docs/architecture.md)
 - [Database](docs/database.md)
 - [Security](docs/security.md)
+- [API](docs/api.md)
 - [Development](docs/development.md)
+- [Deployment](docs/deployment.md)
+- [Backup & recovery](docs/backup-recovery.md)
+- [Production checklist](docs/production-checklist.md)
+- [Production audit](docs/production-audit.md)
 
 ## Phase scope
 
-**Phase 1:** Public website, lead/contact capture, auth foundation.
-
-**Phase 2 (current):** Admin dashboard, RBAC, CRM/CMS for leads/inquiries/projects/talks/users, talk registration, SEO, expanded tests.
-
-**Not started:** Joy Box / Phase 3 ecosystem products.
+| Phase | Status |
+|-------|--------|
+| 1 — Public site, leads/contact, auth foundation | Done |
+| 2 — Admin CRM/CMS, RBAC, talks registration, SEO | Done |
+| 3 — Security fixes, perf, observability, CI/CD, production docs | Done (this release) |
+| Joy Box / new products | **Not started** |

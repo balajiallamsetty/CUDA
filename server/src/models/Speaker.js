@@ -19,5 +19,6 @@ const speakerSchema = new mongoose.Schema(
 );
 
 speakerSchema.index({ name: 'text', organization: 'text' });
+speakerSchema.index({ archived: 1, createdAt: -1 });
 
 export const Speaker = mongoose.model('Speaker', speakerSchema);
