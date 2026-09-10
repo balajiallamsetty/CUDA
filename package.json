@@ -18,7 +18,8 @@
     "test:client": "npm run test -w client",
     "test:e2e": "npx playwright test",
     "lint": "npm run lint -w client && npm run lint -w server",
-    "seed:admin": "npm run seed:admin -w server"
+    "seed:admin": "npm run seed:admin -w server",
+    "seed:content": "npm run seed:content -w server"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",

@@ -13,6 +13,8 @@ const inquirySchema = new mongoose.Schema(
       default: 'NEW',
       index: true,
     },
+    assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+    archived: { type: Boolean, default: false, index: true },
     meta: {
       ip: String,
       userAgent: String,
@@ -22,5 +24,7 @@ const inquirySchema = new mongoose.Schema(
 );
 
 inquirySchema.index({ email: 1, createdAt: -1 });
+inquirySchema.index({ archived: 1, createdAt: -1 });
+inquirySchema.index({ subject: 'text', message: 'text', name: 'text', email: 'text' });
 
 export const Inquiry = mongoose.model('Inquiry', inquirySchema);

@@ -1,7 +1,13 @@
 import ServiceDetail from '../components/common/ServiceDetail';
+import PageMeta from '../components/common/PageMeta';
 
 export default function ConferenceKitsPage() {
   return (
+    <>
+      <PageMeta
+        title="Conference Kits"
+        description="Cohesive conference kits for institutions and organizers — badges, notebooks, certificates and more."
+        path="/customized/conference-kits" />
     <ServiceDetail
       eyebrow="Conference Kits"
       title="Conference kits that feel like one experience."
@@ -30,5 +36,6 @@ export default function ConferenceKitsPage() {
       ctaTo="/start-project"
       ctaLabel="Plan a conference kit"
     />
+    </>
   );
 }

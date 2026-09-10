@@ -4,6 +4,7 @@ import Badge from '../components/ui/Badge';
 import Card from '../components/ui/Card';
 import Container from '../components/layout/Container';
 import Section from '../components/layout/Section';
+import PageMeta from '../components/common/PageMeta';
 import { Loading } from '../components/ui/Loading';
 import { EmptyState } from '../components/ui/States';
 import { listProjects } from '../services/portfolioService';
@@ -20,12 +21,17 @@ export default function PortfolioPage() {
 
   return (
     <>
+      <PageMeta
+        title="Portfolio"
+        description="Selected Vignak Solutions projects across web, events, conference kits and branding."
+        path="/portfolio"
+      />
       <section className="page-hero">
         <Container>
           <p className="eyebrow">Portfolio</p>
           <h1>Selected projects across web, events and branding.</h1>
           <p className="lead">
-            These case summaries illustrate how Vignak approaches digital and experiential work. The same page architecture will later load live API data.
+            Case summaries illustrating how Vignak approaches digital and experiential work.
           </p>
         </Container>
       </section>
@@ -36,7 +42,7 @@ export default function PortfolioPage() {
         )}
         <div className="grid-3">
           {projects.map((project) => (
-            <Card key={project.id} as={Link} to={`/portfolio/${project.slug}`} style={{ display: 'block' }}>
+            <Card key={project.id || project._id} as={Link} to={`/portfolio/${project.slug}`} style={{ display: 'block' }}>
               <Badge>{project.category}</Badge>
               <h3>{project.title}</h3>
               <p className="muted">{project.client}</p>

@@ -99,6 +99,8 @@ See [`.env.example`](.env.example):
 
 ## Phase scope
 
-**Phase 1 (this repo):** public website, web/customized/talks positioning, leads, contact, portfolio & talks data architecture, auth foundation, admin API protection.
+**Phase 1:** Public website, lead/contact capture, auth foundation.
 
-**Not in Phase 1:** Joy Box, full admin CMS, Phase 3 ecosystem products.
+**Phase 2 (current):** Admin dashboard, RBAC, CRM/CMS for leads/inquiries/projects/talks/users, talk registration, SEO, expanded tests.
+
+**Not started:** Joy Box / Phase 3 ecosystem products.

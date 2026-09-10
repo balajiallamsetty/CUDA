@@ -19,8 +19,12 @@ const talkSchema = new mongoose.Schema(
     videoUrl: { type: String, trim: true },
     coverImage: { type: String },
     published: { type: Boolean, default: false, index: true },
+    archived: { type: Boolean, default: false, index: true },
   },
   { timestamps: true },
 );
+
+talkSchema.index({ published: 1, archived: 1, date: 1 });
+talkSchema.index({ title: 'text', description: 'text', location: 'text' });
 
 export const Talk = mongoose.model('Talk', talkSchema);

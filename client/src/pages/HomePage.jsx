@@ -5,6 +5,7 @@ import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Container from '../components/layout/Container';
 import Section from '../components/layout/Section';
+import PageMeta from '../components/common/PageMeta';
 import { listProjects } from '../services/portfolioService';
 import { listTalks } from '../services/talksService';
 import { formatTalkDate, talkStatusLabel } from '../utils/format';
@@ -21,6 +22,11 @@ export default function HomePage() {
 
   return (
     <>
+      <PageMeta
+        title="Vignak Solutions"
+        description="Vignak Solutions brings together digital solutions, experiences and events to help businesses, institutions and communities grow."
+        path="/"
+      />
       <section className={`page-hero page-hero--brand ${styles.hero}`}>
         <Container>
           <p className="eyebrow">Vignak</p>

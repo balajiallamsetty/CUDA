@@ -11,6 +11,9 @@ import leadRoutes from './routes/leadRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import publicContentRoutes from './routes/publicContentRoutes.js';
+import swaggerUi from 'swagger-ui-express';
+import { openApiSpec } from './config/openapi.js';
 
 export function createApp() {
   const app = express();
@@ -32,12 +35,16 @@ export function createApp() {
     app.use(morgan(env.isProd ? 'combined' : 'dev'));
   }
 
+  if (!env.isProd) {
+    app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
+  }
+
   app.get('/', (req, res) => {
     res.json({
       success: true,
       name: 'Vignak Solutions API',
-      version: '1.0.0-phase1',
-      docs: '/api/health',
+      version: '2.0.0-phase2',
+      docs: env.isProd ? '/api/health' : '/api/docs',
     });
   });
 
@@ -46,6 +53,7 @@ export function createApp() {
   app.use('/api/contact', contactRoutes);
   app.use('/api/auth', authRoutes);
   app.use('/api/admin', adminRoutes);
+  app.use('/api', publicContentRoutes);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

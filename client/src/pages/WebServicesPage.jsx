@@ -1,7 +1,13 @@
 import ServiceDetail from '../components/common/ServiceDetail';
+import PageMeta from '../components/common/PageMeta';
 
 export default function WebServicesPage() {
   return (
+    <>
+      <PageMeta
+        title="Web Services"
+        description="Business, college, startup and portfolio websites plus web applications from Vignak Solutions."
+        path="/solutions/web-services" />
     <ServiceDetail
       eyebrow="Web Services"
       title="Websites and applications that represent you accurately."
@@ -32,5 +38,6 @@ export default function WebServicesPage() {
       ctaTo="/start-project"
       ctaLabel="Start a web project"
     />
+    </>
   );
 }

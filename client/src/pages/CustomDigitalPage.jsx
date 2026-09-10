@@ -1,7 +1,13 @@
 import ServiceDetail from '../components/common/ServiceDetail';
+import PageMeta from '../components/common/PageMeta';
 
 export default function CustomDigitalPage() {
   return (
+    <>
+      <PageMeta
+        title="Digital Solutions"
+        description="Custom digital solutions and web applications shaped around how your organization actually works."
+        path="/solutions/custom-digital-solutions" />
     <ServiceDetail
       eyebrow="Custom Digital Solutions"
       title="Digital systems shaped around how you actually work."
@@ -30,5 +36,6 @@ export default function CustomDigitalPage() {
       ctaTo="/start-project"
       ctaLabel="Discuss a custom solution"
     />
+    </>
   );
 }

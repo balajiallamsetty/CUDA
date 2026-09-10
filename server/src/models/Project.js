@@ -16,8 +16,12 @@ const projectSchema = new mongoose.Schema(
     externalUrl: { type: String, trim: true },
     published: { type: Boolean, default: false, index: true },
     featured: { type: Boolean, default: false },
+    archived: { type: Boolean, default: false, index: true },
   },
   { timestamps: true },
 );
+
+projectSchema.index({ title: 'text', client: 'text', description: 'text' });
+projectSchema.index({ published: 1, archived: 1, featured: 1 });
 
 export const Project = mongoose.model('Project', projectSchema);

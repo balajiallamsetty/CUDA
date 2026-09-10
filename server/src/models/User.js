@@ -20,8 +20,9 @@ const userSchema = new mongoose.Schema(
       default: ROLES.USER,
       index: true,
     },
-    isActive: { type: Boolean, default: true },
+    isActive: { type: Boolean, default: true, index: true },
     lastLoginAt: { type: Date },
+    passwordChangedAt: { type: Date },
   },
   { timestamps: true },
 );
@@ -41,6 +42,7 @@ userSchema.methods.toSafeObject = function toSafeObject() {
     email: this.email,
     role: this.role,
     isActive: this.isActive,
+    lastLoginAt: this.lastLoginAt,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,
   };

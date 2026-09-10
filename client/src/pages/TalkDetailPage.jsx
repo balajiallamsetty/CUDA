@@ -9,7 +9,8 @@ import { Input, Textarea } from '../components/ui/Field';
 import { Loading } from '../components/ui/Loading';
 import { ErrorState } from '../components/ui/States';
 import { useToast } from '../components/ui/Toast';
-import { getTalkBySlug } from '../services/talksService';
+import PageMeta from '../components/common/PageMeta';
+import { getTalkBySlug, registerForTalk } from '../services/talksService';
 import { formatTalkDate, talkStatusLabel } from '../utils/format';
 import { validateEmail, validateRequired } from '../utils/validation';
 
@@ -18,9 +19,17 @@ export default function TalkDetailPage() {
   const { push } = useToast();
   const [talk, setTalk] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [form, setForm] = useState({ name: '', email: '', phone: '', organization: '', notes: '' });
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    organization: '',
+    notes: '',
+    company_website: '',
+  });
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     getTalkBySlug(slug).then(setTalk).finally(() => setLoading(false));
@@ -52,7 +61,7 @@ export default function TalkDetailPage() {
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
-  function onSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
     const next = {
       name: validateRequired(form.name, 'Name'),
@@ -61,13 +70,25 @@ export default function TalkDetailPage() {
     setErrors(next);
     if (Object.values(next).some(Boolean)) return;
 
-    // Architecture stub: persistence API will be added with admin/talks management.
-    setSubmitted(true);
-    push('Registration interest recorded. We will confirm details soon.', 'success');
+    setSubmitting(true);
+    try {
+      await registerForTalk(talk.id || talk._id || talk.slug, form);
+      setSubmitted(true);
+      push('Registration successful.', 'success');
+    } catch (err) {
+      push(err.message || 'Registration failed', 'error');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
     <>
+      <PageMeta
+        title={talk.title}
+        description={talk.description?.slice(0, 155)}
+        path={`/talks/${talk.slug}`}
+      />
       <section className="page-hero">
         <Container>
           <Badge tone="accent">{talkStatusLabel(talk.status)}</Badge>
@@ -94,11 +115,11 @@ export default function TalkDetailPage() {
       )}
 
       {canRegister && (
-        <Section title="Registration" description="Share your details to register interest for this talk.">
+        <Section title="Registration" description="Share your details to register for this talk.">
           {submitted ? (
             <Card>
-              <h3>You are on the list</h3>
-              <p>Thank you. Registration architecture is in place; confirmation workflows will expand with the admin phase.</p>
+              <h3>You are registered</h3>
+              <p>Thank you. We will confirm details soon.</p>
             </Card>
           ) : (
             <form className="stack" onSubmit={onSubmit} noValidate style={{ maxWidth: 560 }}>
@@ -107,7 +128,19 @@ export default function TalkDetailPage() {
               <Input label="Phone" name="phone" value={form.phone} onChange={onChange} />
               <Input label="Organization" name="organization" value={form.organization} onChange={onChange} />
               <Textarea label="Notes" name="notes" value={form.notes} onChange={onChange} />
-              <Button type="submit">Register interest</Button>
+              <input
+                type="text"
+                name="company_website"
+                value={form.company_website}
+                onChange={onChange}
+                tabIndex={-1}
+                autoComplete="off"
+                className="sr-only"
+                aria-hidden="true"
+              />
+              <Button type="submit" disabled={submitting}>
+                {submitting ? 'Submitting…' : 'Register'}
+              </Button>
             </form>
           )}
         </Section>

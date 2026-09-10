@@ -23,3 +23,19 @@ export const authLimiter = rateLimit({
   legacyHeaders: false,
   message: { success: false, message: 'Too many authentication attempts. Please try again later.' },
 });
+
+export const passwordResetLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 8,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many password reset attempts. Please try again later.' },
+});
+
+export const registrationLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many registration attempts. Please try again later.' },
+});

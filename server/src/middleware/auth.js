@@ -1,3 +1,4 @@
+import { roleHasPermission, isStaffRole } from '@vignak/shared';
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
 import { User } from '../models/User.js';
@@ -62,12 +63,49 @@ export async function authenticate(req, res, next) {
   }
 }
 
+/** Attach user if cookie valid; never fail. Used for logout audit. */
+export async function optionalAuthenticate(req, res, next) {
+  try {
+    const token = req.cookies?.[COOKIE_NAME];
+    if (!token) return next();
+    const payload = jwt.verify(token, env.jwtSecret);
+    const user = await User.findById(payload.sub);
+    if (user && user.isActive) req.user = user;
+  } catch {
+    // ignore
+  }
+  return next();
+}
+
 export function authorize(...roles) {
   return (req, res, next) => {
     if (!req.user) {
       return next(new AppError('Authentication required', 401));
     }
     if (roles.length && !roles.includes(req.user.role)) {
+      return next(new AppError('Insufficient permissions', 403));
+    }
+    return next();
+  };
+}
+
+export function requireStaff(req, res, next) {
+  if (!req.user) {
+    return next(new AppError('Authentication required', 401));
+  }
+  if (!isStaffRole(req.user.role)) {
+    return next(new AppError('Insufficient permissions', 403));
+  }
+  return next();
+}
+
+export function authorizePermission(...permissions) {
+  return (req, res, next) => {
+    if (!req.user) {
+      return next(new AppError('Authentication required', 401));
+    }
+    const ok = permissions.some((p) => roleHasPermission(req.user.role, p));
+    if (!ok) {
       return next(new AppError('Insufficient permissions', 403));
     }
     return next();

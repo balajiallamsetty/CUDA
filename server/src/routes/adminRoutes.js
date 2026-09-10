@@ -1,19 +1,121 @@
 import { Router } from 'express';
-import { ROLES } from '@vignak/shared';
-import { authenticate, authorize } from '../middleware/auth.js';
-import { adminMe } from '../controllers/adminController.js';
+import { PERMISSIONS } from '@vignak/shared';
+import { authenticate, requireStaff, authorizePermission } from '../middleware/auth.js';
+import { validateRequest } from '../middleware/validate.js';
+import {
+  projectValidators,
+  talkValidators,
+  speakerValidators,
+  leadUpdateValidators,
+  leadNoteValidators,
+  userCreateValidators,
+  userUpdateValidators,
+} from '../validators/index.js';
+import * as admin from '../controllers/adminController.js';
 
 const router = Router();
 
-const staffRoles = [
-  ROLES.SUPER_ADMIN,
-  ROLES.ADMIN,
-  ROLES.STAFF,
-  ROLES.CONTENT_MANAGER,
-  ROLES.SALES,
-];
+router.use(authenticate, requireStaff);
 
-router.use(authenticate, authorize(...staffRoles));
-router.get('/me', adminMe);
+router.get('/me', admin.adminMe);
+router.get('/dashboard/stats', authorizePermission(PERMISSIONS.DASHBOARD_READ), admin.dashboardStats);
+
+router.get('/leads', authorizePermission(PERMISSIONS.LEADS_READ), admin.listLeads);
+router.get('/leads/:id', authorizePermission(PERMISSIONS.LEADS_READ), admin.getLead);
+router.patch(
+  '/leads/:id',
+  authorizePermission(PERMISSIONS.LEADS_WRITE),
+  leadUpdateValidators,
+  validateRequest,
+  admin.patchLead,
+);
+router.post(
+  '/leads/:id/notes',
+  authorizePermission(PERMISSIONS.LEADS_WRITE),
+  leadNoteValidators,
+  validateRequest,
+  admin.postLeadNote,
+);
+
+router.get('/inquiries', authorizePermission(PERMISSIONS.INQUIRIES_READ), admin.listInquiries);
+router.get('/inquiries/:id', authorizePermission(PERMISSIONS.INQUIRIES_READ), admin.getInquiry);
+router.patch('/inquiries/:id', authorizePermission(PERMISSIONS.INQUIRIES_WRITE), admin.patchInquiry);
+
+router.get('/projects', authorizePermission(PERMISSIONS.PROJECTS_READ), admin.listProjects);
+router.get('/projects/:id', authorizePermission(PERMISSIONS.PROJECTS_READ), admin.getProject);
+router.post(
+  '/projects',
+  authorizePermission(PERMISSIONS.PROJECTS_WRITE),
+  projectValidators,
+  validateRequest,
+  admin.createProject,
+);
+router.patch(
+  '/projects/:id',
+  authorizePermission(PERMISSIONS.PROJECTS_WRITE),
+  projectValidators,
+  validateRequest,
+  admin.patchProject,
+);
+
+router.get('/speakers', authorizePermission(PERMISSIONS.SPEAKERS_READ), admin.listSpeakers);
+router.post(
+  '/speakers',
+  authorizePermission(PERMISSIONS.SPEAKERS_WRITE),
+  speakerValidators,
+  validateRequest,
+  admin.createSpeaker,
+);
+router.patch(
+  '/speakers/:id',
+  authorizePermission(PERMISSIONS.SPEAKERS_WRITE),
+  speakerValidators,
+  validateRequest,
+  admin.patchSpeaker,
+);
+
+router.get('/talks', authorizePermission(PERMISSIONS.TALKS_READ), admin.listTalks);
+router.get('/talks/:id', authorizePermission(PERMISSIONS.TALKS_READ), admin.getTalk);
+router.post(
+  '/talks',
+  authorizePermission(PERMISSIONS.TALKS_WRITE),
+  talkValidators,
+  validateRequest,
+  admin.createTalk,
+);
+router.patch(
+  '/talks/:id',
+  authorizePermission(PERMISSIONS.TALKS_WRITE),
+  talkValidators,
+  validateRequest,
+  admin.patchTalk,
+);
+router.get(
+  '/talks/:id/registrations',
+  authorizePermission(PERMISSIONS.TALKS_READ),
+  admin.listRegistrations,
+);
+
+router.get('/users', authorizePermission(PERMISSIONS.USERS_READ), admin.listUsers);
+router.post(
+  '/users',
+  authorizePermission(PERMISSIONS.USERS_WRITE),
+  userCreateValidators,
+  validateRequest,
+  admin.createUser,
+);
+router.patch(
+  '/users/:id',
+  authorizePermission(PERMISSIONS.USERS_WRITE),
+  userUpdateValidators,
+  validateRequest,
+  admin.patchUser,
+);
+
+router.get('/settings', authorizePermission(PERMISSIONS.SETTINGS_READ), admin.getSettings);
+router.patch('/settings', authorizePermission(PERMISSIONS.SETTINGS_WRITE), admin.patchSettings);
+router.get('/audit-logs', authorizePermission(PERMISSIONS.AUDIT_READ), admin.listAuditLogs);
+router.get('/services', authorizePermission(PERMISSIONS.SERVICES_READ), admin.listServices);
+router.post('/services', authorizePermission(PERMISSIONS.SERVICES_WRITE), admin.upsertService);
 
 export default router;

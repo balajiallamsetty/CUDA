@@ -1,56 +1,28 @@
-# Development
-
-## Setup
+# Development (Phase 2)
 
 ```bash
 npm install
-cp .env.example server/.env   # PowerShell: Copy-Item .env.example server/.env
-```
-
-Fill `MONGODB_URI`, `JWT_SECRET`, and `CLIENT_URL` in `server/.env`.
-
-## Run
-
-```bash
-npm run dev                 # client + server
-npm run dev:client          # Vite on :5173
-npm run dev:server          # Express on :5000
-```
-
-Vite proxies `/api` to `http://localhost:5000` during local development.
-
-## Seed an admin
-
-```bash
+Copy-Item .env.example server/.env
+# set MONGODB_URI, JWT_SECRET, CLIENT_URL
 npm run seed:admin
+npm run seed:content
+npm run dev
 ```
 
-Requires `ADMIN_EMAIL`, `ADMIN_PASSWORD` (≥12 chars), optional `ADMIN_NAME`.
+## Scripts
 
-## Test
+| Command | Purpose |
+|---------|---------|
+| `npm run dev` | Client + server |
+| `npm run build` | Client production build |
+| `npm test` | Server + client tests |
+| `npm run test:e2e` | Playwright |
+| `npm run lint` | ESLint |
+| `npm run seed:admin` | Create SUPER_ADMIN from env |
+| `npm run seed:content` | Upsert sample projects/talks/services |
 
-```bash
-npm run test:server         # Jest + Supertest + in-memory MongoDB
-npm run test:client         # Vitest + React Testing Library
-npm test                    # both
-npx playwright install      # once
-npm run test:e2e            # Playwright smoke (starts Vite)
-```
+## Notes
 
-## Lint and build
-
-```bash
-npm run lint
-npm run build
-```
-
-## Quality expectations
-
-Before calling Phase 1 complete:
-
-1. Client production build succeeds
-2. Server and client tests pass
-3. Public routes render without console errors in critical flows
-4. Forms persist when Atlas/local Mongo is configured
-5. Unauthenticated `/api/admin/me` returns 401
-6. No secrets committed
+- Vite proxies `/api` to `:5000`
+- Password reset links are printed to the server console in development
+- Admin UI: `/admin/login` → `/admin/dashboard`

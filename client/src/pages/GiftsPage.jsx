@@ -1,7 +1,13 @@
 import ServiceDetail from '../components/common/ServiceDetail';
+import PageMeta from '../components/common/PageMeta';
 
 export default function GiftsPage() {
   return (
+    <>
+      <PageMeta
+        title="Customized Gifts"
+        description="Branded notebooks, certificates, badges, ID cards and merchandise from Vignak Solutions."
+        path="/customized/gifts" />
     <ServiceDetail
       eyebrow="Customized Gifts"
       title="Branded materials people keep and remember."
@@ -32,5 +38,6 @@ export default function GiftsPage() {
       ctaTo="/start-project"
       ctaLabel="Request customized gifts"
     />
+    </>
   );
 }

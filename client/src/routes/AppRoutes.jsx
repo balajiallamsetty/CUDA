@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import PublicLayout from '../layouts/PublicLayout';
-import AdminLayout from '../layouts/AdminLayout';
+import AdminShell from '../layouts/AdminShell';
 import HomePage from '../pages/HomePage';
 import AboutPage from '../pages/AboutPage';
 import SolutionsPage from '../pages/SolutionsPage';
@@ -19,7 +19,19 @@ import PrivacyPage from '../pages/PrivacyPage';
 import TermsPage from '../pages/TermsPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import AdminLoginPage from '../pages/AdminLoginPage';
-import AdminHomePage from '../pages/AdminHomePage';
+import ForgotPasswordPage from '../pages/ForgotPasswordPage';
+import ResetPasswordPage from '../pages/ResetPasswordPage';
+import AdminDashboardPage from '../pages/admin/AdminDashboardPage';
+import AdminLeadsPage from '../pages/admin/AdminLeadsPage';
+import AdminLeadDetailPage from '../pages/admin/AdminLeadDetailPage';
+import AdminInquiriesPage from '../pages/admin/AdminInquiriesPage';
+import AdminInquiryDetailPage from '../pages/admin/AdminInquiryDetailPage';
+import AdminProjectsPage from '../pages/admin/AdminProjectsPage';
+import AdminProjectEditPage from '../pages/admin/AdminProjectEditPage';
+import AdminTalksPage from '../pages/admin/AdminTalksPage';
+import AdminTalkEditPage from '../pages/admin/AdminTalkEditPage';
+import AdminUsersPage from '../pages/admin/AdminUsersPage';
+import AdminSettingsPage from '../pages/admin/AdminSettingsPage';
 
 export default function AppRoutes() {
   return (
@@ -45,10 +57,25 @@ export default function AppRoutes() {
       </Route>
 
       <Route path="/admin/login" element={<AdminLoginPage />} />
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<AdminHomePage />} />
+      <Route path="/admin/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/admin/reset-password" element={<ResetPasswordPage />} />
+
+      <Route path="/admin" element={<AdminShell />}>
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard" element={<AdminDashboardPage />} />
+        <Route path="leads" element={<AdminLeadsPage />} />
+        <Route path="leads/:id" element={<AdminLeadDetailPage />} />
+        <Route path="inquiries" element={<AdminInquiriesPage />} />
+        <Route path="inquiries/:id" element={<AdminInquiryDetailPage />} />
+        <Route path="projects" element={<AdminProjectsPage />} />
+        <Route path="projects/new" element={<AdminProjectEditPage />} />
+        <Route path="projects/:id/edit" element={<AdminProjectEditPage />} />
+        <Route path="talks" element={<AdminTalksPage />} />
+        <Route path="talks/new" element={<AdminTalkEditPage />} />
+        <Route path="talks/:id/edit" element={<AdminTalkEditPage />} />
+        <Route path="users" element={<AdminUsersPage />} />
+        <Route path="settings" element={<AdminSettingsPage />} />
       </Route>
-      <Route path="/admin/*" element={<Navigate to="/admin" replace />} />
     </Routes>
   );
 }

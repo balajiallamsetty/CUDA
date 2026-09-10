@@ -6,3 +6,6 @@ export { Speaker } from './Speaker.js';
 export { Talk } from './Talk.js';
 export { TalkRegistration } from './TalkRegistration.js';
 export { AuditLog } from './AuditLog.js';
+export { PasswordResetToken } from './PasswordResetToken.js';
+export { ServiceOffering } from './ServiceOffering.js';
+export { SiteSettings } from './SiteSettings.js';
