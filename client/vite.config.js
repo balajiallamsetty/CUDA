@@ -8,7 +8,8 @@ export default defineConfig({
     host: '127.0.0.1',
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        // Prefer IPv4 — Windows often resolves localhost to ::1 and refuses the proxy
+        target: 'http://127.0.0.1:5000',
         changeOrigin: true,
       },
     },

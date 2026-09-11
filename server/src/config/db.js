@@ -1,14 +1,35 @@
 import mongoose from 'mongoose';
 import { env } from './env.js';
+import { logger } from '../utils/logger.js';
 
-export async function connectDatabase(uri = env.mongodbUri) {
+export async function connectDatabase(uri = env.mongodbUri, { retries = 5, delayMs = 2000 } = {}) {
   if (!uri) {
     throw new Error('MONGODB_URI is not configured');
   }
 
   mongoose.set('strictQuery', true);
-  await mongoose.connect(uri);
-  return mongoose.connection;
+
+  let lastError;
+  for (let attempt = 1; attempt <= retries; attempt += 1) {
+    try {
+      await mongoose.connect(uri, {
+        serverSelectionTimeoutMS: 10000,
+      });
+      return mongoose.connection;
+    } catch (err) {
+      lastError = err;
+      logger.warn('db_connect_retry', {
+        attempt,
+        retries,
+        message: err.message,
+      });
+      if (attempt < retries) {
+        await new Promise((resolve) => setTimeout(resolve, delayMs * attempt));
+      }
+    }
+  }
+
+  throw lastError;
 }
 
 export function getDbHealth() {

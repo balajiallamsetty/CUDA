@@ -9,8 +9,9 @@ async function start() {
     logger.info('db_connected');
 
     const app = createApp();
-    app.listen(env.port, () => {
-      logger.info('server_listening', { port: env.port, env: env.nodeEnv });
+    // Bind IPv4 explicitly so the Vite proxy on 127.0.0.1 can reach the API
+    app.listen(env.port, '127.0.0.1', () => {
+      logger.info('server_listening', { port: env.port, host: '127.0.0.1', env: env.nodeEnv });
     });
   } catch (err) {
     logger.error('server_start_failed', { message: err.message });
