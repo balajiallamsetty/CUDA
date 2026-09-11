@@ -1,159 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap');
+/* Legacy tokens kept for admin CSS modules during this pass */
 @import './tokens.css';
 
-#root {
-  min-height: 100vh;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply m-0 font-sans text-base leading-normal text-ink bg-surface antialiased;
+  }
+
+  a {
+    @apply text-inherit no-underline;
+  }
+
+  h1,
+  h2 {
+    @apply font-display font-normal leading-tight text-ink;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  h3 {
+    @apply text-xl font-semibold text-ink;
+  }
+
+  p {
+    @apply text-slate-vignak;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent/40 ring-offset-2;
+  }
 }
 
-.app-shell {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+@layer components {
+  .app-shell {
+    @apply min-h-screen flex flex-col;
+  }
+
+  .app-main {
+    @apply flex-1;
+  }
+
+  .skip-link {
+    @apply absolute left-[-9999px] top-0 z-[1000] rounded-br bg-ink px-4 py-3 text-white;
+  }
+
+  .skip-link:focus {
+    @apply left-0;
+  }
+
+  .page-hero {
+    @apply relative overflow-hidden pt-[calc(72px+4rem)] pb-16 bg-accent-panel;
+  }
+
+  .eyebrow {
+    @apply mb-3 inline-block text-sm font-semibold uppercase tracking-[0.08em] text-accent;
+  }
+
+  .lead {
+    @apply text-lg max-w-xl text-slate-vignak;
+  }
 }
 
-.app-main {
-  flex: 1;
-}
-
-.skip-link {
+.sr-only {
   position: absolute;
-  left: -9999px;
-  top: 0;
-  z-index: 1000;
-  padding: 0.75rem 1rem;
-  background: var(--color-ink);
-  color: #fff;
-  border-radius: 0 0 4px 0;
-}
-
-.skip-link:focus {
-  left: 0;
-}
-
-.page-hero {
-  position: relative;
-  padding: calc(var(--nav-height) + var(--space-8)) 0 var(--space-8);
-  background:
-    var(--gradient-panel),
-    var(--pattern-grid);
-  background-size: auto, 28px 28px;
-  overflow: hidden;
-}
-
-.page-hero::after {
-  content: '';
-  position: absolute;
-  inset: auto -10% -40% auto;
-  width: min(48vw, 420px);
-  height: min(48vw, 420px);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(15, 110, 86, 0.16), transparent 70%);
-  pointer-events: none;
-}
-
-.page-hero > * {
-  position: relative;
-  z-index: 1;
-}
-
-.page-hero--brand {
-  background: var(--gradient-hero);
-  color: #fff;
-}
-
-.page-hero--brand::after {
-  background: radial-gradient(circle, rgba(159, 217, 197, 0.22), transparent 70%);
-}
-
-.page-hero--brand h1,
-.page-hero--brand h2,
-.page-hero--brand p {
-  color: #fff;
-}
-
-.page-hero--brand p {
-  color: rgba(255, 255, 255, 0.82);
-}
-
-.eyebrow {
-  display: inline-block;
-  font-size: var(--text-sm);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-accent);
-  margin-bottom: var(--space-3);
-}
-
-.page-hero--brand .eyebrow {
-  color: #9fd9c5;
-}
-
-.lead {
-  font-size: var(--text-lg);
-  max-width: 42rem;
-}
-
-.grid-2 {
-  display: grid;
-  gap: var(--space-6);
-  grid-template-columns: 1fr;
-}
-
-.grid-3 {
-  display: grid;
-  gap: var(--space-5);
-  grid-template-columns: 1fr;
-}
-
-.grid-4 {
-  display: grid;
-  gap: var(--space-5);
-  grid-template-columns: 1fr;
-}
-
-@media (min-width: 640px) {
-  .grid-2 { grid-template-columns: repeat(2, 1fr); }
-  .grid-4 { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (min-width: 900px) {
-  .grid-3 { grid-template-columns: repeat(3, 1fr); }
-  .grid-4 { grid-template-columns: repeat(4, 1fr); }
-}
-
-.stack {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  align-items: center;
-}
-
-.muted {
-  color: var(--color-muted);
-}
-
-.prose-block h3 {
-  margin-top: var(--space-5);
-}
-
-.list-clean {
-  margin: 0;
+  width: 1px;
+  height: 1px;
   padding: 0;
-  list-style: none;
-}
-
-.list-clean li {
-  padding: var(--space-2) 0;
-  border-bottom: 1px solid var(--color-line-soft);
-  color: var(--color-slate);
-}
-
-.list-clean li:last-child {
-  border-bottom: none;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }

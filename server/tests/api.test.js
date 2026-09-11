@@ -147,6 +147,64 @@ describe('Phase 2 API', () => {
     expect(staff._id).toBeDefined();
   });
 
+  it('registers USER and scopes my leads by ownership', async () => {
+    const register = await request(app).post('/api/auth/register').send({
+      name: 'Student One',
+      email: 'student1@example.com',
+      password: 'StrongPassword123!',
+      passwordConfirm: 'StrongPassword123!',
+      institution: 'Test College',
+      course: 'B.Tech CSE',
+      year: '4th Year',
+    });
+    expect(register.status).toBe(201);
+    expect(register.body.data.user.role).toBe(ROLES.USER);
+
+    const agent = request.agent(app);
+    await agent.post('/api/auth/login').send({
+      email: 'student1@example.com',
+      password: 'StrongPassword123!',
+    });
+
+    const mine = await agent.post('/api/leads').send({
+      name: 'Student One',
+      email: 'student1@example.com',
+      description: 'Need help with a final-year full stack project for my college.',
+      projectTitle: 'Campus Portal',
+      projectCategory: 'full-stack',
+      technologies: ['React', 'Node.js'],
+    });
+    expect(mine.status).toBe(201);
+    expect(mine.body.data.id).toBeTruthy();
+
+    await request(app).post('/api/leads').send({
+      name: 'Anon',
+      email: 'anon@example.com',
+      description: 'Anonymous inquiry that should not appear in my leads list.',
+      service: 'Website',
+    });
+
+    const list = await agent.get('/api/auth/me/leads');
+    expect(list.status).toBe(200);
+    expect(list.body.data.length).toBe(1);
+    expect(list.body.data[0].projectTitle).toBe('Campus Portal');
+    expect(list.body.data[0].user).toBeTruthy();
+
+    const otherUser = await createUser({
+      email: 'student2@example.com',
+      password: 'StrongPassword123!',
+      role: ROLES.USER,
+    });
+    const otherAgent = await loginAgent('student2@example.com', 'StrongPassword123!');
+    const denied = await otherAgent.get(`/api/auth/me/leads/${list.body.data[0]._id}`);
+    expect(denied.status).toBe(404);
+    expect(otherUser._id).toBeDefined();
+
+    const profile = await agent.patch('/api/auth/me/profile').send({ phone: '9999999999' });
+    expect(profile.status).toBe(200);
+    expect(profile.body.data.user.phone).toBe('9999999999');
+  });
+
   it('updates lead status with history', async () => {
     await createUser({ email: 'admin@test.com', password: 'StrongPassword123!', role: ROLES.ADMIN });
     await request(app).post('/api/leads').send({

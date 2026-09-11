@@ -48,6 +48,10 @@ const leadSchema = new mongoose.Schema(
       index: true,
     },
     assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+    projectCategory: { type: String, trim: true, maxlength: 80 },
+    technologies: [{ type: String, trim: true, maxlength: 60 }],
+    projectTitle: { type: String, trim: true, maxlength: 200 },
     archived: { type: Boolean, default: false, index: true },
     notes: [noteSchema],
     statusHistory: [statusHistorySchema],
@@ -60,6 +64,7 @@ const leadSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+leadSchema.index({ user: 1, createdAt: -1 });
 leadSchema.index({ email: 1, createdAt: -1 });
 leadSchema.index({ status: 1, createdAt: -1 });
 leadSchema.index({ archived: 1, createdAt: -1 });

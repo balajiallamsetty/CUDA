@@ -18,9 +18,12 @@ export default function AboutPage() {
           <p className="eyebrow">About Vignak</p>
           <h1>A company built to connect technology with human progress.</h1>
           <p className="lead">
-            Vignak Solutions exists to help businesses, institutions and communities grow through digital systems,
-            thoughtful experiences and meaningful conversations.
+            Today our primary focus is Project Assistance for B.Tech, B.E., and M.Tech students. We also support
+            digital systems, campus experiences, and conversations for institutions and teams.
           </p>
+          <div className="row" style={{ marginTop: '1.25rem' }}>
+            <Button as={Link} to="/project-assistance">Explore Project Assistance</Button>
+          </div>
         </Container>
       </section>
 
@@ -50,7 +53,7 @@ export default function AboutPage() {
           <li>Clear partnerships with campuses, startups and established businesses.</li>
         </ul>
         <div className="row" style={{ marginTop: '1.5rem' }}>
-          <Button as={Link} to="/start-project">Start a Project</Button>
+          <Button as={Link} to="/register">Start Your Project</Button>
           <Button as={Link} to="/contact" variant="secondary">Contact</Button>
         </div>
       </Section>

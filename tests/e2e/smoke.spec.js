@@ -1,12 +1,23 @@
 import { test, expect } from '@playwright/test';
 
-test('home page renders hero and navigation', async ({ page }) => {
+test('home page renders Project Assistance hero and navigation', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByText('Vignak Solutions').first()).toBeVisible();
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
-    'Technology, experiences and connections that move people forward.',
+    'Turn your project idea into a working technical project.',
   );
   await expect(page.getByRole('navigation', { name: 'Primary' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Project Assistance' }).first()).toBeVisible();
+});
+
+test('project assistance page and register path render', async ({ page }) => {
+  await page.goto('/project-assistance');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Technical help for academic projects');
+  await page.goto('/register');
+  await expect(page.getByRole('heading', { name: /create your student account/i })).toBeVisible();
+  await expect(page.getByLabel('Full name')).toBeVisible();
+  await page.goto('/login');
+  await expect(page.getByRole('heading', { name: 'Log in' })).toBeVisible();
 });
 
 test('user can open web services and start project form', async ({ page }) => {
@@ -31,7 +42,7 @@ test('unauthorized admin access redirects to login', async ({ page }) => {
 
 test('portfolio and talks pages render', async ({ page }) => {
   await page.goto('/portfolio');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Selected projects');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Project directions');
   await page.goto('/talks');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Conversations');
 });

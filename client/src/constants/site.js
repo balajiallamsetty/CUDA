@@ -1,9 +1,9 @@
 export const NAV_LINKS = [
   { label: 'Home', to: '/' },
-  { label: 'Solutions', to: '/solutions' },
-  { label: 'Vignak Talks', to: '/talks' },
-  { label: 'Customized', to: '/customized' },
+  { label: 'Project Assistance', to: '/project-assistance' },
   { label: 'Portfolio', to: '/portfolio' },
+  { label: 'Talks', to: '/talks' },
+  { label: 'Services', to: '/solutions' },
   { label: 'About', to: '/about' },
   { label: 'Contact', to: '/contact' },
 ];
@@ -11,6 +11,6 @@ export const NAV_LINKS = [
 export const SITE = {
   name: 'Vignak',
   legalName: 'Vignak Solutions',
-  tagline: 'Technology, experiences and connections that move people forward.',
+  tagline: 'Project assistance for B.Tech and M.Tech students.',
   email: 'hello@vignak.solutions',
 };

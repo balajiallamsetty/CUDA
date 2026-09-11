@@ -14,17 +14,22 @@ export function AuthProvider({ children }) {
     setPermissions([]);
   }, []);
 
+  const applySession = useCallback((data) => {
+    setUser(data.user);
+    setPermissions(data.permissions || permissionsForRole(data.user.role));
+    return data.user;
+  }, []);
+
   const refresh = useCallback(async () => {
     try {
       const res = await api.getMe();
-      setUser(res.data.user);
-      setPermissions(res.data.permissions || permissionsForRole(res.data.user.role));
+      applySession(res.data);
     } catch {
       clearSession();
     } finally {
       setLoading(false);
     }
-  }, [clearSession]);
+  }, [applySession, clearSession]);
 
   useEffect(() => {
     refresh();
@@ -46,10 +51,13 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(async (email, password) => {
     const res = await api.login({ email, password });
-    setUser(res.data.user);
-    setPermissions(res.data.permissions || permissionsForRole(res.data.user.role));
-    return res.data.user;
-  }, []);
+    return applySession(res.data);
+  }, [applySession]);
+
+  const register = useCallback(async (payload) => {
+    const res = await api.register(payload);
+    return applySession(res.data);
+  }, [applySession]);
 
   const logout = useCallback(async () => {
     try {
@@ -67,12 +75,13 @@ export function AuthProvider({ children }) {
       permissions,
       loading,
       login,
+      register,
       logout,
       refresh,
       can,
       isStaff: user ? isStaffRole(user.role) : false,
     }),
-    [user, permissions, loading, login, logout, refresh, can],
+    [user, permissions, loading, login, register, logout, refresh, can],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

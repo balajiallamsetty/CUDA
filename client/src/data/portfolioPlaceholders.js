@@ -1,0 +1,73 @@
+/**
+ * Illustrative portfolio samples for marketing.
+ * Images are local placeholders — not claimed as real client deliveries.
+ * Replace fields later without rewriting UI components.
+ */
+export const PORTFOLIO_PLACEHOLDERS = [
+  {
+    id: 'ph-smart-attendance',
+    slug: 'smart-attendance-assistant',
+    title: 'Smart Attendance Assistant',
+    category: 'ai-ml',
+    categoryLabel: 'AI & Machine Learning',
+    description: 'Concept sample: face-assisted attendance logging with a simple admin review panel.',
+    technologies: ['Python', 'OpenCV', 'Flask', 'SQLite'],
+    image: '/portfolio/placeholder-ai.svg',
+    illustrative: true,
+  },
+  {
+    id: 'ph-campus-portal',
+    slug: 'campus-services-portal',
+    title: 'Campus Services Portal',
+    category: 'full-stack',
+    categoryLabel: 'Full Stack Development',
+    description: 'Concept sample: student requests, role-based access, and status tracking.',
+    technologies: ['React', 'Node.js', 'MongoDB', 'Express'],
+    image: '/portfolio/placeholder-web.svg',
+    illustrative: true,
+  },
+  {
+    id: 'ph-sentiment',
+    slug: 'feedback-sentiment-lab',
+    title: 'Feedback Sentiment Lab',
+    category: 'nlp',
+    categoryLabel: 'NLP',
+    description: 'Concept sample: classify course feedback and visualize theme clusters.',
+    technologies: ['Python', 'scikit-learn', 'Streamlit'],
+    image: '/portfolio/placeholder-data.svg',
+    illustrative: true,
+  },
+  {
+    id: 'ph-inventory',
+    slug: 'lab-inventory-cloud',
+    title: 'Lab Inventory Cloud',
+    category: 'cloud',
+    categoryLabel: 'Cloud Computing',
+    description: 'Concept sample: track lab assets with cloud-hosted API and dashboards.',
+    technologies: ['Node.js', 'MongoDB Atlas', 'React'],
+    image: '/portfolio/placeholder-cloud.svg',
+    illustrative: true,
+  },
+  {
+    id: 'ph-vision-qc',
+    slug: 'vision-quality-check',
+    title: 'Vision Quality Check Demo',
+    category: 'computer-vision',
+    categoryLabel: 'Computer Vision',
+    description: 'Concept sample: classify sample images and surface confidence scores.',
+    technologies: ['PyTorch', 'FastAPI', 'React'],
+    image: '/portfolio/placeholder-vision.svg',
+    illustrative: true,
+  },
+  {
+    id: 'ph-secure-notes',
+    slug: 'secure-notes-workspace',
+    title: 'Secure Notes Workspace',
+    category: 'cybersecurity',
+    categoryLabel: 'Cybersecurity',
+    description: 'Concept sample: authenticated notes with hashing, sessions, and audit basics.',
+    technologies: ['Express', 'JWT', 'bcrypt', 'MongoDB'],
+    image: '/portfolio/placeholder-secure.svg',
+    illustrative: true,
+  },
+];

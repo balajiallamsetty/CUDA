@@ -1,203 +1,225 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Button from '../components/ui/Button';
-import Card from '../components/ui/Card';
-import Badge from '../components/ui/Badge';
-import Container from '../components/layout/Container';
-import Section from '../components/layout/Section';
 import PageMeta from '../components/common/PageMeta';
+import { PROJECT_ASSISTANCE } from '../data/projectAssistance';
+import { PROJECT_CATEGORIES } from '../data/projectCategories';
+import { PORTFOLIO_PLACEHOLDERS } from '../data/portfolioPlaceholders';
 import { listProjects } from '../services/portfolioService';
-import { listTalks } from '../services/talksService';
-import { formatTalkDate, talkStatusLabel } from '../utils/format';
+import { useAuth } from '../context/AuthContext';
 import heroImage from '../assets/hero.png';
-import styles from './HomePage.module.css';
+
+const pa = PROJECT_ASSISTANCE;
 
 export default function HomePage() {
-  const [projects, setProjects] = useState([]);
-  const [talks, setTalks] = useState([]);
+  const { user } = useAuth();
+  const [cmsProjects, setCmsProjects] = useState([]);
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     listProjects({ featuredOnly: true })
-      .then(setProjects)
-      .catch(() => setProjects([]));
-    listTalks()
-      .then((items) => setTalks(items.slice(0, 2)))
-      .catch(() => setTalks([]));
+      .then(setCmsProjects)
+      .catch(() => setCmsProjects([]));
   }, []);
+
+  const portfolioItems = useMemo(() => {
+    if (cmsProjects.length > 0) {
+      return cmsProjects.slice(0, 6).map((p) => ({
+        id: p._id || p.id,
+        slug: p.slug,
+        title: p.title,
+        categoryLabel: p.category,
+        description: p.description,
+        technologies: p.technologies || [],
+        image: p.coverImage || '/portfolio/placeholder-web.svg',
+        source: 'cms',
+      }));
+    }
+    return PORTFOLIO_PLACEHOLDERS;
+  }, [cmsProjects]);
+
+  const filtered = filter === 'all'
+    ? portfolioItems
+    : portfolioItems.filter((item) => item.category === filter || item.categoryLabel === filter);
+
+  const startTo = user ? '/dashboard/requests/new' : '/register';
 
   return (
     <>
       <PageMeta
-        title="Vignak Solutions"
-        description="Vignak Solutions brings together digital solutions, experiences and events to help businesses, institutions and communities grow."
+        title="Project Assistance for B.Tech & M.Tech"
+        description="Vignak Solutions helps B.Tech, B.E., and M.Tech students with project guidance, development assistance, documentation, and demo preparation."
         path="/"
       />
 
-      <section className={styles.hero}>
-        <div className={styles.heroMedia} aria-hidden="true">
-          <img src={heroImage} alt="" className={styles.heroImg} />
-          <div className={styles.heroWash} />
+      <section className="relative isolate min-h-[min(92vh,880px)] overflow-hidden bg-ink text-white">
+        <div className="absolute inset-0" aria-hidden="true">
+          <img src={heroImage} alt="" className="h-full w-full object-cover opacity-55" />
+          <div className="absolute inset-0 bg-gradient-to-br from-ink via-ink/85 to-accent/40" />
         </div>
-        <Container className={styles.heroContent}>
-          <p className={styles.brand}>Vignak Solutions</p>
-          <h1 className={styles.headline}>
-            Technology, experiences and connections that move people forward.
-          </h1>
-          <p className={styles.support}>
-            Digital systems, campus and conference experiences, and conversations built with clarity —
-            for businesses, institutions and communities.
-          </p>
-          <div className={`row ${styles.ctaRow}`}>
-            <Button as={Link} to="/start-project" variant="inverse" size="lg">
-              Start a Project
+        <div className="relative mx-auto flex min-h-[min(92vh,880px)] max-w-container flex-col justify-center px-4 pb-20 pt-[calc(72px+3rem)] sm:px-6">
+          <p className="mb-4 font-display text-4xl text-accent-mist md:text-5xl">{pa.hero.brand}</p>
+          <h1 className="max-w-3xl !text-white md:!text-5xl lg:!text-6xl">{pa.hero.headline}</h1>
+          <p className="mt-5 max-w-xl text-lg text-white/80">{pa.hero.support}</p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Button as={Link} to={startTo} variant="inverse" size="lg">
+              {pa.hero.primaryCta.label}
             </Button>
-            <Button as={Link} to="/solutions" variant="outlineInverse" size="lg">
-              Explore solutions
+            <Button as={Link} to={pa.hero.secondaryCta.to} variant="outlineInverse" size="lg">
+              {pa.hero.secondaryCta.label}
             </Button>
+            {!user && (
+              <Button as={Link} to="/register" variant="outlineInverse" size="lg">
+                Create Account
+              </Button>
+            )}
           </div>
-        </Container>
+        </div>
       </section>
 
-      <Section
-        eyebrow="What we do"
-        title="Where digital systems meet human moments."
-        description="Websites and applications, thoughtful event materials, and talks that help teams decide with purpose."
-      >
-        <div className="grid-4">
-          {[
-            ['Technology', 'Websites, applications and digital systems built for clarity and growth.'],
-            ['Events', 'Materials and moments for conferences and gatherings that feel intentional.'],
-            ['Education', 'Modern presence for institutions and student-facing initiatives.'],
-            ['Experiences', 'Branded gifts, kits and touchpoints that earn attention.'],
-          ].map(([title, text], index) => (
-            <article key={title} className={styles.pillar} style={{ '--delay': `${index * 60}ms` }}>
-              <span className={styles.pillarIndex}>0{index + 1}</span>
-              <h3>{title}</h3>
-              <p>{text}</p>
+      <section className="border-b border-line-soft bg-white py-14">
+        <div className="mx-auto grid max-w-container gap-6 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-5">
+          {pa.values.map((item) => (
+            <article key={item.title}>
+              <h2 className="!font-sans !text-base !font-semibold">{item.title}</h2>
+              <p className="mt-2 text-sm">{item.text}</p>
             </article>
           ))}
         </div>
-      </Section>
+      </section>
 
-      <Section
-        tone="elevated"
-        eyebrow="Services"
-        title="Three foundations we deliver today."
-        description="Web & digital solutions, customized gifts & conference kits, and Vignak Talks."
-      >
-        <div className="grid-3">
-          <Card className={styles.serviceCard}>
-            <Badge tone="accent">Web & Digital</Badge>
-            <h3>Web & Digital Solutions</h3>
-            <p>Business, college, startup and portfolio sites — plus applications that support real workflows.</p>
-            <Button as={Link} to="/solutions/web-services" variant="secondary" size="sm">
-              Explore web services
-            </Button>
-          </Card>
-          <Card className={styles.serviceCard}>
-            <Badge tone="accent">Customized</Badge>
-            <h3>Gifts & Conference Kits</h3>
-            <p>Notebooks, certificates, badges, ID cards, merchandise and complete conference kits.</p>
-            <Button as={Link} to="/customized" variant="secondary" size="sm">
-              Explore customized
-            </Button>
-          </Card>
-          <Card className={styles.serviceCard}>
-            <Badge tone="accent">Talks</Badge>
-            <h3>Vignak Talks</h3>
-            <p>Curated conversations with practitioners on technology, learning and building with purpose.</p>
-            <Button as={Link} to="/talks" variant="secondary" size="sm">
-              View talks
-            </Button>
-          </Card>
+      <section className="bg-accent-panel py-20">
+        <div className="mx-auto max-w-container px-4 sm:px-6">
+          <p className="eyebrow">Project Assistance</p>
+          <h2 className="max-w-2xl">A clear path from idea to demo-ready project.</h2>
+          <p className="lead mt-3">
+            Structured help for final-year and postgraduate technical projects — without inventing outcomes or guaranteed marks.
+          </p>
+          <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {pa.process.map((step) => (
+              <li key={step.step} className="rounded-2xl border border-line-soft bg-white p-5 shadow-soft">
+                <span className="text-sm font-semibold text-accent">Step {step.step}</span>
+                <h3 className="mt-2 !font-sans !text-lg">{step.title}</h3>
+                <p className="mt-2 text-sm">{step.text}</p>
+              </li>
+            ))}
+          </ol>
+          <div className="mt-8">
+            <Button as={Link} to="/project-assistance">Explore Project Assistance</Button>
+          </div>
         </div>
-      </Section>
+      </section>
 
-      <Section
-        eyebrow="Why Vignak"
-        title="Premium execution with human clarity."
-        description="We design for trust: clean systems, honest communication, and delivery that respects your audience."
-      >
-        <div className="grid-3">
-          {[
-            ['One team, connected crafts', 'Digital, experiential and conversational work under one coherent brand.'],
-            ['Built to expand', 'Architecture ready for future education, AI and ecosystem products — without rushing them.'],
-            ['Serious about quality', 'No template clutter. Clear copy, careful design and secure foundations.'],
-          ].map(([title, text]) => (
-            <div key={title} className={styles.whyItem}>
-              <h3>{title}</h3>
-              <p>{text}</p>
+      <section className="py-20">
+        <div className="mx-auto max-w-container px-4 sm:px-6">
+          <p className="eyebrow">Who we help</p>
+          <h2>Built for students who need technical project support.</h2>
+          <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+            {pa.audiences.map((item) => (
+              <li key={item} className="rounded-xl border border-line-soft bg-white px-4 py-3 text-sm font-medium shadow-soft">
+                {item}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8 flex flex-wrap gap-2">
+            {PROJECT_CATEGORIES.map((cat) => (
+              <span
+                key={cat.id}
+                className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${cat.color}`}
+              >
+                {cat.title}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-line-soft bg-white py-20">
+        <div className="mx-auto max-w-container px-4 sm:px-6">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="eyebrow">Portfolio</p>
+              <h2>Sample project directions</h2>
+              <p className="lead mt-2">
+                {cmsProjects.length > 0
+                  ? 'Published work from Vignak.'
+                  : 'Illustrative placeholders until published case studies are available.'}
+              </p>
             </div>
-          ))}
-        </div>
-      </Section>
-
-      <Section tone="muted" eyebrow="Who we serve" title="Partners across campuses and companies.">
-        <div className={styles.audienceRow}>
-          {['Colleges', 'Businesses', 'Startups', 'Students', 'Individuals'].map((audience) => (
-            <div key={audience} className={styles.audience}>
-              {audience}
-            </div>
-          ))}
-        </div>
-      </Section>
-
-      {(projects.length > 0 || talks.length > 0) && (
-        <Section
-          eyebrow="Selected work"
-          title="Portfolio and conversations."
-          description="A glimpse of digital projects and upcoming talks from the Vignak team."
-        >
-          {projects.length > 0 && (
-            <>
-              <div className="grid-3">
-                {projects.map((project) => (
-                  <Card key={project.id} as={Link} to={`/portfolio/${project.slug}`} className={styles.clickCard}>
-                    <Badge>{project.category}</Badge>
-                    <h3>{project.title}</h3>
-                    <p>{project.description}</p>
-                  </Card>
-                ))}
-              </div>
-              <div className={styles.sectionAction}>
-                <Button as={Link} to="/portfolio" variant="secondary">
-                  View all projects
-                </Button>
-              </div>
-            </>
-          )}
-          {talks.length > 0 && (
-            <div className={`grid-2 ${styles.talkGrid}`}>
-              {talks.map((talk) => (
-                <Card key={talk.id} as={Link} to={`/talks/${talk.slug}`} className={styles.clickCard}>
-                  <Badge tone="accent">{talkStatusLabel(talk.status)}</Badge>
-                  <h3>{talk.title}</h3>
-                  <p className="muted">{formatTalkDate(talk.date)} · {talk.location}</p>
-                  <p>{talk.description}</p>
-                </Card>
+            <Button as={Link} to="/portfolio" variant="secondary">View portfolio</Button>
+          </div>
+          {cmsProjects.length === 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setFilter('all')}
+                className={`rounded-full px-3 py-1.5 text-xs font-semibold ${filter === 'all' ? 'bg-accent text-white' : 'bg-line-soft text-ink'}`}
+              >
+                All
+              </button>
+              {PROJECT_CATEGORIES.slice(0, 6).map((cat) => (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setFilter(cat.id)}
+                  className={`rounded-full px-3 py-1.5 text-xs font-semibold ${filter === cat.id ? 'bg-accent text-white' : 'bg-line-soft text-ink'}`}
+                >
+                  {cat.title}
+                </button>
               ))}
             </div>
           )}
-        </Section>
-      )}
-
-      <Section className={styles.finalCta}>
-        <div className={styles.finalInner}>
-          <p className="eyebrow">Next step</p>
-          <h2>Ready to build with Vignak?</h2>
-          <p className="lead">
-            Tell us about your website, conference kit, talk, or digital initiative. We will respond with clear next steps.
-          </p>
-          <div className="row">
-            <Button as={Link} to="/start-project" size="lg">
-              Start a Project
-            </Button>
-            <Button as={Link} to="/contact" variant="secondary" size="lg">
-              Contact us
-            </Button>
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.slice(0, 6).map((item) => (
+              <Link
+                key={item.id}
+                to={`/portfolio/${item.slug}`}
+                className="overflow-hidden rounded-2xl border border-line-soft bg-surface shadow-soft transition hover:-translate-y-0.5 hover:shadow-card"
+              >
+                <img src={item.image} alt="" className="h-40 w-full object-cover" />
+                <div className="p-5">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-accent">{item.categoryLabel}</p>
+                  <h3 className="mt-1 !font-sans !text-lg">{item.title}</h3>
+                  <p className="mt-2 line-clamp-2 text-sm">{item.description}</p>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
-      </Section>
+      </section>
+
+      <section className="py-20">
+        <div className="mx-auto max-w-container px-4 sm:px-6">
+          <p className="eyebrow">More from Vignak</p>
+          <h2>Additional services when you need them.</h2>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {[
+              { title: 'Web & digital', text: 'Sites and applications for teams beyond academic projects.', to: '/solutions' },
+              { title: 'Customized experiences', text: 'Gifts and conference kits for events and campuses.', to: '/customized' },
+              { title: 'Vignak Talks', text: 'Sessions on technology, careers, and practical building.', to: '/talks' },
+            ].map((item) => (
+              <Link key={item.to} to={item.to} className="rounded-2xl border border-line-soft bg-white p-6 shadow-soft hover:border-accent/30">
+                <h3 className="!font-sans !text-lg">{item.title}</h3>
+                <p className="mt-2 text-sm">{item.text}</p>
+              </Link>
+            ))}
+          </div>
+          <p className="mt-10 max-w-2xl text-sm text-muted">{pa.ecosystemNote}</p>
+        </div>
+      </section>
+
+      <section className="bg-ink py-20 text-white">
+        <div className="mx-auto max-w-container px-4 text-center sm:px-6">
+          <h2 className="!text-white">Ready to start your project?</h2>
+          <p className="mx-auto mt-3 max-w-xl text-white/75">
+            Create an account, submit your requirement, and track updates in your dashboard.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Button as={Link} to={startTo} variant="inverse" size="lg">Start Your Project</Button>
+            <Button as={Link} to="/project-assistance" variant="outlineInverse" size="lg">Learn more</Button>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

@@ -12,10 +12,9 @@ describe('HomePage', () => {
   beforeEach(() => {
     vi.mocked(api.getMe).mockRejectedValue(new Error('unauthenticated'));
     vi.mocked(api.getPublicProjects).mockResolvedValue({ data: [] });
-    vi.mocked(api.getPublicTalks).mockResolvedValue({ data: [] });
   });
 
-  it('renders the hero brand, headline and CTAs', async () => {
+  it('renders Project Assistance hero and CTAs', async () => {
     render(
       <MemoryRouter>
         <AuthProvider>
@@ -29,10 +28,10 @@ describe('HomePage', () => {
     expect(screen.getByText('Vignak Solutions')).toBeInTheDocument();
     expect(
       screen.getByRole('heading', {
-        name: /technology, experiences and connections that move people forward/i,
+        name: /turn your project idea into a working technical project/i,
       }),
     ).toBeInTheDocument();
-    expect(screen.getAllByText('Start a Project').length).toBeGreaterThan(0);
-    expect(screen.getByText('Explore solutions')).toBeInTheDocument();
+    expect(screen.getAllByText('Start Your Project').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Explore Project Assistance').length).toBeGreaterThan(0);
   });
 });

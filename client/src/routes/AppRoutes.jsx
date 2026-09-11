@@ -2,11 +2,14 @@ import { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import PublicLayout from '../layouts/PublicLayout';
 import AdminShell from '../layouts/AdminShell';
+import DashboardLayout from '../layouts/DashboardLayout';
 import { Loading } from '../components/ui/Loading';
 import RequirePermission from '../components/admin/RequirePermission';
+import ProtectedRoute from '../components/auth/ProtectedRoute';
 import { PERMISSIONS } from '@vignak/shared';
 
 const HomePage = lazy(() => import('../pages/HomePage'));
+const ProjectAssistancePage = lazy(() => import('../pages/ProjectAssistancePage'));
 const AboutPage = lazy(() => import('../pages/AboutPage'));
 const SolutionsPage = lazy(() => import('../pages/SolutionsPage'));
 const WebServicesPage = lazy(() => import('../pages/WebServicesPage'));
@@ -22,6 +25,13 @@ const ContactPage = lazy(() => import('../pages/ContactPage'));
 const StartProjectPage = lazy(() => import('../pages/StartProjectPage'));
 const PrivacyPage = lazy(() => import('../pages/PrivacyPage'));
 const TermsPage = lazy(() => import('../pages/TermsPage'));
+const LoginPage = lazy(() => import('../pages/LoginPage'));
+const RegisterPage = lazy(() => import('../pages/RegisterPage'));
+const StudentDashboardPage = lazy(() => import('../pages/dashboard/StudentDashboardPage'));
+const MyRequestsPage = lazy(() => import('../pages/dashboard/MyRequestsPage'));
+const MyRequestDetailPage = lazy(() => import('../pages/dashboard/MyRequestDetailPage'));
+const NewRequestPage = lazy(() => import('../pages/dashboard/NewRequestPage'));
+const ProfilePage = lazy(() => import('../pages/dashboard/ProfilePage'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 const AdminLoginPage = lazy(() => import('../pages/AdminLoginPage'));
 const ForgotPasswordPage = lazy(() => import('../pages/ForgotPasswordPage'));
@@ -40,7 +50,7 @@ const AdminSettingsPage = lazy(() => import('../pages/admin/AdminSettingsPage'))
 
 function RouteFallback() {
   return (
-    <div style={{ padding: '3rem', textAlign: 'center' }}>
+    <div className="p-12 text-center">
       <Loading label="Loading…" />
     </div>
   );
@@ -52,6 +62,7 @@ export default function AppRoutes() {
       <Routes>
         <Route element={<PublicLayout />}>
           <Route index element={<HomePage />} />
+          <Route path="project-assistance" element={<ProjectAssistancePage />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="solutions" element={<SolutionsPage />} />
           <Route path="solutions/web-services" element={<WebServicesPage />} />
@@ -68,6 +79,24 @@ export default function AppRoutes() {
           <Route path="privacy" element={<PrivacyPage />} />
           <Route path="terms" element={<TermsPage />} />
           <Route path="*" element={<NotFoundPage />} />
+        </Route>
+
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+
+        <Route
+          path="/dashboard"
+          element={(
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          )}
+        >
+          <Route index element={<StudentDashboardPage />} />
+          <Route path="requests" element={<MyRequestsPage />} />
+          <Route path="requests/new" element={<NewRequestPage />} />
+          <Route path="requests/:id" element={<MyRequestDetailPage />} />
+          <Route path="profile" element={<ProfilePage />} />
         </Route>
 
         <Route path="/admin/login" element={<AdminLoginPage />} />

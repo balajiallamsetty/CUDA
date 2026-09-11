@@ -34,7 +34,8 @@ export default function TalksPage() {
           <p className="eyebrow">Vignak Talks</p>
           <h1>Conversations that connect technology, learning and people.</h1>
           <p className="lead">
-            Vignak Talks bring practitioners and communities together for practical, human discussions — on campus and online.
+            Alongside Project Assistance, Vignak Talks bring practitioners and communities together for practical
+            discussions — on campus and online.
           </p>
         </Container>
       </section>

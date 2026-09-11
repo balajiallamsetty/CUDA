@@ -20,7 +20,7 @@ export const createLeadValidators = [
     .optional({ checkFalsy: true })
     .isIn(ORGANIZATION_TYPE_VALUES)
     .withMessage('Invalid organization type'),
-  body('service').isIn(LEAD_SERVICE_VALUES).withMessage('Invalid service'),
+  body('service').optional({ checkFalsy: true }).isIn(LEAD_SERVICE_VALUES).withMessage('Invalid service'),
   body('description')
     .trim()
     .notEmpty()
@@ -31,6 +31,31 @@ export const createLeadValidators = [
   body('preferredContactMethod')
     .optional({ checkFalsy: true })
     .isIn(CONTACT_METHOD_VALUES),
+  body('projectCategory').optional({ checkFalsy: true }).trim().isLength({ max: 80 }),
+  body('projectTitle').optional({ checkFalsy: true }).trim().isLength({ max: 200 }),
+  body('technologies').optional().isArray({ max: 20 }),
+  body('technologies.*').optional().isString().isLength({ max: 60 }),
+  body('course').optional({ checkFalsy: true }).trim().isLength({ max: 120 }),
+  body('year').optional({ checkFalsy: true }).trim().isLength({ max: 40 }),
+];
+
+export const registerValidators = [
+  body('name').trim().notEmpty().withMessage('Name is required').isLength({ max: 120 }),
+  body('email').trim().isEmail().withMessage('Valid email is required').normalizeEmail(),
+  body('password').isLength({ min: 12, max: 128 }).withMessage('Password must be at least 12 characters'),
+  body('passwordConfirm').optional().isString(),
+  body('phone').optional({ checkFalsy: true }).trim().isLength({ max: 30 }),
+  body('institution').optional({ checkFalsy: true }).trim().isLength({ max: 160 }),
+  body('course').optional({ checkFalsy: true }).trim().isLength({ max: 120 }),
+  body('year').optional({ checkFalsy: true }).trim().isLength({ max: 40 }),
+];
+
+export const profileUpdateValidators = [
+  body('name').optional().trim().isLength({ min: 1, max: 120 }),
+  body('phone').optional({ checkFalsy: true }).trim().isLength({ max: 30 }),
+  body('institution').optional({ checkFalsy: true }).trim().isLength({ max: 160 }),
+  body('course').optional({ checkFalsy: true }).trim().isLength({ max: 120 }),
+  body('year').optional({ checkFalsy: true }).trim().isLength({ max: 40 }),
 ];
 
 export const createContactValidators = [

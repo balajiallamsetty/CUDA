@@ -7,9 +7,55 @@ import { clearAuthCookie, setAuthCookie, signToken } from '../middleware/auth.js
 import { env } from '../config/env.js';
 import { isSmtpConfigured, sendMail } from '../utils/mailer.js';
 import { logger } from '../utils/logger.js';
+import { ROLES } from '@vignak/shared';
 
 const GENERIC_RESET_MESSAGE =
   'If an account exists for that email, password reset instructions have been sent.';
+
+export async function registerUser(payload, meta = {}) {
+  const email = String(payload.email || '').toLowerCase().trim();
+  const password = payload.password;
+  const name = String(payload.name || '').trim();
+
+  if (!name || !email || !password) {
+    throw new AppError('Name, email and password are required', 400);
+  }
+  if (password.length < 12) {
+    throw new AppError('Password must be at least 12 characters', 400);
+  }
+  if (payload.passwordConfirm && payload.passwordConfirm !== password) {
+    throw new AppError('Passwords do not match', 400);
+  }
+
+  const existing = await User.findOne({ email });
+  if (existing) {
+    throw new AppError('An account with this email already exists', 409);
+  }
+
+  const passwordHash = await User.hashPassword(password);
+  const user = await User.create({
+    name,
+    email,
+    passwordHash,
+    role: ROLES.USER,
+    phone: payload.phone || '',
+    institution: payload.institution || '',
+    course: payload.course || '',
+    year: payload.year || '',
+  });
+
+  const token = signToken(user);
+  await writeAuditLog({
+    action: 'AUTH_REGISTER',
+    actor: user._id,
+    actorEmail: user.email,
+    ip: meta.ip,
+    userAgent: meta.userAgent,
+    success: true,
+  });
+
+  return { user, token };
+}
 
 export async function loginUser({ email, password }, meta = {}) {
   const user = await User.findOne({ email: email.toLowerCase() }).select('+passwordHash');

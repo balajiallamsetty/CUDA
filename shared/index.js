@@ -13,6 +13,7 @@ export const LEAD_STATUSES = Object.freeze({
 export const LEAD_STATUS_VALUES = Object.freeze(Object.values(LEAD_STATUSES));
 
 export const LEAD_SERVICES = Object.freeze({
+  PROJECT_ASSISTANCE: 'Project Assistance',
   WEBSITE: 'Website',
   WEB_APPLICATION: 'Web Application',
   AI_SOLUTION: 'AI Solution',

@@ -25,9 +25,9 @@ describe('Navbar', () => {
     );
 
     expect(screen.getByText('Vignak')).toBeInTheDocument();
-    expect(screen.getByRole('navigation', { name: 'Primary' })).toBeInTheDocument();
-    expect(screen.getAllByText('Start a Project').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('Solutions').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('Vignak Talks').length).toBeGreaterThan(0);
+    expect(screen.getByRole('navigation', { name: 'Primary' })).toBeVisible();
+    expect(screen.getAllByText('Start Your Project').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Project Assistance').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Talks').length).toBeGreaterThan(0);
   });
 });

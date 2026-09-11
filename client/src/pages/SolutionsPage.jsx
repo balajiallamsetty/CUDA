@@ -15,10 +15,12 @@ export default function SolutionsPage() {
       />
       <section className="page-hero">
         <Container>
-          <p className="eyebrow">Solutions</p>
+          <p className="eyebrow">Other services</p>
           <h1>Digital solutions designed for clarity and growth.</h1>
           <p className="lead">
-            From institutional websites to custom applications, Vignak builds digital foundations that communicate well and scale with your ambitions.
+            Looking for academic project help? Start with{' '}
+            <Link to="/project-assistance" className="font-semibold text-accent">Project Assistance</Link>.
+            Below are additional web and digital services for institutions and teams.
           </p>
         </Container>
       </section>

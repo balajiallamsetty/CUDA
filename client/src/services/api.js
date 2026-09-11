@@ -82,12 +82,33 @@ export function login(payload) {
   return request('/api/auth/login', { method: 'POST', body: JSON.stringify(payload) });
 }
 
+export function register(payload) {
+  return request('/api/auth/register', { method: 'POST', body: JSON.stringify(payload) });
+}
+
 export function logout() {
   return request('/api/auth/logout', { method: 'POST' });
 }
 
 export function getMe() {
   return request('/api/auth/me');
+}
+
+export function getMyProfile() {
+  return request('/api/auth/me/profile');
+}
+
+export function updateMyProfile(payload) {
+  return request('/api/auth/me/profile', { method: 'PATCH', body: JSON.stringify(payload) });
+}
+
+export function getMyLeads(params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  return request(`/api/auth/me/leads${qs ? `?${qs}` : ''}`);
+}
+
+export function getMyLead(id) {
+  return request(`/api/auth/me/leads/${id}`);
 }
 
 export function forgotPassword(payload) {

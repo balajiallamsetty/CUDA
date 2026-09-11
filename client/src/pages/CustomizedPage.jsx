@@ -18,7 +18,8 @@ export default function CustomizedPage() {
           <p className="eyebrow">Customized</p>
           <h1>Gifts and conference kits with intention.</h1>
           <p className="lead">
-            From branded notebooks to complete conference kits, Vignak helps institutions and organizers deliver materials that feel cohesive and professional.
+            Secondary to our Project Assistance focus: branded notebooks to complete conference kits for institutions
+            and organizers who need cohesive event materials.
           </p>
         </Container>
       </section>
