@@ -4,6 +4,11 @@
   border-radius: var(--radius-lg);
   padding: var(--space-5);
   box-shadow: var(--shadow-sm);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.card:hover {
+  border-color: rgba(15, 110, 86, 0.18);
 }
 
 .card h3 {

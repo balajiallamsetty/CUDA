@@ -30,15 +30,38 @@
 }
 
 .page-hero {
+  position: relative;
   padding: calc(var(--nav-height) + var(--space-8)) 0 var(--space-8);
-  background: var(--gradient-soft);
-  background-image: var(--pattern-dots);
-  background-size: 18px 18px;
+  background:
+    var(--gradient-panel),
+    var(--pattern-grid);
+  background-size: auto, 28px 28px;
+  overflow: hidden;
+}
+
+.page-hero::after {
+  content: '';
+  position: absolute;
+  inset: auto -10% -40% auto;
+  width: min(48vw, 420px);
+  height: min(48vw, 420px);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(15, 110, 86, 0.16), transparent 70%);
+  pointer-events: none;
+}
+
+.page-hero > * {
+  position: relative;
+  z-index: 1;
 }
 
 .page-hero--brand {
   background: var(--gradient-hero);
   color: #fff;
+}
+
+.page-hero--brand::after {
+  background: radial-gradient(circle, rgba(159, 217, 197, 0.22), transparent 70%);
 }
 
 .page-hero--brand h1,

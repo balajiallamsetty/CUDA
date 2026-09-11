@@ -21,8 +21,12 @@
 
   /* Atmosphere */
   --gradient-hero: linear-gradient(145deg, #0b1220 0%, #14304a 48%, #0f6e56 140%);
-  --gradient-soft: linear-gradient(180deg, #f7f9fc 0%, #eef3f8 100%);
-  --pattern-dots: radial-gradient(rgba(11, 18, 32, 0.06) 1px, transparent 1px);
+  --gradient-soft: linear-gradient(180deg, #f5f7fb 0%, #eef3f8 100%);
+  --gradient-panel: linear-gradient(160deg, rgba(15, 110, 86, 0.08), rgba(11, 18, 32, 0.03));
+  --pattern-dots: radial-gradient(rgba(11, 18, 32, 0.055) 1px, transparent 1px);
+  --pattern-grid:
+    linear-gradient(rgba(11, 18, 32, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(11, 18, 32, 0.035) 1px, transparent 1px);
 
   /* Type */
   --font-sans: 'DM Sans', 'Segoe UI', sans-serif;

@@ -1,23 +1,13 @@
 import * as api from './api';
 
 export async function listTalks() {
-  try {
-    const res = await api.getPublicTalks();
-    return (res.data || []).map(normalizeTalk);
-  } catch {
-    const { talks } = await import('../data/talks');
-    return [...talks];
-  }
+  const res = await api.getPublicTalks();
+  return (res.data || []).map(normalizeTalk);
 }
 
 export async function getTalkBySlug(slug) {
-  try {
-    const res = await api.getPublicTalk(slug);
-    return normalizeTalk(res.data);
-  } catch {
-    const { talks } = await import('../data/talks');
-    return talks.find((t) => t.slug === slug) || null;
-  }
+  const res = await api.getPublicTalk(slug);
+  return normalizeTalk(res.data);
 }
 
 export async function registerForTalk(idOrSlug, payload) {

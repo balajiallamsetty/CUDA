@@ -6,15 +6,20 @@ import Container from '../components/layout/Container';
 import Section from '../components/layout/Section';
 import PageMeta from '../components/common/PageMeta';
 import { Loading } from '../components/ui/Loading';
+import { EmptyState, ErrorState } from '../components/ui/States';
 import { listTalks } from '../services/talksService';
 import { formatTalkDate, talkStatusLabel } from '../utils/format';
 
 export default function TalksPage() {
   const [talks, setTalks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    listTalks().then(setTalks).finally(() => setLoading(false));
+    listTalks()
+      .then(setTalks)
+      .catch((err) => setError(err.message || 'Unable to load talks'))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -35,6 +40,12 @@ export default function TalksPage() {
       </section>
       <Section>
         {loading && <Loading />}
+        {!loading && error && (
+          <ErrorState title="Talks unavailable" description={error} onRetry={() => window.location.reload()} />
+        )}
+        {!loading && !error && talks.length === 0 && (
+          <EmptyState title="No talks published yet" description="Check back soon for upcoming conversations." />
+        )}
         <div className="grid-2">
           {talks.map((talk) => (
             <Card key={talk.id || talk._id} as={Link} to={`/talks/${talk.slug}`} style={{ display: 'block' }}>

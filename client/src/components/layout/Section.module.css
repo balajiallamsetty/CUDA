@@ -12,6 +12,7 @@
 
 .elevated {
   background: var(--color-surface-elevated);
+  border-block: 1px solid var(--color-line-soft);
 }
 
 .ink {

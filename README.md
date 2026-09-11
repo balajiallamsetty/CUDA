@@ -29,13 +29,24 @@ vignak/
 ```bash
 npm install
 cp .env.example server/.env   # PowerShell: Copy-Item .env.example server/.env
-# edit MONGODB_URI, JWT_SECRET (32+), CLIENT_URL
+# edit MONGODB_URI, JWT_SECRET (32+), CLIENT_URL=http://127.0.0.1:5173
 npm run seed:admin            # optional
-npm run dev
 ```
 
-- Client: http://localhost:5173  
-- API: http://localhost:5000 (`/api/health`, `/api/ready`)
+Start in **two terminals** from the repo root:
+
+```bash
+npm run server
+```
+
+```bash
+npm run client
+```
+
+- Client: http://127.0.0.1:5173  
+- API: http://127.0.0.1:5000 (`/api/health`, `/api/ready`)
+
+Full walkthrough: [docs/START.md](docs/START.md).
 
 ## Environment variables
 
@@ -45,7 +56,9 @@ See [`.env.example`](.env.example). Production **hard-fails** without a strong `
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Client + server |
+| `npm run server` | Backend only (Terminal 1) |
+| `npm run client` | Frontend only (Terminal 2) |
+| `npm run dev` | Client + server together |
 | `npm run build` | Production client build |
 | `npm test` | Server + client tests |
 | `npm run lint` | Lint |
@@ -54,6 +67,7 @@ See [`.env.example`](.env.example). Production **hard-fails** without a strong `
 
 ## Documentation
 
+- [Start guide](docs/START.md) — run backend and frontend in two terminals
 - [Architecture](docs/architecture.md)
 - [Database](docs/database.md)
 - [Security](docs/security.md)

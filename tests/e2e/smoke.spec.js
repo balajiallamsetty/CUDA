@@ -2,8 +2,9 @@ import { test, expect } from '@playwright/test';
 
 test('home page renders hero and navigation', async ({ page }) => {
   await page.goto('/');
+  await expect(page.getByText('Vignak Solutions').first()).toBeVisible();
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
-    'Building technology, experiences and connections that move people forward.',
+    'Technology, experiences and connections that move people forward.',
   );
   await expect(page.getByRole('navigation', { name: 'Primary' })).toBeVisible();
 });

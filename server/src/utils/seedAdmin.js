@@ -1,6 +1,13 @@
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { connectDatabase } from '../config/db.js';
 import { User } from '../models/User.js';
 import { ROLES } from '@vignak/shared';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 async function seedAdmin() {
   const email = process.env.ADMIN_EMAIL;

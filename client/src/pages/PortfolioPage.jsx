@@ -6,16 +6,18 @@ import Container from '../components/layout/Container';
 import Section from '../components/layout/Section';
 import PageMeta from '../components/common/PageMeta';
 import { Loading } from '../components/ui/Loading';
-import { EmptyState } from '../components/ui/States';
+import { EmptyState, ErrorState } from '../components/ui/States';
 import { listProjects } from '../services/portfolioService';
 
 export default function PortfolioPage() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     listProjects()
       .then(setProjects)
+      .catch((err) => setError(err.message || 'Unable to load projects'))
       .finally(() => setLoading(false));
   }, []);
 
@@ -37,7 +39,10 @@ export default function PortfolioPage() {
       </section>
       <Section>
         {loading && <Loading />}
-        {!loading && projects.length === 0 && (
+        {!loading && error && (
+          <ErrorState title="Portfolio unavailable" description={error} onRetry={() => window.location.reload()} />
+        )}
+        {!loading && !error && projects.length === 0 && (
           <EmptyState title="No projects published yet" description="Check back soon for featured work." />
         )}
         <div className="grid-3">

@@ -9,9 +9,11 @@
     "shared"
   ],
   "scripts": {
-    "dev": "concurrently -n client,server -c cyan,magenta \"npm run dev -w client\" \"npm run dev -w server\"",
-    "dev:client": "npm run dev -w client",
-    "dev:server": "npm run dev -w server",
+    "dev": "concurrently -n client,server -c cyan,magenta \"npm run client\" \"npm run server\"",
+    "client": "npm run dev -w client",
+    "server": "npm run dev -w server",
+    "dev:client": "npm run client",
+    "dev:server": "npm run server",
     "build": "npm run build -w client",
     "test": "npm run test -w server && npm run test -w client",
     "test:server": "npm run test -w server",
