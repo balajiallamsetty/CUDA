@@ -9,6 +9,13 @@ import {
   PROJECT_CATEGORY_VALUES,
   TALK_STATUS_VALUES,
   ROLE_VALUES,
+  PA_DOMAIN_VALUES,
+  SERVICE_REQUEST_STATUS_VALUES,
+  WORK_PROJECT_STATUS_VALUES,
+  MILESTONE_STATUS_VALUES,
+  TASK_STATUS_VALUES,
+  TASK_PRIORITY_VALUES,
+  TASK_VISIBILITY_VALUES,
 } from '@vignak/shared';
 
 export const createLeadValidators = [
@@ -183,4 +190,65 @@ export const serviceValidators = [
   body('order').optional().isInt({ min: 0, max: 1000 }),
   body('published').optional().isBoolean(),
   body('id').optional().isMongoId(),
+];
+
+export const serviceRequestCreateValidators = [
+  body('title').trim().notEmpty().withMessage('Title is required').isLength({ max: 200 }),
+  body('description').trim().notEmpty().withMessage('Description is required').isLength({ max: 5000 }),
+  body('domain').isIn(PA_DOMAIN_VALUES).withMessage('Invalid domain'),
+  body('requirements').optional({ checkFalsy: true }).trim().isLength({ max: 5000 }),
+  body('technologies').optional().isArray({ max: 20 }),
+  body('technologies.*').optional().isString().isLength({ max: 60 }),
+  body('timeline').optional({ checkFalsy: true }).isIn([...TIMELINE_OPTIONS]),
+  body('expectedCompletionDate').optional({ checkFalsy: true }).isISO8601(),
+  body('phone').optional({ checkFalsy: true }).trim().isLength({ max: 30 }),
+  body('organization').optional({ checkFalsy: true }).trim().isLength({ max: 160 }),
+  body('course').optional({ checkFalsy: true }).trim().isLength({ max: 120 }),
+  body('year').optional({ checkFalsy: true }).trim().isLength({ max: 40 }),
+];
+
+export const serviceRequestUpdateValidators = [
+  body('status').optional().isIn(SERVICE_REQUEST_STATUS_VALUES),
+  body('assignedTo').optional({ nullable: true }).isMongoId(),
+  body('archived').optional().isBoolean(),
+  body('statusNote').optional({ checkFalsy: true }).trim().isLength({ max: 1000 }),
+];
+
+export const workProjectUpdateValidators = [
+  body('status').optional().isIn(WORK_PROJECT_STATUS_VALUES),
+  body('assignees').optional().isArray(),
+  body('assignees.*').optional().isMongoId(),
+  body('summary').optional({ checkFalsy: true }).trim().isLength({ max: 2000 }),
+  body('archived').optional().isBoolean(),
+];
+
+export const milestoneValidators = [
+  body('id').optional().isMongoId(),
+  body('title').optional().trim().isLength({ max: 160 }),
+  body('description').optional({ checkFalsy: true }).trim().isLength({ max: 2000 }),
+  body('status').optional().isIn(MILESTONE_STATUS_VALUES),
+  body('stage').optional().isIn(WORK_PROJECT_STATUS_VALUES),
+  body('order').optional().isInt({ min: 0, max: 1000 }),
+  body('weight').optional().isInt({ min: 1, max: 100 }),
+  body('dueDate').optional({ checkFalsy: true }).isISO8601(),
+];
+
+export const taskValidators = [
+  body('id').optional().isMongoId(),
+  body('title').optional().trim().isLength({ max: 200 }),
+  body('description').optional({ checkFalsy: true }).trim().isLength({ max: 4000 }),
+  body('status').optional().isIn(TASK_STATUS_VALUES),
+  body('priority').optional().isIn(TASK_PRIORITY_VALUES),
+  body('visibility').optional().isIn(TASK_VISIBILITY_VALUES),
+  body('assignee').optional({ nullable: true }).isMongoId(),
+  body('milestone').optional({ nullable: true }).isMongoId(),
+  body('dueDate').optional({ checkFalsy: true }).isISO8601(),
+];
+
+export const messageValidators = [
+  body('body').trim().notEmpty().withMessage('Message is required').isLength({ max: 5000 }),
+];
+
+export const verifyEmailConfirmValidators = [
+  body('token').trim().notEmpty().withMessage('Token is required'),
 ];

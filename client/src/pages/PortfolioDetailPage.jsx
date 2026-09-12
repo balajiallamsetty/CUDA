@@ -87,10 +87,10 @@ export default function PortfolioDetailPage() {
                 <span key={tech} className="rounded-full border border-line px-3 py-1 text-xs font-medium">{tech}</span>
               ))}
             </div>
-            {project.challenge && (
+            {(project.problem || project.challenge) && (
               <>
-                <h2 className="mt-8 !font-sans !text-xl">Challenge</h2>
-                <p className="mt-2 text-sm">{project.challenge}</p>
+                <h2 className="mt-8 !font-sans !text-xl">{project.problem ? 'Problem' : 'Challenge'}</h2>
+                <p className="mt-2 text-sm">{project.problem || project.challenge}</p>
               </>
             )}
             {project.solution && (

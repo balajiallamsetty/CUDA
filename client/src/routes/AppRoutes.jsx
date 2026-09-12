@@ -10,6 +10,7 @@ import { PERMISSIONS } from '@vignak/shared';
 
 const HomePage = lazy(() => import('../pages/HomePage'));
 const ProjectAssistancePage = lazy(() => import('../pages/ProjectAssistancePage'));
+const DomainLandingPage = lazy(() => import('../pages/DomainLandingPage'));
 const AboutPage = lazy(() => import('../pages/AboutPage'));
 const SolutionsPage = lazy(() => import('../pages/SolutionsPage'));
 const WebServicesPage = lazy(() => import('../pages/WebServicesPage'));
@@ -32,6 +33,11 @@ const MyRequestsPage = lazy(() => import('../pages/dashboard/MyRequestsPage'));
 const MyRequestDetailPage = lazy(() => import('../pages/dashboard/MyRequestDetailPage'));
 const NewRequestPage = lazy(() => import('../pages/dashboard/NewRequestPage'));
 const ProfilePage = lazy(() => import('../pages/dashboard/ProfilePage'));
+const MyProjectsPage = lazy(() => import('../pages/dashboard/MyProjectsPage'));
+const MyProjectDetailPage = lazy(() => import('../pages/dashboard/MyProjectDetailPage'));
+const NotificationsPage = lazy(() => import('../pages/dashboard/NotificationsPage'));
+const PaymentsPage = lazy(() => import('../pages/dashboard/PaymentsPage'));
+const SupportPage = lazy(() => import('../pages/dashboard/SupportPage'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 const AdminLoginPage = lazy(() => import('../pages/AdminLoginPage'));
 const ForgotPasswordPage = lazy(() => import('../pages/ForgotPasswordPage'));
@@ -47,6 +53,10 @@ const AdminTalksPage = lazy(() => import('../pages/admin/AdminTalksPage'));
 const AdminTalkEditPage = lazy(() => import('../pages/admin/AdminTalkEditPage'));
 const AdminUsersPage = lazy(() => import('../pages/admin/AdminUsersPage'));
 const AdminSettingsPage = lazy(() => import('../pages/admin/AdminSettingsPage'));
+const AdminServiceRequestsPage = lazy(() => import('../pages/admin/AdminServiceRequestsPage'));
+const AdminServiceRequestDetailPage = lazy(() => import('../pages/admin/AdminServiceRequestDetailPage'));
+const AdminWorkProjectsPage = lazy(() => import('../pages/admin/AdminWorkProjectsPage'));
+const AdminWorkProjectDetailPage = lazy(() => import('../pages/admin/AdminWorkProjectDetailPage'));
 
 function RouteFallback() {
   return (
@@ -63,6 +73,7 @@ export default function AppRoutes() {
         <Route element={<PublicLayout />}>
           <Route index element={<HomePage />} />
           <Route path="project-assistance" element={<ProjectAssistancePage />} />
+          <Route path="project-assistance/domains/:domainId" element={<DomainLandingPage />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="solutions" element={<SolutionsPage />} />
           <Route path="solutions/web-services" element={<WebServicesPage />} />
@@ -96,7 +107,12 @@ export default function AppRoutes() {
           <Route path="requests" element={<MyRequestsPage />} />
           <Route path="requests/new" element={<NewRequestPage />} />
           <Route path="requests/:id" element={<MyRequestDetailPage />} />
+          <Route path="projects" element={<MyProjectsPage />} />
+          <Route path="projects/:id" element={<MyProjectDetailPage />} />
+          <Route path="notifications" element={<NotificationsPage />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="payments" element={<PaymentsPage />} />
+          <Route path="support" element={<SupportPage />} />
         </Route>
 
         <Route path="/admin/login" element={<AdminLoginPage />} />
@@ -126,6 +142,38 @@ export default function AppRoutes() {
             element={(
               <RequirePermission permission={PERMISSIONS.LEADS_READ}>
                 <AdminLeadDetailPage />
+              </RequirePermission>
+            )}
+          />
+          <Route
+            path="service-requests"
+            element={(
+              <RequirePermission permission={PERMISSIONS.SERVICE_REQUESTS_READ}>
+                <AdminServiceRequestsPage />
+              </RequirePermission>
+            )}
+          />
+          <Route
+            path="service-requests/:id"
+            element={(
+              <RequirePermission permission={PERMISSIONS.SERVICE_REQUESTS_READ}>
+                <AdminServiceRequestDetailPage />
+              </RequirePermission>
+            )}
+          />
+          <Route
+            path="work-projects"
+            element={(
+              <RequirePermission permission={PERMISSIONS.WORK_PROJECTS_READ}>
+                <AdminWorkProjectsPage />
+              </RequirePermission>
+            )}
+          />
+          <Route
+            path="work-projects/:id"
+            element={(
+              <RequirePermission permission={PERMISSIONS.WORK_PROJECTS_READ}>
+                <AdminWorkProjectDetailPage />
               </RequirePermission>
             )}
           />

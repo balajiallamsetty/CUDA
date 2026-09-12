@@ -33,6 +33,7 @@ export function loadEnv() {
     jwtSecret: jwtSecret || 'dev_insecure_secret_change_me_do_not_use_in_prod',
     jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
     clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
+    uploadDir: process.env.UPLOAD_DIR || '',
     isProd,
     isTest,
     smtp: {

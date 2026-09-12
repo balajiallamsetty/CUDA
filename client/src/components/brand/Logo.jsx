@@ -6,8 +6,8 @@ export default function Logo({
   tone = 'dark',
   className = '',
 }) {
-  const ink = tone === 'light' ? '#ffffff' : '#0b1220';
-  const accent = tone === 'light' ? '#9fd9c5' : '#0f6e56';
+  const ink = tone === 'light' ? '#ffffff' : '#0B0F19';
+  const accent = tone === 'light' ? '#67E8F9' : '#4F46E5';
 
   if (variant === 'mark') {
     return (

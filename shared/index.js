@@ -83,3 +83,4 @@ export const TIMELINE_OPTIONS = Object.freeze([
 ]);
 
 export * from './permissions.js';
+export * from './platform.js';

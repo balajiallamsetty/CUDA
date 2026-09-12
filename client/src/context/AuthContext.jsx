@@ -38,12 +38,12 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     api.setUnauthorizedHandler(async () => {
       clearSession();
-      if (
-        typeof window !== 'undefined'
-        && window.location.pathname.startsWith('/admin')
-        && !window.location.pathname.includes('/login')
-      ) {
+      if (typeof window === 'undefined') return;
+      const path = window.location.pathname;
+      if (path.startsWith('/admin') && !path.includes('/login')) {
         window.location.assign('/admin/login');
+      } else if (path.startsWith('/dashboard')) {
+        window.location.assign('/login');
       }
     });
     return () => api.setUnauthorizedHandler(null);

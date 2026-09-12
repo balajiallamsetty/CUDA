@@ -5,26 +5,28 @@ export default {
     extend: {
       colors: {
         ink: {
-          DEFAULT: '#0b1220',
-          soft: '#1a2436',
+          DEFAULT: '#0B0F19',
+          soft: '#1E293B',
         },
         slate: {
-          vignak: '#3d4a5c',
+          vignak: '#334155',
         },
-        muted: '#6b7789',
+        muted: '#64748B',
         line: {
-          DEFAULT: '#d8dee8',
-          soft: '#e8edf4',
+          DEFAULT: '#E2E8F0',
+          soft: '#F1F5F9',
         },
         surface: {
-          DEFAULT: '#f5f7fb',
+          DEFAULT: '#F8FAFC',
           elevated: '#ffffff',
         },
         accent: {
-          DEFAULT: '#0f6e56',
-          hover: '#0b5844',
-          soft: '#e6f4ef',
-          mist: '#9fd9c5',
+          DEFAULT: '#4F46E5',
+          hover: '#4338CA',
+          soft: '#EEF2FF',
+          mist: '#A5B4FC',
+          cyan: '#06B6D4',
+          cyanSoft: '#CFFAFE',
         },
         warn: '#9a6700',
         danger: {
@@ -41,15 +43,15 @@ export default {
         container: '1120px',
       },
       boxShadow: {
-        soft: '0 1px 2px rgba(11, 18, 32, 0.06)',
-        card: '0 8px 24px rgba(11, 18, 32, 0.08)',
-        lift: '0 20px 48px rgba(11, 18, 32, 0.12)',
+        soft: '0 1px 2px rgba(11, 15, 25, 0.06)',
+        card: '0 8px 24px rgba(79, 70, 229, 0.08)',
+        lift: '0 20px 48px rgba(11, 15, 25, 0.12)',
       },
       backgroundImage: {
         'hero-wash':
-          'linear-gradient(180deg, rgba(11,18,32,0.35) 0%, rgba(11,18,32,0.72) 48%, rgba(11,18,32,0.92) 100%)',
+          'linear-gradient(180deg, rgba(11,15,25,0.35) 0%, rgba(11,15,25,0.72) 48%, rgba(79,70,229,0.55) 100%)',
         'accent-panel':
-          'linear-gradient(160deg, rgba(15,110,86,0.12), rgba(11,18,32,0.03))',
+          'linear-gradient(160deg, rgba(79,70,229,0.12), rgba(6,182,212,0.08))',
       },
       keyframes: {
         riseIn: {

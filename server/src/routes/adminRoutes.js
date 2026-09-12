@@ -13,8 +13,15 @@ import {
   inquiryUpdateValidators,
   settingsValidators,
   serviceValidators,
+  serviceRequestUpdateValidators,
+  workProjectUpdateValidators,
+  milestoneValidators,
+  taskValidators,
+  messageValidators,
 } from '../validators/index.js';
 import * as admin from '../controllers/adminController.js';
+import * as adminPlatform from '../controllers/adminPlatformController.js';
+import { uploadDocumentMiddleware } from '../middleware/upload.js';
 
 const router = Router();
 
@@ -137,6 +144,79 @@ router.post(
   serviceValidators,
   validateRequest,
   admin.upsertService,
+);
+
+router.get(
+  '/service-requests',
+  authorizePermission(PERMISSIONS.SERVICE_REQUESTS_READ),
+  adminPlatform.listServiceRequests,
+);
+router.get(
+  '/service-requests/:id',
+  authorizePermission(PERMISSIONS.SERVICE_REQUESTS_READ),
+  adminPlatform.getServiceRequest,
+);
+router.patch(
+  '/service-requests/:id',
+  authorizePermission(PERMISSIONS.SERVICE_REQUESTS_WRITE),
+  serviceRequestUpdateValidators,
+  validateRequest,
+  adminPlatform.patchServiceRequest,
+);
+router.post(
+  '/service-requests/:id/convert',
+  authorizePermission(PERMISSIONS.WORK_PROJECTS_WRITE),
+  adminPlatform.convertServiceRequest,
+);
+
+router.get(
+  '/work-projects',
+  authorizePermission(PERMISSIONS.WORK_PROJECTS_READ),
+  adminPlatform.listWorkProjects,
+);
+router.get(
+  '/work-projects/:id',
+  authorizePermission(PERMISSIONS.WORK_PROJECTS_READ),
+  adminPlatform.getWorkProject,
+);
+router.patch(
+  '/work-projects/:id',
+  authorizePermission(PERMISSIONS.WORK_PROJECTS_WRITE),
+  workProjectUpdateValidators,
+  validateRequest,
+  adminPlatform.patchWorkProject,
+);
+router.post(
+  '/work-projects/:id/milestones',
+  authorizePermission(PERMISSIONS.MILESTONES_WRITE),
+  milestoneValidators,
+  validateRequest,
+  adminPlatform.upsertMilestone,
+);
+router.post(
+  '/work-projects/:id/tasks',
+  authorizePermission(PERMISSIONS.TASKS_WRITE),
+  taskValidators,
+  validateRequest,
+  adminPlatform.upsertTask,
+);
+router.post(
+  '/work-projects/:id/messages',
+  authorizePermission(PERMISSIONS.MESSAGES_WRITE),
+  messageValidators,
+  validateRequest,
+  adminPlatform.postWorkProjectMessage,
+);
+router.post(
+  '/work-projects/:id/documents',
+  authorizePermission(PERMISSIONS.DOCUMENTS_WRITE),
+  uploadDocumentMiddleware,
+  adminPlatform.uploadWorkProjectDocument,
+);
+router.get(
+  '/documents/:id/download',
+  authorizePermission(PERMISSIONS.DOCUMENTS_READ),
+  adminPlatform.downloadDocument,
 );
 
 export default router;

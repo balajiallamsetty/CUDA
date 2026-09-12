@@ -111,6 +111,139 @@ export function getMyLead(id) {
   return request(`/api/auth/me/leads/${id}`);
 }
 
+export function getMyOverview() {
+  return request('/api/auth/me/overview');
+}
+
+export function getMyServiceRequests(params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  return request(`/api/auth/me/service-requests${qs ? `?${qs}` : ''}`);
+}
+
+export function getMyServiceRequest(id) {
+  return request(`/api/auth/me/service-requests/${id}`);
+}
+
+export function createMyServiceRequest(payload) {
+  return request('/api/auth/me/service-requests', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export function getMyWorkProjects(params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  return request(`/api/auth/me/work-projects${qs ? `?${qs}` : ''}`);
+}
+
+export function getMyWorkProject(id) {
+  return request(`/api/auth/me/work-projects/${id}`);
+}
+
+export function postMyProjectMessage(id, body) {
+  return request(`/api/auth/me/work-projects/${id}/messages`, {
+    method: 'POST',
+    body: JSON.stringify({ body }),
+  });
+}
+
+export function getMyNotifications(params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  return request(`/api/auth/me/notifications${qs ? `?${qs}` : ''}`);
+}
+
+export function readMyNotification(id) {
+  return request(`/api/auth/me/notifications/${id}/read`, { method: 'PATCH' });
+}
+
+export function readAllMyNotifications() {
+  return request('/api/auth/me/notifications/read-all', { method: 'POST' });
+}
+
+export function downloadMyDocumentUrl(id) {
+  return `/api/auth/me/documents/${id}/download`;
+}
+
+export function requestEmailVerification() {
+  return request('/api/auth/verify-email/request', { method: 'POST' });
+}
+
+export function confirmEmailVerification(token) {
+  return request('/api/auth/verify-email/confirm', {
+    method: 'POST',
+    body: JSON.stringify({ token }),
+  });
+}
+
+export function getAdminServiceRequests(params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  return request(`/api/admin/service-requests${qs ? `?${qs}` : ''}`);
+}
+
+export function getAdminServiceRequest(id) {
+  return request(`/api/admin/service-requests/${id}`);
+}
+
+export function updateAdminServiceRequest(id, payload) {
+  return request(`/api/admin/service-requests/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+}
+
+export function convertAdminServiceRequest(id) {
+  return request(`/api/admin/service-requests/${id}/convert`, { method: 'POST' });
+}
+
+export function getAdminWorkProjects(params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  return request(`/api/admin/work-projects${qs ? `?${qs}` : ''}`);
+}
+
+export function getAdminWorkProject(id) {
+  return request(`/api/admin/work-projects/${id}`);
+}
+
+export function updateAdminWorkProject(id, payload) {
+  return request(`/api/admin/work-projects/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+}
+
+export function upsertAdminMilestone(projectId, payload) {
+  return request(`/api/admin/work-projects/${projectId}/milestones`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export function upsertAdminTask(projectId, payload) {
+  return request(`/api/admin/work-projects/${projectId}/tasks`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export function postAdminProjectMessage(projectId, body) {
+  return request(`/api/admin/work-projects/${projectId}/messages`, {
+    method: 'POST',
+    body: JSON.stringify({ body }),
+  });
+}
+
+export async function uploadAdminProjectDocument(projectId, formData) {
+  const API_BASE = import.meta.env.VITE_API_URL || '';
+  const res = await fetch(`${API_BASE}/api/admin/work-projects/${projectId}/documents`, {
+    method: 'POST',
+    credentials: 'include',
+    body: formData,
+  });
+  const data = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(data?.message || 'Upload failed');
+  return data;
+}
+
 export function forgotPassword(payload) {
   return request('/api/auth/forgot-password', { method: 'POST', body: JSON.stringify(payload) });
 }

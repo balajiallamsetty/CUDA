@@ -123,12 +123,13 @@ export default function HomePage() {
           </ul>
           <div className="mt-8 flex flex-wrap gap-2">
             {PROJECT_CATEGORIES.map((cat) => (
-              <span
+              <Link
                 key={cat.id}
+                to={`/project-assistance/domains/${cat.id}`}
                 className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${cat.color}`}
               >
                 {cat.title}
-              </span>
+              </Link>
             ))}
           </div>
         </div>
@@ -205,6 +206,40 @@ export default function HomePage() {
             ))}
           </div>
           <p className="mt-10 max-w-2xl text-sm text-muted">{pa.ecosystemNote}</p>
+        </div>
+      </section>
+
+      <section className="bg-accent-panel py-20">
+        <div className="mx-auto max-w-container px-4 sm:px-6">
+          <p className="eyebrow">Why Vignak</p>
+          <h2>Structured help without over-promising outcomes.</h2>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {[
+              ['Clear intake', 'Submit requirements once, track request status, then move into a real work project.'],
+              ['Transparent progress', 'Milestones and progress come from delivery state — not marketing CRM labels.'],
+              ['Broader ecosystem', 'Project Assistance is flagship today; web, talks, and future services share one platform.'],
+            ].map(([title, text]) => (
+              <article key={title} className="rounded-2xl border border-line-soft bg-white p-5 shadow-soft">
+                <h3 className="!font-sans !text-lg">{title}</h3>
+                <p className="mt-2 text-sm">{text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20">
+        <div className="mx-auto max-w-container px-4 sm:px-6">
+          <p className="eyebrow">FAQ</p>
+          <h2>Common questions</h2>
+          <div className="mt-8 grid gap-4">
+            {pa.faqs.map((faq) => (
+              <details key={faq.q} className="rounded-xl border border-line-soft bg-white p-5 shadow-soft">
+                <summary className="cursor-pointer font-semibold text-ink">{faq.q}</summary>
+                <p className="mt-3 text-sm">{faq.a}</p>
+              </details>
+            ))}
+          </div>
         </div>
       </section>
 

@@ -15,16 +15,23 @@ export default function AdminLeadDetailPage() {
   const { push } = useToast();
   const [lead, setLead] = useState(null);
   const [status, setStatus] = useState('');
+  const [assignedTo, setAssignedTo] = useState('');
+  const [users, setUsers] = useState([]);
   const [note, setNote] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   function load() {
     setLoading(true);
-    api.getAdminLead(id)
-      .then((res) => {
-        setLead(res.data);
-        setStatus(res.data.status);
+    Promise.all([
+      api.getAdminLead(id),
+      api.getAdminUsers({ limit: 100 }).catch(() => ({ data: [] })),
+    ])
+      .then(([leadRes, usersRes]) => {
+        setLead(leadRes.data);
+        setStatus(leadRes.data.status);
+        setAssignedTo(leadRes.data.assignedTo?._id || leadRes.data.assignedTo || '');
+        setUsers(usersRes.data || []);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -34,9 +41,9 @@ export default function AdminLeadDetailPage() {
 
   async function saveStatus() {
     try {
-      const res = await api.updateAdminLead(id, { status });
+      const res = await api.updateAdminLead(id, { status, assignedTo: assignedTo || null });
       setLead(res.data);
-      push('Lead status updated.', 'success');
+      push('Lead updated.', 'success');
     } catch (err) {
       push(err.message, 'error');
     }
@@ -88,12 +95,18 @@ export default function AdminLeadDetailPage() {
       </section>
 
       <section className={styles.panel}>
-        <h2>Update status</h2>
+        <h2>Update status & assignment</h2>
         <div className={styles.actions}>
           <Select label="Status" value={status} onChange={(e) => setStatus(e.target.value)}>
             {LEAD_STATUS_VALUES.map((s) => <option key={s} value={s}>{s}</option>)}
           </Select>
-          <Button onClick={saveStatus}>Save status</Button>
+          <Select label="Assign to" value={assignedTo} onChange={(e) => setAssignedTo(e.target.value)}>
+            <option value="">Unassigned</option>
+            {users.map((u) => (
+              <option key={u._id || u.id} value={u._id || u.id}>{u.name} ({u.role})</option>
+            ))}
+          </Select>
+          <Button onClick={saveStatus}>Save</Button>
           <Button variant="secondary" onClick={() => archive(!lead.archived)}>
             {lead.archived ? 'Unarchive' : 'Archive'}
           </Button>

@@ -1,5 +1,17 @@
 export const PROJECT_CATEGORIES = [
   {
+    id: 'generative-ai',
+    title: 'Generative AI',
+    description: 'LLM apps, prompt workflows, RAG demos, and generative academic projects.',
+    color: 'bg-indigo-50 text-indigo-900 border-indigo-100',
+  },
+  {
+    id: 'ai-agents',
+    title: 'AI Agents / Agentic AI',
+    description: 'Tool-using agents, multi-step planners, and autonomous demo flows.',
+    color: 'bg-cyan-50 text-cyan-900 border-cyan-100',
+  },
+  {
     id: 'ai-ml',
     title: 'AI & Machine Learning',
     description: 'Classical ML pipelines, feature work, evaluation, and app integration.',
@@ -15,31 +27,31 @@ export const PROJECT_CATEGORIES = [
     id: 'nlp',
     title: 'NLP',
     description: 'Text classification, chat-style interfaces, and language pipelines.',
-    color: 'bg-cyan-50 text-cyan-900 border-cyan-100',
+    color: 'bg-sky-50 text-sky-900 border-sky-100',
   },
   {
     id: 'data-science',
     title: 'Data Science',
     description: 'Analysis, visualization, notebooks, and insight storytelling.',
-    color: 'bg-sky-50 text-sky-900 border-sky-100',
+    color: 'bg-blue-50 text-blue-900 border-blue-100',
   },
   {
     id: 'web',
     title: 'Web Development',
     description: 'Responsive sites and frontend experiences with clean UX.',
-    color: 'bg-indigo-50 text-indigo-900 border-indigo-100',
+    color: 'bg-violet-50 text-violet-900 border-violet-100',
   },
   {
     id: 'full-stack',
     title: 'Full Stack Development',
     description: 'APIs, auth, databases, and end-to-end application flows.',
-    color: 'bg-violet-50 text-violet-900 border-violet-100',
+    color: 'bg-fuchsia-50 text-fuchsia-900 border-fuchsia-100',
   },
   {
     id: 'cloud',
     title: 'Cloud Computing',
     description: 'Deployments, cloud services, and scalable app foundations.',
-    color: 'bg-blue-50 text-blue-900 border-blue-100',
+    color: 'bg-slate-50 text-slate-800 border-slate-200',
   },
   {
     id: 'cybersecurity',
@@ -71,3 +83,7 @@ export const PROJECT_CATEGORY_OPTIONS = PROJECT_CATEGORIES.map((c) => ({
   value: c.id,
   label: c.title,
 }));
+
+export function getCategoryById(id) {
+  return PROJECT_CATEGORIES.find((c) => c.id === id) || null;
+}

@@ -6,8 +6,11 @@ import Logo from '../components/brand/Logo';
 const LINKS = [
   { to: '/dashboard', label: 'Overview', end: true },
   { to: '/dashboard/requests', label: 'My requests' },
-  { to: '/dashboard/requests/new', label: 'New request' },
+  { to: '/dashboard/projects', label: 'My projects' },
+  { to: '/dashboard/notifications', label: 'Notifications' },
   { to: '/dashboard/profile', label: 'Profile' },
+  { to: '/dashboard/payments', label: 'Payments' },
+  { to: '/dashboard/support', label: 'Support' },
 ];
 
 export default function DashboardLayout() {

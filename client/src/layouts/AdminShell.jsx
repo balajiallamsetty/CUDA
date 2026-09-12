@@ -9,8 +9,10 @@ import styles from './AdminShell.module.css';
 const NAV = [
   { to: '/admin/dashboard', label: 'Dashboard', permission: PERMISSIONS.DASHBOARD_READ },
   { to: '/admin/leads', label: 'Leads', permission: PERMISSIONS.LEADS_READ },
+  { to: '/admin/service-requests', label: 'Service Requests', permission: PERMISSIONS.SERVICE_REQUESTS_READ },
+  { to: '/admin/work-projects', label: 'Work Projects', permission: PERMISSIONS.WORK_PROJECTS_READ },
   { to: '/admin/inquiries', label: 'Inquiries', permission: PERMISSIONS.INQUIRIES_READ },
-  { to: '/admin/projects', label: 'Projects', permission: PERMISSIONS.PROJECTS_READ },
+  { to: '/admin/projects', label: 'Portfolio', permission: PERMISSIONS.PROJECTS_READ },
   { to: '/admin/talks', label: 'Talks', permission: PERMISSIONS.TALKS_READ },
   { to: '/admin/users', label: 'Users', permission: PERMISSIONS.USERS_READ },
   { to: '/admin/settings', label: 'Settings', permission: PERMISSIONS.SETTINGS_READ },
