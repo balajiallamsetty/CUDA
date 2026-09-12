@@ -8,7 +8,7 @@ import {
 import * as api from '../../services/api';
 import Button from '../../components/ui/Button';
 import Badge from '../../components/ui/Badge';
-import { Select } from '../../components/ui/Field';
+import { Select, Input } from '../../components/ui/Field';
 import { Loading } from '../../components/ui/Loading';
 import { ErrorState } from '../../components/ui/States';
 import { useToast } from '../../components/ui/Toast';
@@ -23,6 +23,7 @@ export default function AdminServiceRequestDetailPage() {
   const [assignedTo, setAssignedTo] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [quoteForm, setQuoteForm] = useState({ description: 'Service delivery', amount: '10000' });
 
   function load() {
     setLoading(true);
@@ -60,6 +61,20 @@ export default function AdminServiceRequestDetailPage() {
       const res = await api.convertAdminServiceRequest(id);
       push('Converted to work project.', 'success');
       window.location.assign(`/admin/work-projects/${res.data._id}`);
+    } catch (err) {
+      push(err.message, 'error');
+    }
+  }
+
+  async function createQuote() {
+    try {
+      const amount = Number(quoteForm.amount) || 0;
+      await api.createAdminQuotation(id, {
+        send: true,
+        lineItems: [{ description: quoteForm.description, quantity: 1, unitAmount: amount, amount }],
+      });
+      push('Quotation sent to customer.', 'success');
+      load();
     } catch (err) {
       push(err.message, 'error');
     }
@@ -108,6 +123,25 @@ export default function AdminServiceRequestDetailPage() {
               Open work project
             </Button>
           )}
+        </div>
+      </section>
+      <section className={styles.panel}>
+        <h2>Quotation</h2>
+        <p className={styles.sub}>Service: {item.serviceSlug} · Customer type: {item.customerType || item.user?.customerType || '—'}</p>
+        {item.quotation && <p>Linked quotation: {item.quotation._id || item.quotation}</p>}
+        <div className={styles.actions}>
+          <Input
+            label="Line description"
+            value={quoteForm.description}
+            onChange={(e) => setQuoteForm((p) => ({ ...p, description: e.target.value }))}
+          />
+          <Input
+            label="Amount"
+            type="number"
+            value={quoteForm.amount}
+            onChange={(e) => setQuoteForm((p) => ({ ...p, amount: e.target.value }))}
+          />
+          <Button onClick={createQuote}>Create & send quotation</Button>
         </div>
       </section>
     </div>

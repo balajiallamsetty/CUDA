@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { MESSAGE_VISIBILITY, MESSAGE_VISIBILITY_VALUES } from '@vignak/shared';
 
 const conversationSchema = new mongoose.Schema(
   {
@@ -18,12 +19,19 @@ const messageSchema = new mongoose.Schema(
     workProject: { type: mongoose.Schema.Types.ObjectId, ref: 'WorkProject', required: true, index: true },
     sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     body: { type: String, required: true, trim: true, maxlength: 5000 },
+    visibility: {
+      type: String,
+      enum: MESSAGE_VISIBILITY_VALUES,
+      default: MESSAGE_VISIBILITY.CLIENT,
+      index: true,
+    },
     readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   },
   { timestamps: true },
 );
 
 messageSchema.index({ workProject: 1, createdAt: 1 });
+messageSchema.index({ workProject: 1, visibility: 1, createdAt: 1 });
 
 export const Conversation = mongoose.model('Conversation', conversationSchema);
 export const Message = mongoose.model('Message', messageSchema);

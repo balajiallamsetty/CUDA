@@ -1,4 +1,4 @@
-import { ROLES, ROLE_VALUES } from '@vignak/shared';
+import { ROLES, ROLE_VALUES, CUSTOMER_TYPE_VALUES } from '@vignak/shared';
 import { User } from '../models/User.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { parsePagination, buildMeta, parseSort } from '../utils/pagination.js';
@@ -110,6 +110,9 @@ export async function updateUser(id, payload, actor, meta = {}) {
   }
 
   if (payload.name) user.name = payload.name;
+  if (payload.customerType && CUSTOMER_TYPE_VALUES.includes(payload.customerType)) {
+    user.customerType = payload.customerType;
+  }
   await user.save();
   return user.toSafeObject();
 }

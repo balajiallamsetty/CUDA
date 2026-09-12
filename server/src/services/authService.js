@@ -7,7 +7,7 @@ import { clearAuthCookie, setAuthCookie, signToken } from '../middleware/auth.js
 import { env } from '../config/env.js';
 import { isSmtpConfigured, sendMail } from '../utils/mailer.js';
 import { logger } from '../utils/logger.js';
-import { ROLES } from '@vignak/shared';
+import { ROLES, CUSTOMER_TYPES, CUSTOMER_TYPE_VALUES } from '@vignak/shared';
 
 const GENERIC_RESET_MESSAGE =
   'If an account exists for that email, password reset instructions have been sent.';
@@ -33,11 +33,16 @@ export async function registerUser(payload, meta = {}) {
   }
 
   const passwordHash = await User.hashPassword(password);
+  const customerType =
+    payload.customerType && CUSTOMER_TYPE_VALUES.includes(payload.customerType)
+      ? payload.customerType
+      : CUSTOMER_TYPES.STUDENT;
   const user = await User.create({
     name,
     email,
     passwordHash,
     role: ROLES.USER,
+    customerType,
     phone: payload.phone || '',
     institution: payload.institution || '',
     course: payload.course || '',

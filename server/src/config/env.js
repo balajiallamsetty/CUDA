@@ -34,6 +34,8 @@ export function loadEnv() {
     jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
     clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
     uploadDir: process.env.UPLOAD_DIR || '',
+    paymentProvider: process.env.PAYMENT_PROVIDER || '',
+    paymentWebhookSecret: process.env.PAYMENT_WEBHOOK_SECRET || '',
     isProd,
     isTest,
     smtp: {

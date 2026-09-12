@@ -18,9 +18,14 @@ import {
   milestoneValidators,
   taskValidators,
   messageValidators,
+  quotationValidators,
+  paymentRecordValidators,
+  deliverableValidators,
+  serviceDefinitionValidators,
 } from '../validators/index.js';
 import * as admin from '../controllers/adminController.js';
 import * as adminPlatform from '../controllers/adminPlatformController.js';
+import * as ecosystem from '../controllers/ecosystemController.js';
 import { uploadDocumentMiddleware } from '../middleware/upload.js';
 
 const router = Router();
@@ -218,5 +223,56 @@ router.get(
   authorizePermission(PERMISSIONS.DOCUMENTS_READ),
   adminPlatform.downloadDocument,
 );
+
+router.get(
+  '/service-definitions',
+  authorizePermission(PERMISSIONS.SERVICES_READ),
+  ecosystem.listAdminServiceDefinitions,
+);
+router.get(
+  '/service-definitions/:id',
+  authorizePermission(PERMISSIONS.SERVICES_READ),
+  ecosystem.getAdminServiceDefinition,
+);
+router.patch(
+  '/service-definitions/:id',
+  authorizePermission(PERMISSIONS.SERVICES_CONFIG_WRITE),
+  serviceDefinitionValidators,
+  validateRequest,
+  ecosystem.patchAdminServiceDefinition,
+);
+
+router.get('/quotations', authorizePermission(PERMISSIONS.QUOTATIONS_READ), ecosystem.listAdminQuotations);
+router.post(
+  '/service-requests/:id/quotations',
+  authorizePermission(PERMISSIONS.QUOTATIONS_WRITE),
+  quotationValidators,
+  validateRequest,
+  ecosystem.createQuotation,
+);
+
+router.get('/payments', authorizePermission(PERMISSIONS.PAYMENTS_READ), ecosystem.listAdminPayments);
+router.post(
+  '/payments',
+  authorizePermission(PERMISSIONS.PAYMENTS_WRITE),
+  paymentRecordValidators,
+  validateRequest,
+  ecosystem.recordPayment,
+);
+
+router.get(
+  '/work-projects/:id/deliverables',
+  authorizePermission(PERMISSIONS.DELIVERABLES_READ),
+  ecosystem.listProjectDeliverables,
+);
+router.post(
+  '/work-projects/:id/deliverables',
+  authorizePermission(PERMISSIONS.DELIVERABLES_WRITE),
+  deliverableValidators,
+  validateRequest,
+  ecosystem.createDeliverable,
+);
+
+router.get('/assigned-overview', authorizePermission(PERMISSIONS.DASHBOARD_READ), ecosystem.staffAssignedOverview);
 
 export default router;

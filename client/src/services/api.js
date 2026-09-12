@@ -225,10 +225,10 @@ export function upsertAdminTask(projectId, payload) {
   });
 }
 
-export function postAdminProjectMessage(projectId, body) {
+export function postAdminProjectMessage(projectId, body, visibility = 'CLIENT') {
   return request(`/api/admin/work-projects/${projectId}/messages`, {
     method: 'POST',
-    body: JSON.stringify({ body }),
+    body: JSON.stringify({ body, visibility }),
   });
 }
 
@@ -394,6 +394,108 @@ export function registerForTalk(idOrSlug, payload) {
 
 export function getPublicServices() {
   return request('/api/services');
+}
+
+export function getCatalogServices() {
+  return request('/api/catalog/services');
+}
+
+export function getCatalogService(slug) {
+  return request(`/api/catalog/services/${slug}`);
+}
+
+export function getMyQuotations(params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  return request(`/api/auth/me/quotations${qs ? `?${qs}` : ''}`);
+}
+
+export function getMyQuotation(id) {
+  return request(`/api/auth/me/quotations/${id}`);
+}
+
+export function approveMyQuotation(id) {
+  return request(`/api/auth/me/quotations/${id}/approve`, { method: 'POST' });
+}
+
+export function rejectMyQuotation(id, note = '') {
+  return request(`/api/auth/me/quotations/${id}/reject`, {
+    method: 'POST',
+    body: JSON.stringify({ note }),
+  });
+}
+
+export function getMyPayments(params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  return request(`/api/auth/me/payments${qs ? `?${qs}` : ''}`);
+}
+
+export function getMyDeliverables(params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  return request(`/api/auth/me/deliverables${qs ? `?${qs}` : ''}`);
+}
+
+export function getMyDeliverable(id) {
+  return request(`/api/auth/me/deliverables/${id}`);
+}
+
+export function approveMyDeliverable(id) {
+  return request(`/api/auth/me/deliverables/${id}/approve`, { method: 'POST' });
+}
+
+export function requestMyDeliverableChanges(id, note = '') {
+  return request(`/api/auth/me/deliverables/${id}/request-changes`, {
+    method: 'POST',
+    body: JSON.stringify({ note }),
+  });
+}
+
+export function getAdminServiceDefinitions() {
+  return request('/api/admin/service-definitions');
+}
+
+export function getAdminServiceDefinition(id) {
+  return request(`/api/admin/service-definitions/${id}`);
+}
+
+export function updateAdminServiceDefinition(id, payload) {
+  return request(`/api/admin/service-definitions/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+}
+
+export function createAdminQuotation(requestId, payload) {
+  return request(`/api/admin/service-requests/${requestId}/quotations`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export function recordAdminPayment(payload) {
+  return request('/api/admin/payments', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export function getAdminPayments(params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  return request(`/api/admin/payments${qs ? `?${qs}` : ''}`);
+}
+
+export function createAdminDeliverable(projectId, payload) {
+  return request(`/api/admin/work-projects/${projectId}/deliverables`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export function getAdminProjectDeliverables(projectId) {
+  return request(`/api/admin/work-projects/${projectId}/deliverables`);
+}
+
+export function getAdminAssignedOverview() {
+  return request('/api/admin/assigned-overview');
 }
 
 export function getHealth() {

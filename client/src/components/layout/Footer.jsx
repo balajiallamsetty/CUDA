@@ -20,7 +20,7 @@ export default function Footer() {
             <li><Link className="hover:text-accent-mist" to="/project-assistance">Project Assistance</Link></li>
             <li><Link className="hover:text-accent-mist" to="/portfolio">Portfolio</Link></li>
             <li><Link className="hover:text-accent-mist" to="/talks">Vignak Talks</Link></li>
-            <li><Link className="hover:text-accent-mist" to="/solutions">Other services</Link></li>
+            <li><Link className="hover:text-accent-mist" to="/services">Services</Link></li>
           </ul>
         </div>
         <div>

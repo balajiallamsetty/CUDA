@@ -16,6 +16,12 @@ import {
   TASK_STATUS_VALUES,
   TASK_PRIORITY_VALUES,
   TASK_VISIBILITY_VALUES,
+  SERVICE_SLUG_VALUES,
+  CUSTOMER_TYPE_VALUES,
+  MESSAGE_VISIBILITY_VALUES,
+  QUOTATION_STATUS_VALUES,
+  PAYMENT_STATUS_VALUES,
+  DELIVERABLE_STATUS_VALUES,
 } from '@vignak/shared';
 
 export const createLeadValidators = [
@@ -55,6 +61,7 @@ export const registerValidators = [
   body('institution').optional({ checkFalsy: true }).trim().isLength({ max: 160 }),
   body('course').optional({ checkFalsy: true }).trim().isLength({ max: 120 }),
   body('year').optional({ checkFalsy: true }).trim().isLength({ max: 40 }),
+  body('customerType').optional().isIn(CUSTOMER_TYPE_VALUES),
 ];
 
 export const profileUpdateValidators = [
@@ -63,6 +70,10 @@ export const profileUpdateValidators = [
   body('institution').optional({ checkFalsy: true }).trim().isLength({ max: 160 }),
   body('course').optional({ checkFalsy: true }).trim().isLength({ max: 120 }),
   body('year').optional({ checkFalsy: true }).trim().isLength({ max: 40 }),
+  body('customerType').optional().isIn(CUSTOMER_TYPE_VALUES),
+  body('notificationPreferences').optional().isObject(),
+  body('notificationPreferences.email').optional().isBoolean(),
+  body('notificationPreferences.inApp').optional().isBoolean(),
 ];
 
 export const createContactValidators = [
@@ -168,6 +179,7 @@ export const userUpdateValidators = [
   body('name').optional().trim().isLength({ max: 120 }),
   body('role').optional().isIn(ROLE_VALUES),
   body('isActive').optional().isBoolean(),
+  body('customerType').optional().isIn(CUSTOMER_TYPE_VALUES),
 ];
 
 export const inquiryUpdateValidators = [
@@ -195,7 +207,9 @@ export const serviceValidators = [
 export const serviceRequestCreateValidators = [
   body('title').trim().notEmpty().withMessage('Title is required').isLength({ max: 200 }),
   body('description').trim().notEmpty().withMessage('Description is required').isLength({ max: 5000 }),
-  body('domain').isIn(PA_DOMAIN_VALUES).withMessage('Invalid domain'),
+  body('serviceSlug').optional().isIn(SERVICE_SLUG_VALUES),
+  body('domain').optional({ checkFalsy: true }).isIn(PA_DOMAIN_VALUES).withMessage('Invalid domain'),
+  body('customerType').optional().isIn(CUSTOMER_TYPE_VALUES),
   body('requirements').optional({ checkFalsy: true }).trim().isLength({ max: 5000 }),
   body('technologies').optional().isArray({ max: 20 }),
   body('technologies.*').optional().isString().isLength({ max: 60 }),
@@ -205,6 +219,7 @@ export const serviceRequestCreateValidators = [
   body('organization').optional({ checkFalsy: true }).trim().isLength({ max: 160 }),
   body('course').optional({ checkFalsy: true }).trim().isLength({ max: 120 }),
   body('year').optional({ checkFalsy: true }).trim().isLength({ max: 40 }),
+  body('payload').optional().isObject(),
 ];
 
 export const serviceRequestUpdateValidators = [
@@ -247,6 +262,56 @@ export const taskValidators = [
 
 export const messageValidators = [
   body('body').trim().notEmpty().withMessage('Message is required').isLength({ max: 5000 }),
+  body('visibility').optional().isIn(MESSAGE_VISIBILITY_VALUES),
+];
+
+export const quotationValidators = [
+  body('lineItems').isArray({ min: 1 }).withMessage('Line items required'),
+  body('lineItems.*.description').trim().notEmpty().isLength({ max: 300 }),
+  body('lineItems.*.quantity').optional().isFloat({ min: 0 }),
+  body('lineItems.*.unitAmount').isFloat({ min: 0 }),
+  body('tax').optional().isFloat({ min: 0 }),
+  body('currency').optional().isLength({ max: 8 }),
+  body('terms').optional({ checkFalsy: true }).trim().isLength({ max: 4000 }),
+  body('validUntil').optional({ checkFalsy: true }).isISO8601(),
+  body('send').optional().isBoolean(),
+  body('status').optional().isIn(QUOTATION_STATUS_VALUES),
+];
+
+export const paymentRecordValidators = [
+  body('amount').isFloat({ min: 0 }),
+  body('status').isIn(PAYMENT_STATUS_VALUES),
+  body('workProject').optional().isMongoId(),
+  body('quotation').optional().isMongoId(),
+  body('client').optional().isMongoId(),
+  body('currency').optional().isLength({ max: 8 }),
+  body('method').optional().trim().isLength({ max: 80 }),
+  body('stage').optional().trim().isLength({ max: 80 }),
+  body('note').optional({ checkFalsy: true }).trim().isLength({ max: 1000 }),
+  body('providerRef').optional({ checkFalsy: true }).trim().isLength({ max: 160 }),
+];
+
+export const deliverableValidators = [
+  body('title').trim().notEmpty().isLength({ max: 200 }),
+  body('type').optional().trim().isLength({ max: 80 }),
+  body('version').optional().isInt({ min: 1 }),
+  body('document').optional().isMongoId(),
+  body('externalUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
+  body('notes').optional({ checkFalsy: true }).trim().isLength({ max: 2000 }),
+  body('submit').optional().isBoolean(),
+  body('status').optional().isIn(DELIVERABLE_STATUS_VALUES),
+];
+
+export const serviceDefinitionValidators = [
+  body('title').optional().trim().isLength({ max: 160 }),
+  body('summary').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
+  body('active').optional().isBoolean(),
+  body('public').optional().isBoolean(),
+  body('flagship').optional().isBoolean(),
+  body('order').optional().isInt({ min: 0, max: 10000 }),
+  body('category').optional().trim().isLength({ max: 80 }),
+  body('ctaLabel').optional().trim().isLength({ max: 80 }),
+  body('workflowConfig').optional().isObject(),
 ];
 
 export const verifyEmailConfirmValidators = [

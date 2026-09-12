@@ -2,6 +2,7 @@ import { Router } from 'express';
 import * as projectService from '../services/projectService.js';
 import * as talkService from '../services/talkService.js';
 import * as settingsService from '../services/settingsService.js';
+import * as ecosystem from '../controllers/ecosystemController.js';
 import { talkRegisterValidators } from '../validators/index.js';
 import { validateRequest, rejectHoneypot } from '../middleware/validate.js';
 import { registrationLimiter } from '../middleware/rateLimiters.js';
@@ -78,5 +79,8 @@ router.get('/services', async (req, res, next) => {
     next(err);
   }
 });
+
+router.get('/catalog/services', ecosystem.listCatalogServices);
+router.get('/catalog/services/:slug', ecosystem.getCatalogService);
 
 export default router;

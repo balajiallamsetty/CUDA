@@ -8,16 +8,12 @@ import RequirePermission from '../components/admin/RequirePermission';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
 import { PERMISSIONS } from '@vignak/shared';
 
+const ServicesCatalogPage = lazy(() => import('../pages/ServicesCatalogPage'));
+const ServiceDetailPage = lazy(() => import('../pages/ServiceDetailPage'));
 const HomePage = lazy(() => import('../pages/HomePage'));
 const ProjectAssistancePage = lazy(() => import('../pages/ProjectAssistancePage'));
 const DomainLandingPage = lazy(() => import('../pages/DomainLandingPage'));
 const AboutPage = lazy(() => import('../pages/AboutPage'));
-const SolutionsPage = lazy(() => import('../pages/SolutionsPage'));
-const WebServicesPage = lazy(() => import('../pages/WebServicesPage'));
-const CustomDigitalPage = lazy(() => import('../pages/CustomDigitalPage'));
-const CustomizedPage = lazy(() => import('../pages/CustomizedPage'));
-const GiftsPage = lazy(() => import('../pages/GiftsPage'));
-const ConferenceKitsPage = lazy(() => import('../pages/ConferenceKitsPage'));
 const TalksPage = lazy(() => import('../pages/TalksPage'));
 const TalkDetailPage = lazy(() => import('../pages/TalkDetailPage'));
 const PortfolioPage = lazy(() => import('../pages/PortfolioPage'));
@@ -37,6 +33,8 @@ const MyProjectsPage = lazy(() => import('../pages/dashboard/MyProjectsPage'));
 const MyProjectDetailPage = lazy(() => import('../pages/dashboard/MyProjectDetailPage'));
 const NotificationsPage = lazy(() => import('../pages/dashboard/NotificationsPage'));
 const PaymentsPage = lazy(() => import('../pages/dashboard/PaymentsPage'));
+const QuotationsPage = lazy(() => import('../pages/dashboard/QuotationsPage'));
+const DeliverablesPage = lazy(() => import('../pages/dashboard/DeliverablesPage'));
 const SupportPage = lazy(() => import('../pages/dashboard/SupportPage'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 const AdminLoginPage = lazy(() => import('../pages/AdminLoginPage'));
@@ -57,6 +55,8 @@ const AdminServiceRequestsPage = lazy(() => import('../pages/admin/AdminServiceR
 const AdminServiceRequestDetailPage = lazy(() => import('../pages/admin/AdminServiceRequestDetailPage'));
 const AdminWorkProjectsPage = lazy(() => import('../pages/admin/AdminWorkProjectsPage'));
 const AdminWorkProjectDetailPage = lazy(() => import('../pages/admin/AdminWorkProjectDetailPage'));
+const AdminServiceDefinitionsPage = lazy(() => import('../pages/admin/AdminServiceDefinitionsPage'));
+const AdminAssignedOverviewPage = lazy(() => import('../pages/admin/AdminAssignedOverviewPage'));
 
 function RouteFallback() {
   return (
@@ -75,12 +75,14 @@ export default function AppRoutes() {
           <Route path="project-assistance" element={<ProjectAssistancePage />} />
           <Route path="project-assistance/domains/:domainId" element={<DomainLandingPage />} />
           <Route path="about" element={<AboutPage />} />
-          <Route path="solutions" element={<SolutionsPage />} />
-          <Route path="solutions/web-services" element={<WebServicesPage />} />
-          <Route path="solutions/custom-digital-solutions" element={<CustomDigitalPage />} />
-          <Route path="customized" element={<CustomizedPage />} />
-          <Route path="customized/gifts" element={<GiftsPage />} />
-          <Route path="customized/conference-kits" element={<ConferenceKitsPage />} />
+          <Route path="services" element={<ServicesCatalogPage />} />
+          <Route path="services/:slug" element={<ServiceDetailPage />} />
+          <Route path="solutions" element={<Navigate to="/services" replace />} />
+          <Route path="solutions/web-services" element={<Navigate to="/services/web-development" replace />} />
+          <Route path="solutions/custom-digital-solutions" element={<Navigate to="/services/business-startup-digital" replace />} />
+          <Route path="customized" element={<Navigate to="/services" replace />} />
+          <Route path="customized/gifts" element={<Navigate to="/services/customized-gifts-conference-kits" replace />} />
+          <Route path="customized/conference-kits" element={<Navigate to="/services/customized-gifts-conference-kits" replace />} />
           <Route path="talks" element={<TalksPage />} />
           <Route path="talks/:slug" element={<TalkDetailPage />} />
           <Route path="portfolio" element={<PortfolioPage />} />
@@ -112,6 +114,8 @@ export default function AppRoutes() {
           <Route path="notifications" element={<NotificationsPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="payments" element={<PaymentsPage />} />
+          <Route path="quotations" element={<QuotationsPage />} />
+          <Route path="deliverables" element={<DeliverablesPage />} />
           <Route path="support" element={<SupportPage />} />
         </Route>
 
@@ -174,6 +178,22 @@ export default function AppRoutes() {
             element={(
               <RequirePermission permission={PERMISSIONS.WORK_PROJECTS_READ}>
                 <AdminWorkProjectDetailPage />
+              </RequirePermission>
+            )}
+          />
+          <Route
+            path="service-definitions"
+            element={(
+              <RequirePermission permission={PERMISSIONS.SERVICES_READ}>
+                <AdminServiceDefinitionsPage />
+              </RequirePermission>
+            )}
+          />
+          <Route
+            path="assigned-overview"
+            element={(
+              <RequirePermission permission={PERMISSIONS.DASHBOARD_READ}>
+                <AdminAssignedOverviewPage />
               </RequirePermission>
             )}
           />

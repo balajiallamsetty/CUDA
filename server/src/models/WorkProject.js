@@ -16,13 +16,14 @@ const workProjectSchema = new mongoose.Schema(
       default: SERVICE_SLUGS.PROJECT_ASSISTANCE,
       index: true,
     },
-    domain: { type: String, enum: PA_DOMAIN_VALUES, required: true, index: true },
+    domain: { type: String, enum: PA_DOMAIN_VALUES, required: false, index: true },
     serviceRequest: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'ServiceRequest',
       required: true,
       unique: true,
     },
+    quotation: { type: mongoose.Schema.Types.ObjectId, ref: 'Quotation' },
     client: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     assignees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     status: {
@@ -31,6 +32,8 @@ const workProjectSchema = new mongoose.Schema(
       default: WORK_PROJECT_STATUSES.PLANNING,
       index: true,
     },
+    currentStage: { type: String, trim: true, maxlength: 80, default: '' },
+    workflowKey: { type: String, trim: true, maxlength: 80, default: 'default' },
     progress: { type: Number, default: 0, min: 0, max: 100 },
     summary: { type: String, trim: true, maxlength: 2000 },
     archived: { type: Boolean, default: false, index: true },
@@ -41,5 +44,6 @@ const workProjectSchema = new mongoose.Schema(
 workProjectSchema.index({ client: 1, createdAt: -1 });
 workProjectSchema.index({ status: 1, archived: 1, createdAt: -1 });
 workProjectSchema.index({ assignees: 1, archived: 1 });
+workProjectSchema.index({ serviceSlug: 1, archived: 1 });
 
 export const WorkProject = mongoose.model('WorkProject', workProjectSchema);

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { CUSTOMER_TYPE_VALUES, CUSTOMER_TYPE_LABELS, CUSTOMER_TYPES } from '@vignak/shared';
 import Button from '../components/ui/Button';
 import { Input, Select } from '../components/ui/Field';
 import Logo from '../components/brand/Logo';
@@ -16,6 +17,7 @@ const initial = {
   institution: '',
   course: '',
   year: '',
+  customerType: CUSTOMER_TYPES.STUDENT,
 };
 
 export default function RegisterPage() {
@@ -58,13 +60,18 @@ export default function RegisterPage() {
       <div className="mx-auto max-w-xl rounded-2xl border border-line-soft bg-white p-8 shadow-card">
         <Logo className="mb-6" />
         <p className="eyebrow">Get started</p>
-        <h1 className="!text-3xl">Create your student account</h1>
-        <p className="lead mb-6">Submit project requirements and track progress in one place.</p>
+        <h1 className="!text-3xl">Create your account</h1>
+        <p className="lead mb-6">Submit service requests and track delivery in one place.</p>
         <form className="grid gap-4 sm:grid-cols-2" onSubmit={onSubmit} noValidate>
           <Input className="sm:col-span-2" label="Full name" name="name" value={form.name} onChange={onChange} required />
           <Input className="sm:col-span-2" label="Email" type="email" name="email" value={form.email} onChange={onChange} required />
+          <Select className="sm:col-span-2" label="I am a" name="customerType" value={form.customerType} onChange={onChange}>
+            {CUSTOMER_TYPE_VALUES.map((t) => (
+              <option key={t} value={t}>{CUSTOMER_TYPE_LABELS[t]}</option>
+            ))}
+          </Select>
           <Input label="Phone" name="phone" value={form.phone} onChange={onChange} />
-          <Input label="Institution" name="institution" value={form.institution} onChange={onChange} />
+          <Input label="Institution / organization" name="institution" value={form.institution} onChange={onChange} />
           <Input label="Course" name="course" value={form.course} onChange={onChange} placeholder="B.Tech CSE" />
           <Select label="Year" name="year" value={form.year} onChange={onChange}>
             <option value="">Select year</option>

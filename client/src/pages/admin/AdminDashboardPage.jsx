@@ -41,7 +41,13 @@ export default function AdminDashboardPage() {
         <StatCard label="Total leads" value={stats.totalLeads} />
         <StatCard label="New leads" value={stats.newLeads} />
         <StatCard label="Qualified leads" value={stats.qualifiedLeads} />
-        <StatCard label="Published projects" value={stats.projects} />
+        <StatCard label="Users" value={stats.totalUsers ?? 0} />
+        <StatCard label="Service requests" value={stats.totalRequests ?? 0} />
+        <StatCard label="Active projects" value={stats.activeProjects ?? 0} />
+        <StatCard label="Completed projects" value={stats.completedProjects ?? 0} />
+        <StatCard label="Overdue milestones" value={stats.overdueMilestones ?? 0} />
+        <StatCard label="Overdue tasks" value={stats.overdueTasks ?? 0} />
+        <StatCard label="Published portfolio" value={stats.projects} />
         <StatCard label="Upcoming talks" value={stats.upcomingTalks} />
         <StatCard label="New inquiries" value={stats.inquiries} />
       </div>
@@ -61,6 +67,39 @@ export default function AdminDashboardPage() {
           {!stats.leadStatusBreakdown?.length && <p className={styles.sub}>No leads yet.</p>}
         </div>
       </section>
+
+      <section className={styles.panel}>
+        <h2>Requests by service</h2>
+        <ul>
+          {(stats.requestsByService || []).map((row) => (
+            <li key={row.serviceSlug}>{row.serviceSlug}: <strong>{row.count}</strong></li>
+          ))}
+          {!stats.requestsByService?.length && <p className={styles.sub}>No service requests yet.</p>}
+        </ul>
+      </section>
+
+      <section className={styles.panel}>
+        <h2>Workload by assignee</h2>
+        <ul>
+          {(stats.workloadByAssignee || []).map((row) => (
+            <li key={row.user?._id || row.user?.id || row.count}>
+              {row.user?.name || 'Unknown'}: <strong>{row.count}</strong> projects
+            </li>
+          ))}
+          {!stats.workloadByAssignee?.length && <p className={styles.sub}>No assigned projects yet.</p>}
+        </ul>
+      </section>
+
+      {stats.paymentsTotals && (
+        <section className={styles.panel}>
+          <h2>Payments</h2>
+          <ul>
+            {stats.paymentsTotals.map((row) => (
+              <li key={row.status}>{row.status}: {row.count} · ₹{Number(row.amount).toLocaleString()}</li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }

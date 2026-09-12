@@ -1,20 +1,18 @@
-import { Link, NavLink, Outlet } from 'react-router-dom';
+import { Link, NavLink, Outlet, Navigate } from 'react-router-dom';
+import { isStaffRole } from '@vignak/shared';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/ui/Button';
 import Logo from '../components/brand/Logo';
-
-const LINKS = [
-  { to: '/dashboard', label: 'Overview', end: true },
-  { to: '/dashboard/requests', label: 'My requests' },
-  { to: '/dashboard/projects', label: 'My projects' },
-  { to: '/dashboard/notifications', label: 'Notifications' },
-  { to: '/dashboard/profile', label: 'Profile' },
-  { to: '/dashboard/payments', label: 'Payments' },
-  { to: '/dashboard/support', label: 'Support' },
-];
+import { dashboardNavForUser } from '../constants/site';
 
 export default function DashboardLayout() {
   const { user, logout } = useAuth();
+
+  if (user && isStaffRole(user.role)) {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
+
+  const links = dashboardNavForUser(user);
 
   return (
     <div className="min-h-screen bg-surface">
@@ -31,7 +29,7 @@ export default function DashboardLayout() {
       <div className="mx-auto grid max-w-container gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[220px_1fr]">
         <aside className="h-fit rounded-2xl border border-line-soft bg-white p-3 shadow-soft">
           <nav className="flex flex-col gap-1" aria-label="Dashboard">
-            {LINKS.map((link) => (
+            {links.map((link) => (
               <NavLink
                 key={link.to}
                 to={link.to}

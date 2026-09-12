@@ -6,6 +6,11 @@ import {
   ROLES,
   WORK_PROJECT_STATUS_VALUES,
   SERVICE_REQUEST_STATUSES,
+  SERVICE_SLUGS,
+  MESSAGE_VISIBILITY,
+  MESSAGE_VISIBILITY_VALUES,
+  QUOTATION_STATUSES,
+  SERVICE_SLUG_VALUES,
 } from '@vignak/shared';
 import { WorkProject } from '../models/WorkProject.js';
 import { Milestone } from '../models/Milestone.js';
@@ -13,9 +18,13 @@ import { Task } from '../models/Task.js';
 import { Document } from '../models/Document.js';
 import { Conversation, Message } from '../models/Conversation.js';
 import { Activity } from '../models/Activity.js';
-import { ServiceRequest } from '../models/ServiceRequest.js';
+import { Quotation } from '../models/Quotation.js';
+import { Deliverable } from '../models/Deliverable.js';
+import { Payment } from '../models/Payment.js';
+import { getServiceWorkflow } from '../models/ServiceDefinition.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { parsePagination, buildMeta } from '../utils/pagination.js';
+import { asEnum, assertScalar } from '../utils/safeQuery.js';
 import { writeAuditLog } from './auditService.js';
 import { createNotification } from './notificationService.js';
 import { recalculateWorkProjectProgress } from './progressService.js';
@@ -29,6 +38,18 @@ function staffProjectScope(user, filter = {}) {
   return filter;
 }
 
+async function resolveMilestoneTemplate(serviceSlug) {
+  if (serviceSlug === SERVICE_SLUGS.PROJECT_ASSISTANCE) {
+    return PA_DEFAULT_MILESTONES.map((m) => ({ ...m }));
+  }
+  const def = await getServiceWorkflow(serviceSlug);
+  const fromConfig = def?.workflowConfig?.milestones;
+  if (Array.isArray(fromConfig) && fromConfig.length) {
+    return fromConfig;
+  }
+  return PA_DEFAULT_MILESTONES.map((m) => ({ ...m }));
+}
+
 export async function convertRequestToWorkProject(requestId, actor, meta = {}) {
   const request = await getAdminServiceRequest(requestId, actor);
   if (request.workProject) {
@@ -38,27 +59,43 @@ export async function convertRequestToWorkProject(requestId, actor, meta = {}) {
     throw new AppError('Cannot convert a rejected or cancelled request', 400);
   }
 
+  const def = await getServiceWorkflow(request.serviceSlug);
+  if (def?.workflowConfig?.requiresQuotation) {
+    const quote = request.quotation
+      ? await Quotation.findById(request.quotation)
+      : await Quotation.findOne({ serviceRequest: request._id }).sort({ createdAt: -1 });
+    if (!quote || quote.status !== QUOTATION_STATUSES.APPROVED) {
+      throw new AppError('An approved quotation is required before converting this request', 400);
+    }
+  }
+
+  const template = await resolveMilestoneTemplate(request.serviceSlug);
+  const firstStage = template[0]?.stage || 'PLANNING';
+
   const project = await WorkProject.create({
     title: request.title,
     serviceSlug: request.serviceSlug,
-    domain: request.domain,
+    domain: request.domain || undefined,
     serviceRequest: request._id,
+    quotation: request.quotation || undefined,
     client: request.user._id || request.user,
     assignees: request.assignedTo ? [request.assignedTo._id || request.assignedTo] : [actor._id],
     summary: request.description,
-    status: 'PLANNING',
+    status: WORK_PROJECT_STATUS_VALUES.includes(firstStage) ? firstStage : 'PLANNING',
+    currentStage: template[0]?.title || firstStage,
+    workflowKey: def?.workflowKey || request.serviceSlug,
     progress: 0,
   });
 
   await Milestone.insertMany(
-    PA_DEFAULT_MILESTONES.map((m) => ({
+    template.map((m, idx) => ({
       workProject: project._id,
       title: m.title,
-      stage: m.stage,
-      order: m.order,
-      weight: m.weight,
-      status: m.order === 1 ? MILESTONE_STATUSES.IN_PROGRESS : MILESTONE_STATUSES.PENDING,
-      description: `Project Assistance milestone: ${m.title}`,
+      stage: WORK_PROJECT_STATUS_VALUES.includes(m.stage) ? m.stage : undefined,
+      order: m.order ?? idx + 1,
+      weight: m.weight ?? 10,
+      status: (m.order ?? idx + 1) === 1 ? MILESTONE_STATUSES.IN_PROGRESS : MILESTONE_STATUSES.PENDING,
+      description: `${def?.title || 'Service'} milestone: ${m.title}`,
     })),
   );
 
@@ -89,7 +126,7 @@ export async function convertRequestToWorkProject(requestId, actor, meta = {}) {
     userId: project.client,
     type: NOTIFICATION_TYPES.PROJECT_CREATED,
     title: 'Your project has started',
-    body: `“${project.title}” is now an active Project Assistance work order.`,
+    body: `“${project.title}” is now an active work order.`,
     link: `/dashboard/projects/${project._id}`,
     resourceType: 'WorkProject',
     resourceId: project._id,
@@ -130,31 +167,48 @@ export async function getMyWorkProject(userId, id) {
 
 export async function getMyWorkProjectBundle(userId, id) {
   const project = await getMyWorkProject(userId, id);
-  const [milestones, tasks, documents, messages, activity] = await Promise.all([
+  const [milestones, tasks, documents, messages, activity, deliverables, payments] = await Promise.all([
     Milestone.find({ workProject: id }).sort({ order: 1 }).lean(),
     Task.find({ workProject: id, visibility: TASK_VISIBILITY.CLIENT }).sort({ createdAt: -1 }).lean(),
     Document.find({ workProject: id, archived: false, clientVisible: true })
       .select('-storageKey')
       .sort({ createdAt: -1 })
       .lean(),
-    Message.find({ workProject: id })
+    Message.find({ workProject: id, visibility: MESSAGE_VISIBILITY.CLIENT })
       .sort({ createdAt: 1 })
       .populate('sender', 'name email role')
       .lean(),
     Activity.find({ workProject: id }).sort({ createdAt: -1 }).limit(50).lean(),
+    Deliverable.find({ workProject: id, client: userId })
+      .sort({ createdAt: -1 })
+      .lean(),
+    Payment.find({ workProject: id, client: userId }).sort({ createdAt: -1 }).lean(),
   ]);
-  return { project, milestones, tasks, documents, messages, activity };
+  return { project, milestones, tasks, documents, messages, activity, deliverables, payments };
 }
 
 export async function listAdminWorkProjects(query, user) {
   const { page, limit, skip } = parsePagination(query);
-  const filter = staffProjectScope(user, { archived: false });
+  const filter = staffProjectScope(user, {});
+  const archivedFlag = assertScalar(query.archived, 'archived');
+  if (archivedFlag === 'true') filter.archived = true;
+  else if (archivedFlag !== 'all') filter.archived = false;
+
+  const status = asEnum(query.status, WORK_PROJECT_STATUS_VALUES, 'status');
+  if (status) filter.status = status;
+  const serviceSlug = asEnum(query.serviceSlug, SERVICE_SLUG_VALUES, 'serviceSlug');
+  if (serviceSlug) filter.serviceSlug = serviceSlug;
+  if (query.q) {
+    const q = String(query.q).trim().slice(0, 80);
+    if (q) filter.title = { $regex: q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: 'i' };
+  }
+
   const [items, total] = await Promise.all([
     WorkProject.find(filter)
       .sort({ updatedAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate('client', 'name email')
+      .populate('client', 'name email customerType')
       .populate('assignees', 'name email role')
       .lean(),
     WorkProject.countDocuments(filter),
@@ -327,13 +381,21 @@ export async function upsertTask(projectId, payload, user, meta = {}) {
   return task;
 }
 
-export async function addProjectMessage({ projectId, user, body, asStaff }) {
+export async function addProjectMessage({ projectId, user, body, asStaff, visibility }) {
   let project;
   if (asStaff) {
     project = await getAdminWorkProject(projectId, user);
   } else {
     project = await WorkProject.findOne({ _id: projectId, client: user._id, archived: false });
     if (!project) throw new AppError('Project not found', 404);
+  }
+
+  let resolvedVisibility = MESSAGE_VISIBILITY.CLIENT;
+  if (asStaff && visibility) {
+    if (!MESSAGE_VISIBILITY_VALUES.includes(visibility)) {
+      throw new AppError('Invalid message visibility', 400);
+    }
+    resolvedVisibility = visibility;
   }
 
   let conversation = await Conversation.findOne({ workProject: projectId });
@@ -346,6 +408,7 @@ export async function addProjectMessage({ projectId, user, body, asStaff }) {
     workProject: projectId,
     sender: user._id,
     body,
+    visibility: resolvedVisibility,
     readBy: [user._id],
   });
 
@@ -353,20 +416,25 @@ export async function addProjectMessage({ projectId, user, body, asStaff }) {
     workProject: projectId,
     actor: user._id,
     type: 'NEW_MESSAGE',
-    message: 'New project message',
+    message:
+      resolvedVisibility === MESSAGE_VISIBILITY.INTERNAL
+        ? 'Internal note added'
+        : 'New project message',
   });
 
-  const recipientId = asStaff ? project.client : project.assignees?.[0];
-  if (recipientId) {
-    await createNotification({
-      userId: recipientId,
-      type: NOTIFICATION_TYPES.NEW_MESSAGE,
-      title: 'New project message',
-      body: body.slice(0, 120),
-      link: asStaff ? `/admin/work-projects/${projectId}` : `/dashboard/projects/${projectId}`,
-      resourceType: 'Message',
-      resourceId: message._id,
-    });
+  if (resolvedVisibility === MESSAGE_VISIBILITY.CLIENT) {
+    const recipientId = asStaff ? project.client : project.assignees?.[0];
+    if (recipientId) {
+      await createNotification({
+        userId: recipientId,
+        type: NOTIFICATION_TYPES.NEW_MESSAGE,
+        title: 'New project message',
+        body: body.slice(0, 120),
+        link: asStaff ? `/admin/work-projects/${projectId}` : `/dashboard/projects/${projectId}`,
+        resourceType: 'Message',
+        resourceId: message._id,
+      });
+    }
   }
 
   return Message.findById(message._id).populate('sender', 'name email role');

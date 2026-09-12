@@ -19,3 +19,6 @@ export { Conversation, Message } from './Conversation.js';
 export { Notification } from './Notification.js';
 export { EmailVerificationToken } from './EmailVerificationToken.js';
 export { Activity } from './Activity.js';
+export { Quotation } from './Quotation.js';
+export { Payment } from './Payment.js';
+export { Deliverable } from './Deliverable.js';

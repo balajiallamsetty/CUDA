@@ -191,15 +191,21 @@ export default function HomePage() {
 
       <section className="py-20">
         <div className="mx-auto max-w-container px-4 sm:px-6">
-          <p className="eyebrow">More from Vignak</p>
-          <h2>Additional services when you need them.</h2>
+          <p className="eyebrow">All services</p>
+          <h2>Beyond Project Assistance.</h2>
+          <p className="lead mt-2 max-w-2xl">
+            Explore the catalog for web, AI, campus, events, and business delivery — same account, same platform.
+          </p>
+          <div className="mt-8">
+            <Button as={Link} to="/services" size="lg">Browse all services</Button>
+          </div>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {[
-              { title: 'Web & digital', text: 'Sites and applications for teams beyond academic projects.', to: '/solutions' },
-              { title: 'Customized experiences', text: 'Gifts and conference kits for events and campuses.', to: '/customized' },
+              { title: 'Web & digital', text: 'Sites and applications for teams beyond academic projects.', to: '/services/web-development' },
+              { title: 'AI solutions', text: 'Custom AI systems with measured results — no invented accuracy claims.', to: '/services/ai-solutions' },
               { title: 'Vignak Talks', text: 'Sessions on technology, careers, and practical building.', to: '/talks' },
             ].map((item) => (
-              <Link key={item.to} to={item.to} className="rounded-2xl border border-line-soft bg-white p-6 shadow-soft hover:border-accent/30">
+              <Link key={item.to} to={item.to} className="border-b border-line-soft pb-4 hover:border-accent/40">
                 <h3 className="!font-sans !text-lg">{item.title}</h3>
                 <p className="mt-2 text-sm">{item.text}</p>
               </Link>

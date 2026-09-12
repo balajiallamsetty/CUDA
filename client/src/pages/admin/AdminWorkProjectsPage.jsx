@@ -5,7 +5,7 @@ import * as api from '../../services/api';
 import Button from '../../components/ui/Button';
 import { Loading } from '../../components/ui/Loading';
 import { ErrorState } from '../../components/ui/States';
-import DataTable from '../../components/admin/DataTable';
+import DataTable from '../../components/ui/DataTable';
 import styles from './AdminPages.module.css';
 
 export default function AdminWorkProjectsPage() {

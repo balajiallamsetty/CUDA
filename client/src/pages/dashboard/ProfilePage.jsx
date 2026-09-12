@@ -6,6 +6,7 @@ import { Input, Select } from '../../components/ui/Field';
 import PageMeta from '../../components/common/PageMeta';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../components/ui/Toast';
+import { CUSTOMER_TYPE_VALUES, CUSTOMER_TYPE_LABELS, CUSTOMER_TYPES } from '@vignak/shared';
 
 export default function ProfilePage() {
   const { user, refresh } = useAuth();
@@ -17,6 +18,7 @@ export default function ProfilePage() {
     institution: user?.institution || '',
     course: user?.course || '',
     year: user?.year || '',
+    customerType: user?.customerType || CUSTOMER_TYPES.STUDENT,
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -76,6 +78,11 @@ export default function ProfilePage() {
       </p>
       <form className="grid max-w-xl gap-4 rounded-2xl border border-line-soft bg-white p-6 shadow-soft" onSubmit={onSubmit}>
         <Input label="Name" name="name" value={form.name} onChange={onChange} required />
+        <Select label="Customer type" name="customerType" value={form.customerType} onChange={onChange}>
+          {CUSTOMER_TYPE_VALUES.map((t) => (
+            <option key={t} value={t}>{CUSTOMER_TYPE_LABELS[t]}</option>
+          ))}
+        </Select>
         <Input label="Phone" name="phone" value={form.phone} onChange={onChange} />
         <Input label="Institution" name="institution" value={form.institution} onChange={onChange} />
         <Input label="Course" name="course" value={form.course} onChange={onChange} />

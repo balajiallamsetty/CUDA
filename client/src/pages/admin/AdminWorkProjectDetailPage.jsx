@@ -16,13 +16,23 @@ export default function AdminWorkProjectDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [visibility, setVisibility] = useState('CLIENT');
   const [taskTitle, setTaskTitle] = useState('');
   const [file, setFile] = useState(null);
+  const [deliverableTitle, setDeliverableTitle] = useState('');
+  const [paymentAmount, setPaymentAmount] = useState('');
+  const [deliverables, setDeliverables] = useState([]);
 
   function load() {
     setLoading(true);
-    api.getAdminWorkProject(id)
-      .then((res) => setBundle(res.data))
+    Promise.all([
+      api.getAdminWorkProject(id),
+      api.getAdminProjectDeliverables(id).catch(() => ({ data: [] })),
+    ])
+      .then(([res, deliv]) => {
+        setBundle(res.data);
+        setDeliverables(deliv.data || []);
+      })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }
@@ -57,10 +67,36 @@ export default function AdminWorkProjectDetailPage() {
 
   async function sendMessage() {
     try {
-      await api.postAdminProjectMessage(id, message);
+      await api.postAdminProjectMessage(id, message, visibility);
       setMessage('');
-      push('Message sent.', 'success');
+      push(visibility === 'INTERNAL' ? 'Internal note saved.' : 'Message sent.', 'success');
       load();
+    } catch (err) {
+      push(err.message, 'error');
+    }
+  }
+
+  async function submitDeliverable() {
+    try {
+      await api.createAdminDeliverable(id, { title: deliverableTitle, submit: true, type: 'file' });
+      setDeliverableTitle('');
+      push('Deliverable submitted to client.', 'success');
+      load();
+    } catch (err) {
+      push(err.message, 'error');
+    }
+  }
+
+  async function recordPayment() {
+    try {
+      await api.recordAdminPayment({
+        workProject: id,
+        amount: Number(paymentAmount) || 0,
+        status: 'PAID',
+        method: 'admin_recorded',
+      });
+      setPaymentAmount('');
+      push('Payment recorded.', 'success');
     } catch (err) {
       push(err.message, 'error');
     }
@@ -139,14 +175,42 @@ export default function AdminWorkProjectDetailPage() {
       </section>
 
       <section className={styles.panel}>
-        <h2>Messages</h2>
+        <h2>Messages & internal notes</h2>
         <ul>
           {messages.map((m) => (
-            <li key={m._id}><strong>{m.sender?.name}:</strong> {m.body}</li>
+            <li key={m._id}>
+              <strong>{m.sender?.name}</strong>
+              {m.visibility === 'INTERNAL' ? ' (internal)' : ''}: {m.body}
+            </li>
           ))}
         </ul>
-        <Textarea label="Reply" value={message} onChange={(e) => setMessage(e.target.value)} />
+        <Select label="Visibility" value={visibility} onChange={(e) => setVisibility(e.target.value)}>
+          <option value="CLIENT">Client-visible</option>
+          <option value="INTERNAL">Internal note</option>
+        </Select>
+        <Textarea label="Message" value={message} onChange={(e) => setMessage(e.target.value)} />
         <Button onClick={sendMessage} disabled={!message.trim()}>Send</Button>
+      </section>
+
+      <section className={styles.panel}>
+        <h2>Deliverables</h2>
+        <ul>
+          {deliverables.map((d) => (
+            <li key={d._id}>{d.title} · v{d.version} · {d.status}</li>
+          ))}
+        </ul>
+        <div className={styles.actions}>
+          <Input label="Deliverable title" value={deliverableTitle} onChange={(e) => setDeliverableTitle(e.target.value)} />
+          <Button onClick={submitDeliverable} disabled={!deliverableTitle.trim()}>Submit to client</Button>
+        </div>
+      </section>
+
+      <section className={styles.panel}>
+        <h2>Record payment</h2>
+        <div className={styles.actions}>
+          <Input label="Amount" type="number" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} />
+          <Button onClick={recordPayment} disabled={!paymentAmount}>Record paid</Button>
+        </div>
       </section>
     </div>
   );

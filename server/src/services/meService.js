@@ -3,7 +3,7 @@ import { AppError } from '../middleware/errorHandler.js';
 import { pickFields } from '../utils/safeQuery.js';
 import { writeAuditLog } from './auditService.js';
 
-const PROFILE_FIELDS = ['name', 'phone', 'institution', 'course', 'year'];
+const PROFILE_FIELDS = ['name', 'phone', 'institution', 'course', 'year', 'customerType'];
 
 export async function getProfile(userId) {
   const user = await User.findById(userId);
@@ -15,6 +15,18 @@ export async function updateProfile(userId, payload, meta = {}) {
   const user = await getProfile(userId);
   const data = pickFields(payload, PROFILE_FIELDS);
   Object.assign(user, data);
+  if (payload.notificationPreferences && typeof payload.notificationPreferences === 'object') {
+    user.notificationPreferences = {
+      email:
+        typeof payload.notificationPreferences.email === 'boolean'
+          ? payload.notificationPreferences.email
+          : user.notificationPreferences?.email !== false,
+      inApp:
+        typeof payload.notificationPreferences.inApp === 'boolean'
+          ? payload.notificationPreferences.inApp
+          : user.notificationPreferences?.inApp !== false,
+    };
+  }
   await user.save();
   await writeAuditLog({
     action: 'USER_PROFILE_UPDATED',

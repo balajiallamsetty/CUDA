@@ -16,7 +16,7 @@ beforeAll(async () => {
   process.env.MONGODB_URI = mongo.getUri();
   await mongoose.connect(process.env.MONGODB_URI);
   app = createApp();
-});
+}, 180000);
 
 afterAll(async () => {
   await mongoose.disconnect();
@@ -130,5 +130,133 @@ describe('Part 1 platform workflow', () => {
     const updated = await sales.patch(`/api/admin/leads/${leadId}`).send({ assignedTo: staff._id.toString() });
     expect(updated.status).toBe(200);
     expect(updated.body.data.assignedTo).toBeTruthy();
+  });
+});
+
+describe('Part 2 multi-service ecosystem', () => {
+  it('lists catalog services and rejects inactive service requests', async () => {
+    const catalog = await request(app).get('/api/catalog/services');
+    expect(catalog.status).toBe(200);
+    expect(catalog.body.data.length).toBeGreaterThanOrEqual(13);
+
+    await createUser({ email: 'admin2@example.com', password: 'StrongPassword123!', role: ROLES.ADMIN });
+    const admin = await loginAgent('admin2@example.com', 'StrongPassword123!');
+    await admin.patch('/api/admin/service-definitions/joy-box').send({ active: false });
+
+    await request(app).post('/api/auth/register').send({
+      name: 'Biz',
+      email: 'biz@example.com',
+      password: 'StrongPassword123!',
+      passwordConfirm: 'StrongPassword123!',
+      customerType: 'BUSINESS',
+    });
+    const biz = request.agent(app);
+    await biz.post('/api/auth/login').send({ email: 'biz@example.com', password: 'StrongPassword123!' });
+
+    const denied = await biz.post('/api/auth/me/service-requests').send({
+      serviceSlug: SERVICE_SLUGS.JOY_BOX,
+      title: 'Joy box order',
+      description: 'Need 20 boxes',
+      packageType: 'Standard',
+      quantity: '20',
+    });
+    expect(denied.status).toBe(400);
+  });
+
+  it('quotation → approve → convert path and IDOR on deliverables/payments/internal notes', async () => {
+    await request(app).post('/api/auth/register').send({
+      name: 'Client A',
+      email: 'clienta@example.com',
+      password: 'StrongPassword123!',
+      passwordConfirm: 'StrongPassword123!',
+      customerType: 'BUSINESS',
+    });
+    await request(app).post('/api/auth/register').send({
+      name: 'Client B',
+      email: 'clientb@example.com',
+      password: 'StrongPassword123!',
+      passwordConfirm: 'StrongPassword123!',
+    });
+    await createUser({ email: 'ops@example.com', password: 'StrongPassword123!', role: ROLES.ADMIN });
+
+    const clientA = request.agent(app);
+    await clientA.post('/api/auth/login').send({ email: 'clienta@example.com', password: 'StrongPassword123!' });
+    const clientB = await loginAgent('clientb@example.com', 'StrongPassword123!');
+    const admin = await loginAgent('ops@example.com', 'StrongPassword123!');
+
+    const created = await clientA.post('/api/auth/me/service-requests').send({
+      serviceSlug: SERVICE_SLUGS.WEB_DEVELOPMENT,
+      title: 'Marketing site',
+      description: 'Need a company website with CMS.',
+      organization: 'Acme',
+    });
+    expect(created.status).toBe(201);
+    const requestId = created.body.data._id;
+
+    const directConvert = await admin.post(`/api/admin/service-requests/${requestId}/convert`);
+    expect(directConvert.status).toBe(400);
+
+    const quote = await admin.post(`/api/admin/service-requests/${requestId}/quotations`).send({
+      send: true,
+      lineItems: [{ description: 'Website build', quantity: 1, unitAmount: 50000, amount: 50000 }],
+    });
+    expect(quote.status).toBe(201);
+    const quoteId = quote.body.data._id;
+
+    const stolenQuote = await clientB.get(`/api/auth/me/quotations/${quoteId}`);
+    expect(stolenQuote.status).toBe(404);
+
+    const approved = await clientA.post(`/api/auth/me/quotations/${quoteId}/approve`);
+    expect(approved.status).toBe(200);
+
+    let projectId;
+    const afterApprove = await admin.get(`/api/admin/service-requests/${requestId}`);
+    if (afterApprove.body.data.workProject) {
+      projectId = afterApprove.body.data.workProject._id || afterApprove.body.data.workProject;
+    } else {
+      const converted = await admin.post(`/api/admin/service-requests/${requestId}/convert`);
+      expect(converted.status).toBe(201);
+      projectId = converted.body.data._id;
+    }
+    expect(projectId).toBeTruthy();
+
+    const deliv = await admin.post(`/api/admin/work-projects/${projectId}/deliverables`).send({
+      title: 'Staging URL',
+      submit: true,
+      type: 'staging',
+    });
+    expect(deliv.status).toBe(201);
+    const delivId = deliv.body.data._id;
+
+    const stolenDeliv = await clientB.get(`/api/auth/me/deliverables/${delivId}`);
+    expect(stolenDeliv.status).toBe(404);
+
+    const approveDeliv = await clientA.post(`/api/auth/me/deliverables/${delivId}/approve`);
+    expect(approveDeliv.status).toBe(200);
+
+    const pay = await admin.post('/api/admin/payments').send({
+      workProject: projectId,
+      amount: 25000,
+      status: 'PAID',
+    });
+    expect(pay.status).toBe(201);
+    const payId = pay.body.data._id;
+    const stolenPay = await clientB.get(`/api/auth/me/payments/${payId}`);
+    expect(stolenPay.status).toBe(404);
+
+    await admin.post(`/api/admin/work-projects/${projectId}/messages`).send({
+      body: 'Internal margin note',
+      visibility: 'INTERNAL',
+    });
+    await admin.post(`/api/admin/work-projects/${projectId}/messages`).send({
+      body: 'Hello client',
+      visibility: 'CLIENT',
+    });
+
+    const bundle = await clientA.get(`/api/auth/me/work-projects/${projectId}`);
+    expect(bundle.status).toBe(200);
+    const bodies = (bundle.body.data.messages || []).map((m) => m.body);
+    expect(bodies).toContain('Hello client');
+    expect(bodies).not.toContain('Internal margin note');
   });
 });

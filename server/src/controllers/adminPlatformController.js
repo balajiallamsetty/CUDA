@@ -117,6 +117,7 @@ export async function postWorkProjectMessage(req, res, next) {
       user: req.user,
       body: req.body.body,
       asStaff: true,
+      visibility: req.body.visibility,
     });
     res.status(201).json({ success: true, data: message });
   } catch (err) {

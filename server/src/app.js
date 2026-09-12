@@ -13,6 +13,7 @@ import contactRoutes from './routes/contactRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import publicContentRoutes from './routes/publicContentRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 import swaggerUi from 'swagger-ui-express';
 import { openApiSpec } from './config/openapi.js';
 
@@ -75,6 +76,7 @@ export function createApp() {
   app.use('/api/contact', contactRoutes);
   app.use('/api/auth', authRoutes);
   app.use('/api/admin', adminRoutes);
+  app.use('/api/payments', paymentRoutes);
   app.use('/api', publicContentRoutes);
 
   app.use(notFoundHandler);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ROLE_VALUES, ROLES } from '@vignak/shared';
+import { ROLE_VALUES, ROLES, CUSTOMER_TYPE_VALUES, CUSTOMER_TYPE_LABELS } from '@vignak/shared';
 import * as api from '../../services/api';
 import Button from '../../components/ui/Button';
 import DataTable from '../../components/ui/DataTable';
@@ -88,12 +88,38 @@ export default function AdminUsersPage() {
               { key: 'email', label: 'Email' },
               { key: 'role', label: 'Role', render: (r) => <Badge>{r.role}</Badge> },
               {
+                key: 'customerType',
+                label: 'Customer',
+                render: (r) => (r.role === ROLES.USER ? (CUSTOMER_TYPE_LABELS[r.customerType] || r.customerType || 'Student') : '—'),
+              },
+              {
                 key: 'isActive',
                 label: 'Status',
                 render: (r) => (
-                  <Button size="sm" variant="secondary" onClick={(e) => { e.stopPropagation(); toggleActive(r); }}>
-                    {r.isActive ? 'Active' : 'Disabled'}
-                  </Button>
+                  <div className={styles.actions}>
+                    {r.role === ROLES.USER && (
+                      <Select
+                        label="Type"
+                        value={r.customerType || 'STUDENT'}
+                        onChange={async (e) => {
+                          try {
+                            await api.updateAdminUser(r.id || r._id, { customerType: e.target.value });
+                            push('Customer type updated.', 'success');
+                            load(meta?.page || 1);
+                          } catch (err) {
+                            push(err.message, 'error');
+                          }
+                        }}
+                      >
+                        {CUSTOMER_TYPE_VALUES.map((t) => (
+                          <option key={t} value={t}>{CUSTOMER_TYPE_LABELS[t]}</option>
+                        ))}
+                      </Select>
+                    )}
+                    <Button size="sm" variant="secondary" onClick={(e) => { e.stopPropagation(); toggleActive(r); }}>
+                      {r.isActive ? 'Active' : 'Disabled'}
+                    </Button>
+                  </div>
                 ),
               },
             ]}

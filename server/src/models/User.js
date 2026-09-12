@@ -1,6 +1,14 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-import { ROLE_VALUES, ROLES } from '@vignak/shared';
+import { ROLE_VALUES, ROLES, CUSTOMER_TYPE_VALUES, CUSTOMER_TYPES } from '@vignak/shared';
+
+const notificationPreferencesSchema = new mongoose.Schema(
+  {
+    email: { type: Boolean, default: true },
+    inApp: { type: Boolean, default: true },
+  },
+  { _id: false },
+);
 
 const userSchema = new mongoose.Schema(
   {
@@ -19,6 +27,16 @@ const userSchema = new mongoose.Schema(
       enum: ROLE_VALUES,
       default: ROLES.USER,
       index: true,
+    },
+    customerType: {
+      type: String,
+      enum: CUSTOMER_TYPE_VALUES,
+      default: CUSTOMER_TYPES.STUDENT,
+      index: true,
+    },
+    notificationPreferences: {
+      type: notificationPreferencesSchema,
+      default: () => ({ email: true, inApp: true }),
     },
     phone: { type: String, trim: true, maxlength: 30 },
     institution: { type: String, trim: true, maxlength: 160 },
@@ -46,6 +64,8 @@ userSchema.methods.toSafeObject = function toSafeObject() {
     name: this.name,
     email: this.email,
     role: this.role,
+    customerType: this.customerType || CUSTOMER_TYPES.STUDENT,
+    notificationPreferences: this.notificationPreferences || { email: true, inApp: true },
     phone: this.phone || '',
     institution: this.institution || '',
     course: this.course || '',
