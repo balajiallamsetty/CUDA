@@ -69,7 +69,7 @@ export default function NewRequestPage() {
       <div className="mb-6 max-w-2xl rounded-xl border border-accent/20 bg-accent-soft/60 p-4 text-sm text-ink">
         <p className="m-0 font-semibold">You are submitting a service request — not starting the project yet.</p>
         <p className="mt-2 mb-0 text-slate-vignak">
-          Vignak reviews your request first. After it is accepted, your project workspace appears under Projects
+          CUDA Solutions reviews your request first. After it is accepted, your project workspace appears under Projects
           with milestones, documents, and messages.
         </p>
       </div>

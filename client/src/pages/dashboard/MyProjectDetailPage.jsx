@@ -158,7 +158,7 @@ export default function MyProjectDetailPage() {
           <ul className="grid gap-2">
             {documents.length === 0 && (
               <p className="text-sm text-muted">
-                No documents shared yet. This tab is the authoritative place for project files once Vignak starts delivery.
+                No documents shared yet. This tab is the authoritative place for project files once CUDA Solutions starts delivery.
               </p>
             )}
             {documents.map((d) => (

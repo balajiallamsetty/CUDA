@@ -85,7 +85,7 @@ export default function StartProjectPage() {
     <>
       <PageMeta
         title="General Inquiry"
-        description="Send a general inquiry to Vignak Solutions. For tracked Project Assistance, create an account and submit a service request."
+        description="Send a general inquiry to CUDA Solutions. For tracked Project Assistance, create an account and submit a service request."
         path="/start-project"
       />
       <section className="page-hero">
@@ -107,7 +107,7 @@ export default function StartProjectPage() {
               <h3>Inquiry received</h3>
               <p className="font-semibold text-ink">This is a general inquiry (not tracked).</p>
               <p>
-                Thank you. A Vignak team member will follow up using your preferred contact method. You will not see this inquiry in your dashboard.
+                Thank you. A CUDA Solutions team member will follow up using your preferred contact method. You will not see this inquiry in your dashboard.
               </p>
               <div className="mt-4 flex flex-wrap gap-3">
                 <Button as={Link} to="/register">Create account</Button>

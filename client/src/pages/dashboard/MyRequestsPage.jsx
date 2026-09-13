@@ -33,7 +33,7 @@ export default function MyRequestsPage() {
           <div className="mt-3 max-w-2xl rounded-xl border border-accent/20 bg-accent-soft/50 p-4 text-sm text-ink">
             <p className="m-0 font-semibold">Request status is intake status — not development progress.</p>
             <p className="mt-2 mb-0 text-slate-vignak">
-              A project workspace appears under Projects only after Vignak accepts a request. Until then, track review status here.
+              A project workspace appears under Projects only after CUDA Solutions accepts a request. Until then, track review status here.
             </p>
           </div>
         </div>

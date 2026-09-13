@@ -39,7 +39,7 @@ export default function MyRequestDetailPage() {
           <p className="mt-1 text-xs text-muted">Reference: VGN-{shortId}</p>
           <p className="mt-3 mb-1 text-sm font-semibold">What happens next?</p>
           <ol className="m-0 list-decimal space-y-1 pl-5 text-sm text-slate-vignak">
-            <li>Vignak reviews your request.</li>
+            <li>CUDA Solutions reviews your request.</li>
             <li>Our team may contact you if clarification is needed.</li>
             <li>Once accepted, your project workspace appears under Projects.</li>
           </ol>
@@ -86,7 +86,7 @@ export default function MyRequestDetailPage() {
           <Button as={Link} to="/dashboard/support" variant="secondary">Get help</Button>
         </div>
         <p className="mt-4 text-sm text-muted">
-          Documents and messages appear on your project after Vignak accepts this request.
+          Documents and messages appear on your project after CUDA Solutions accepts this request.
         </p>
       </div>
     </div>
