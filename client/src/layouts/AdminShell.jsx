@@ -47,7 +47,7 @@ export default function AdminShell() {
     <div className={styles.shell}>
       <aside className={`${styles.sidebar} ${open ? styles.sidebarOpen : ''}`}>
         <div className={styles.brand}>
-          <Link to="/admin/dashboard" onClick={() => setOpen(false)}>Vignak Admin</Link>
+          <Link to="/admin/dashboard" onClick={() => setOpen(false)}>CUDA Admin</Link>
         </div>
         <nav className={styles.nav} aria-label="Admin">
           {links.map((item) => (

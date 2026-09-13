@@ -10,12 +10,12 @@ export default function AboutPage() {
     <>
       <PageMeta
         title="About"
-        description="Learn about Vignak Solutions — connecting technology with human progress through digital systems and meaningful conversations."
+        description="Learn about CUDA Solutions — connecting technology with human progress through digital systems and meaningful conversations."
         path="/about"
       />
       <section className="page-hero">
         <Container>
-          <p className="eyebrow">About Vignak</p>
+          <p className="eyebrow">About CUDA Solutions</p>
           <h1>A company built to connect technology with human progress.</h1>
           <p className="lead">
             Today our primary focus is Project Assistance for B.Tech, B.E., and M.Tech students. We also support

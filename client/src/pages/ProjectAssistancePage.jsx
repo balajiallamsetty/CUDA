@@ -16,7 +16,7 @@ export default function ProjectAssistancePage() {
     <>
       <PageMeta
         title="Project Assistance for B.Tech & M.Tech Students"
-        description="Final-year B.Tech, B.E., and M.Tech project assistance — guidance, development support, documentation, and demo preparation from Vignak Solutions."
+        description="Final-year B.Tech, B.E., and M.Tech project assistance — guidance, development support, documentation, and demo preparation from CUDA Solutions."
         path="/project-assistance"
       />
 

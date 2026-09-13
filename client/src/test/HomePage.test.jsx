@@ -25,7 +25,7 @@ describe('HomePage', () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText('Vignak Solutions')).toBeInTheDocument();
+    expect(screen.getByText('CUDA Solutions')).toBeInTheDocument();
     expect(
       screen.getByRole('heading', {
         name: /turn your project idea into a working technical project/i,

@@ -1,58 +1,63 @@
+import { SITE } from '../../constants/site';
+
 /**
- * Vignak wordmark + mark (SVG). Centralized for light/dark use.
+ * Brand logo — official PNG crops from the CUDA branding sheet (public/brand/).
  */
+const BRAND_IMAGES_READY = true;
+
+const BRAND = {
+  dark: '/brand/logo-horizontal.png',
+  light: '/brand/logo-horizontal-on-dark.png',
+  mark: '/brand/mark.png',
+};
+
 export default function Logo({
   variant = 'wordmark',
   tone = 'dark',
   className = '',
 }) {
   const ink = tone === 'light' ? '#ffffff' : '#0B0F19';
-  const accent = tone === 'light' ? '#67E8F9' : '#4F46E5';
+
+  if (BRAND_IMAGES_READY) {
+    const src = variant === 'mark'
+      ? BRAND.mark
+      : (tone === 'light' ? BRAND.light : BRAND.dark);
+    return (
+      <span className={`inline-flex items-center ${className}`}>
+        <img
+          src={src}
+          alt={SITE.legalName}
+          width={variant === 'mark' ? 32 : undefined}
+          height={variant === 'mark' ? 32 : undefined}
+          className={
+            variant === 'mark'
+              ? 'h-8 w-8 object-contain'
+              : 'h-8 w-auto max-w-[180px] object-contain object-left'
+          }
+        />
+      </span>
+    );
+  }
 
   if (variant === 'mark') {
     return (
-      <svg
-        className={className}
-        width="32"
-        height="32"
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
+      <span
+        className={`inline-flex h-8 w-8 items-center justify-center rounded-md text-sm font-bold ${className}`}
+        style={{ background: ink === '#ffffff' ? 'rgba(255,255,255,0.15)' : '#0B0F19', color: tone === 'light' ? '#67E8F9' : '#4F46E5' }}
         aria-hidden="true"
       >
-        <rect width="32" height="32" rx="8" fill={ink} />
-        <path
-          d="M8 22V10h3.2l4.3 8.4L19.8 10H23v12h-2.6v-7.2L16.1 22h-1.7l-4.3-7.2V22H8z"
-          fill={accent}
-        />
-        <circle cx="24.5" cy="8.5" r="2" fill={accent} />
-      </svg>
+        {SITE.name.charAt(0)}
+      </span>
     );
   }
 
   return (
-    <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <rect width="32" height="32" rx="8" fill={ink} />
-        <path
-          d="M8 22V10h3.2l4.3 8.4L19.8 10H23v12h-2.6v-7.2L16.1 22h-1.7l-4.3-7.2V22H8z"
-          fill={accent}
-        />
-        <circle cx="24.5" cy="8.5" r="2" fill={accent} />
-      </svg>
-      <span
-        className="font-semibold tracking-tight text-[1.15rem]"
-        style={{ color: ink }}
-      >
-        Vignak
-      </span>
+    <span
+      className={`inline-flex items-center font-semibold tracking-tight text-[1.15rem] ${className}`}
+      style={{ color: ink }}
+      aria-label={SITE.legalName}
+    >
+      {SITE.name}
     </span>
   );
 }

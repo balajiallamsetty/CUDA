@@ -10,12 +10,40 @@ export const NAV_LINKS = [
   { label: 'Contact', to: '/contact' },
 ];
 
+/** Single source of truth for company branding & contact (update here only). */
 export const SITE = {
-  name: 'Vignak',
-  legalName: 'Vignak Solutions',
-  tagline: 'Project assistance for B.Tech and M.Tech students.',
-  email: 'hello@vignak.solutions',
+  name: 'CUDA',
+  legalName: 'CUDA Solutions',
+  tagline: 'Where Ideas Become Excellence.',
+  email: 'cudasolutionstech@gmail.com',
+  phone: '+91 78427 04429',
+  whatsapp: '+91 78427 04429',
+  website: '[INSERT OFFICIAL WEBSITE]',
+  address: 'Vadlamudi',
+  city: 'Guntur',
+  state: 'Andhra Pradesh',
+  country: 'India',
+  pinCode: '522213',
+  instagram: 'https://www.instagram.com/cudasolutions/#',
+  linkedin: 'https://www.linkedin.com/in/cuda-solutions-23ba23436/',
 };
+
+/** tel: / WhatsApp helpers (digits only for wa.me). */
+export function siteTelHref(phone = SITE.phone) {
+  const digits = String(phone).replace(/[^\d+]/g, '');
+  return `tel:${digits}`;
+}
+
+export function siteWhatsAppHref(phone = SITE.whatsapp) {
+  const digits = String(phone).replace(/\D/g, '');
+  return `https://wa.me/${digits}`;
+}
+
+export function siteFullAddress() {
+  return [SITE.address, SITE.city, SITE.state, SITE.pinCode, SITE.country]
+    .filter(Boolean)
+    .join(', ');
+}
 
 const STUDENT_TYPES = new Set([CUSTOMER_TYPES.STUDENT]);
 

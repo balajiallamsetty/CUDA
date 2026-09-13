@@ -46,7 +46,7 @@ export default function PortfolioPage() {
     <>
       <PageMeta
         title="Portfolio"
-        description="Sample project directions and published work from Vignak Solutions project assistance."
+        description="Sample project directions and published work from CUDA Solutions project assistance."
         path="/portfolio"
       />
       <section className="page-hero">
@@ -56,7 +56,7 @@ export default function PortfolioPage() {
           <p className="lead mt-3">
             {usingPlaceholders
               ? 'Illustrative samples for marketing — replace with published case studies when ready.'
-              : 'Published projects from Vignak.'}
+              : 'Published projects from CUDA Solutions.'}
           </p>
         </div>
       </section>

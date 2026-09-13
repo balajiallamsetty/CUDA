@@ -46,7 +46,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-accent-panel px-4 py-16">
-      <PageMeta title="Log in" description="Log in to your Vignak student account." path="/login" />
+      <PageMeta title="Log in" description="Log in to your CUDA Solutions account." path="/login" />
       <div className="mx-auto max-w-md rounded-2xl border border-line-soft bg-white p-8 shadow-card">
         <Logo className="mb-6" />
         <p className="eyebrow">Account</p>

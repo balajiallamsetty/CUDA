@@ -24,7 +24,7 @@ describe('Navbar', () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText('Vignak')).toBeInTheDocument();
+    expect(screen.getByAltText(/CUDA Solutions/i)).toBeInTheDocument();
     expect(screen.getByRole('navigation', { name: 'Primary' })).toBeVisible();
     expect(screen.getAllByText('Start Your Project').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Project Assistance').length).toBeGreaterThan(0);

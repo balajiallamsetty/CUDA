@@ -48,7 +48,7 @@ export default function HomePage() {
     <>
       <PageMeta
         title="Project Assistance for B.Tech & M.Tech"
-        description="Vignak Solutions helps B.Tech, B.E., and M.Tech students with project guidance, development assistance, documentation, and demo preparation."
+        description="CUDA Solutions helps B.Tech, B.E., and M.Tech students with project guidance, development assistance, documentation, and demo preparation."
         path="/"
       />
 
@@ -143,7 +143,7 @@ export default function HomePage() {
               <h2>Sample project directions</h2>
               <p className="lead mt-2">
                 {cmsProjects.length > 0
-                  ? 'Published work from Vignak.'
+                  ? 'Published work from CUDA Solutions.'
                   : 'Illustrative placeholders until published case studies are available.'}
               </p>
             </div>
@@ -203,7 +203,7 @@ export default function HomePage() {
             {[
               { title: 'Web & digital', text: 'Sites and applications for teams beyond academic projects.', to: '/services/web-development' },
               { title: 'AI solutions', text: 'Custom AI systems with measured results — no invented accuracy claims.', to: '/services/ai-solutions' },
-              { title: 'Vignak Talks', text: 'Sessions on technology, careers, and practical building.', to: '/talks' },
+              { title: 'Talks', text: 'Sessions on technology, careers, and practical building.', to: '/talks' },
             ].map((item) => (
               <Link key={item.to} to={item.to} className="border-b border-line-soft pb-3 hover:border-accent/40">
                 <h3 className="!font-sans !text-lg">{item.title}</h3>
@@ -217,7 +217,7 @@ export default function HomePage() {
 
       <section className="border-y border-line-soft bg-accent-panel py-14">
         <div className="mx-auto max-w-container px-4 sm:px-6">
-          <p className="eyebrow">Why Vignak</p>
+          <p className="eyebrow">Why CUDA Solutions</p>
           <h2>Structured help without over-promising outcomes.</h2>
           <div className="mt-6 grid gap-4 md:grid-cols-3">
             {[

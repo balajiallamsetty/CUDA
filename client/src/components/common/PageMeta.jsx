@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { SITE } from '../../constants/site';
 
 function upsertMeta(attr, key, content) {
   if (!content) return;
@@ -15,10 +16,13 @@ export default function PageMeta({
   title,
   description,
   path = '/',
-  image = '/favicon.svg',
+  image = '/favicon.png',
 }) {
   useEffect(() => {
-    const fullTitle = title.includes('Vignak') ? title : `${title} | Vignak Solutions`;
+    const brand = SITE.legalName;
+    const fullTitle = title.includes(SITE.name) || title.includes(brand)
+      ? title
+      : `${title} | ${brand}`;
     document.title = fullTitle;
     upsertMeta('name', 'description', description);
     upsertMeta('property', 'og:title', fullTitle);

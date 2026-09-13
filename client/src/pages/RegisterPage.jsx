@@ -45,7 +45,7 @@ export default function RegisterPage() {
     setSubmitting(true);
     try {
       await register(form);
-      push('Account created. Welcome to Vignak.', 'success');
+      push('Account created. Welcome to CUDA Solutions.', 'success');
       const dest = buildPostAuthPath({
         next,
         service: service || SERVICE_SLUGS.PROJECT_ASSISTANCE,
@@ -66,7 +66,7 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-accent-panel px-4 py-16">
       <PageMeta
         title="Create Account"
-        description="Create a Vignak account to submit project assistance requests and track status."
+        description="Create a CUDA Solutions account to submit project assistance requests and track status."
         path="/register"
       />
       <div className="mx-auto max-w-xl rounded-2xl border border-line-soft bg-white p-8 shadow-card">

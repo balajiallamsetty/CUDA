@@ -26,7 +26,7 @@ export default function ComingSoonPage() {
     <>
       <PageMeta
         title="Coming soon"
-        description="This Vignak service is being prepared. Project Assistance and Web Development are available now."
+        description="This CUDA Solutions service is being prepared. Project Assistance and Web Development are available now."
         path="/services/coming-soon"
       />
       <section className="border-b border-line-soft bg-gradient-to-br from-accent-panel via-white to-cyan-50/40 py-20">

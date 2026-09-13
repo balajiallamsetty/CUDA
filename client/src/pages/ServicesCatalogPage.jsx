@@ -25,7 +25,7 @@ export default function ServicesCatalogPage() {
     <>
       <PageMeta
         title="Services"
-        description="Project Assistance and the full Vignak service catalog — web, AI, campus, events, and more."
+        description="Project Assistance and the full CUDA Solutions service catalog — web, AI, campus, events, and more."
         path="/services"
       />
       <section className="border-b border-line-soft bg-gradient-to-br from-accent-panel via-white to-cyan-50/40 py-16">

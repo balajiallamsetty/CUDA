@@ -39,7 +39,7 @@ export default function AdminLoginPage() {
       <div style={{ padding: '4rem 0' }}>
         <p className="eyebrow">Admin</p>
         <h1>Sign in</h1>
-        <p className="lead">Staff access for the Vignak operations dashboard.</p>
+        <p className="lead">Staff access for the CUDA Solutions operations dashboard.</p>
         <form className="stack" onSubmit={onSubmit} style={{ marginTop: '1.5rem' }}>
           <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
           <Input label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />

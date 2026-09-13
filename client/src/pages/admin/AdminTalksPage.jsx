@@ -30,7 +30,7 @@ export default function AdminTalksPage() {
     <div>
       <header className={styles.header}>
         <div>
-          <h1>Vignak Talks</h1>
+          <h1>Talks</h1>
           <p className={styles.sub}>Manage talks, speakers, and registrations.</p>
         </div>
         <Button as={Link} to="/admin/talks/new">New talk</Button>

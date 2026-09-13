@@ -32,7 +32,7 @@ export default function AdminDashboardPage() {
       <header className={styles.header}>
         <div>
           <h1>Dashboard</h1>
-          <p className={styles.sub}>Operational snapshot for the Vignak team.</p>
+          <p className={styles.sub}>Operational snapshot for the CUDA Solutions team.</p>
         </div>
         <Link to="/admin/leads" className={styles.quickLink}>Review leads</Link>
       </header>

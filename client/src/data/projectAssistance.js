@@ -1,6 +1,6 @@
 export const PROJECT_ASSISTANCE = {
   hero: {
-    brand: 'Vignak Solutions',
+    brand: 'CUDA Solutions',
     headline: 'Turn your project idea into a working technical project.',
     support:
       'Technical guidance, development assistance, documentation support, and demo preparation for B.Tech, B.E., and M.Tech students.',
@@ -43,7 +43,7 @@ export const PROJECT_ASSISTANCE = {
   faqs: [
     {
       q: 'What is Project Assistance?',
-      a: 'Vignak helps students plan, build, document, and present technical academic projects with guidance and development support — not guaranteed grades or college approvals.',
+      a: 'CUDA Solutions helps students plan, build, document, and present technical academic projects with guidance and development support — not guaranteed grades or college approvals.',
     },
     {
       q: 'Who is it for?',
@@ -59,7 +59,7 @@ export const PROJECT_ASSISTANCE = {
     },
   ],
   ecosystemNote:
-    'Project Assistance is our focus today. Vignak continues to grow other services and future ecosystem products — introduced carefully when ready.',
+    'Project Assistance is our focus today. CUDA Solutions continues to grow other services and future ecosystem products — introduced carefully when ready.',
 };
 
 export const STUDENT_STATUS_LABELS = {

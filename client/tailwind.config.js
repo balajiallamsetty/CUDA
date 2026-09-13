@@ -40,7 +40,7 @@ export default {
         display: ['"Instrument Serif"', 'Georgia', 'serif'],
       },
       maxWidth: {
-        container: '1120px',
+        container: '1440px',
       },
       boxShadow: {
         soft: '0 1px 2px rgba(11, 15, 25, 0.06)',

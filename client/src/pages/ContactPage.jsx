@@ -7,7 +7,7 @@ import { Input, Textarea } from '../components/ui/Field';
 import { useToast } from '../components/ui/Toast';
 import { createContact } from '../services/api';
 import { validateEmail, validateRequired } from '../utils/validation';
-import { SITE } from '../constants/site';
+import { SITE, siteFullAddress, siteTelHref, siteWhatsAppHref } from '../constants/site';
 import PageMeta from '../components/common/PageMeta';
 
 const initial = {
@@ -78,9 +78,19 @@ export default function ContactPage() {
           <p className="eyebrow">Contact</p>
           <h1>Tell us what you are working on.</h1>
           <p className="lead">
-            Reach the Vignak team for project questions, partnerships, or Vignak Talks. Prefer a structured brief? Use Start a Project.
+            Reach the {SITE.legalName} team for project questions, partnerships, or Talks. Prefer a structured brief? Use Start a Project.
           </p>
-          <p className="muted">{SITE.email}</p>
+          <div className="mt-4 grid gap-1 text-sm text-muted">
+            <p className="m-0">
+              <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+            </p>
+            <p className="m-0">
+              <a href={siteTelHref()}>{SITE.phone}</a>
+              {' · '}
+              <a href={siteWhatsAppHref()} target="_blank" rel="noreferrer">WhatsApp</a>
+            </p>
+            <p className="m-0">{siteFullAddress()}</p>
+          </div>
         </Container>
       </section>
       <Section>
