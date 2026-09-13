@@ -47,7 +47,7 @@ export default function HomePage() {
   return (
     <>
       <PageMeta
-        title="Project Assistance for B.Tech & M.Tech"
+        title="CUDA Solutions"
         description="CUDA Solutions helps B.Tech, B.E., and M.Tech students with project guidance, development assistance, documentation, and demo preparation."
         path="/"
       />
