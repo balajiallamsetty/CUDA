@@ -1,0 +1,170 @@
+{
+  "base": "http://127.0.0.1:5173",
+  "routes": [
+    {
+      "route": "/",
+      "url": "chrome-error://chromewebdata/",
+      "status": 0,
+      "title": "",
+      "h1": null,
+      "pageErrors": [],
+      "verdict": "FAIL"
+    },
+    {
+      "route": "/about",
+      "url": "chrome-error://chromewebdata/",
+      "status": 0,
+      "title": "",
+      "h1": null,
+      "pageErrors": [],
+      "verdict": "FAIL"
+    },
+    {
+      "route": "/solutions",
+      "url": "chrome-error://chromewebdata/",
+      "status": 0,
+      "title": "",
+      "h1": null,
+      "pageErrors": [],
+      "verdict": "FAIL"
+    },
+    {
+      "route": "/solutions/web-services",
+      "url": "http://127.0.0.1:5173/solutions/web-services",
+      "status": 200,
+      "title": "Web Services | Vignak Solutions",
+      "h1": "Websites and applications that represent you accurately.",
+      "pageErrors": [],
+      "verdict": "PASS"
+    },
+    {
+      "route": "/solutions/custom-digital-solutions",
+      "url": "chrome-error://chromewebdata/",
+      "status": 0,
+      "title": "",
+      "h1": null,
+      "pageErrors": [],
+      "verdict": "FAIL"
+    },
+    {
+      "route": "/customized",
+      "url": "chrome-error://chromewebdata/",
+      "status": 0,
+      "title": "",
+      "h1": null,
+      "pageErrors": [],
+      "verdict": "FAIL"
+    },
+    {
+      "route": "/customized/gifts",
+      "url": "chrome-error://chromewebdata/",
+      "status": 0,
+      "title": "",
+      "h1": null,
+      "pageErrors": [],
+      "verdict": "FAIL"
+    },
+    {
+      "route": "/customized/conference-kits",
+      "url": "chrome-error://chromewebdata/",
+      "status": 0,
+      "title": "",
+      "h1": null,
+      "pageErrors": [],
+      "verdict": "FAIL"
+    },
+    {
+      "route": "/talks",
+      "url": "chrome-error://chromewebdata/",
+      "status": 0,
+      "title": "",
+      "h1": null,
+      "pageErrors": [],
+      "verdict": "FAIL"
+    },
+    {
+      "route": "/portfolio",
+      "url": "chrome-error://chromewebdata/",
+      "status": 0,
+      "title": "",
+      "h1": null,
+      "pageErrors": [],
+      "verdict": "FAIL"
+    },
+    {
+      "route": "/contact",
+      "url": "chrome-error://chromewebdata/",
+      "status": 0,
+      "title": "",
+      "h1": null,
+      "pageErrors": [],
+      "verdict": "FAIL"
+    },
+    {
+      "route": "/start-project",
+      "url": "chrome-error://chromewebdata/",
+      "status": 0,
+      "title": "",
+      "h1": null,
+      "pageErrors": [],
+      "verdict": "FAIL"
+    },
+    {
+      "route": "/privacy",
+      "url": "http://127.0.0.1:5173/privacy",
+      "status": 200,
+      "title": "Privacy Policy | Vignak Solutions",
+      "h1": "Privacy Policy",
+      "pageErrors": [],
+      "verdict": "PASS"
+    },
+    {
+      "route": "/terms",
+      "url": "http://127.0.0.1:5173/terms",
+      "status": 200,
+      "title": "Terms of Use | Vignak Solutions",
+      "h1": "Terms of Use",
+      "pageErrors": [],
+      "verdict": "PASS"
+    },
+    {
+      "route": "/admin/login",
+      "url": "http://127.0.0.1:5173/admin/login",
+      "status": 200,
+      "title": "Vignak Solutions",
+      "h1": "Sign in",
+      "pageErrors": [],
+      "verdict": "PASS"
+    },
+    {
+      "route": "/admin/forgot-password",
+      "url": "http://127.0.0.1:5173/admin/forgot-password",
+      "status": 200,
+      "title": "Vignak Solutions",
+      "h1": "Forgot password",
+      "pageErrors": [],
+      "verdict": "PASS"
+    },
+    {
+      "route": "/admin/dashboard",
+      "url": "http://127.0.0.1:5173/admin/login",
+      "status": 200,
+      "title": "Vignak Solutions",
+      "h1": "Sign in",
+      "pageErrors": [],
+      "verdict": "PASS"
+    },
+    {
+      "route": "/this-route-should-404",
+      "url": "http://127.0.0.1:5173/this-route-should-404",
+      "status": 200,
+      "title": "Page not found | Vignak Solutions",
+      "h1": "Page not found",
+      "pageErrors": [],
+      "verdict": "PASS"
+    }
+  ],
+  "navFooterLinks": [],
+  "portfolioRendersWithoutApiGuarantee": "PARTIAL — content may be API or static fallback; cannot distinguish without network interception",
+  "skipLinkPresent": "FAIL"
+}
