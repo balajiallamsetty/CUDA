@@ -55,7 +55,17 @@ export const createLeadValidators = [
 export const registerValidators = [
   body('name').trim().notEmpty().withMessage('Name is required').isLength({ max: 120 }),
   body('email').trim().isEmail().withMessage('Valid email is required').normalizeEmail(),
-  body('password').isLength({ min: 12, max: 128 }).withMessage('Password must be at least 12 characters'),
+  body('password')
+    .isLength({ min: 8, max: 128 })
+    .withMessage('Password must be at least 8 characters')
+    .matches(/[A-Z]/)
+    .withMessage('Password must include an uppercase letter')
+    .matches(/[a-z]/)
+    .withMessage('Password must include a lowercase letter')
+    .matches(/[0-9]/)
+    .withMessage('Password must include a number')
+    .matches(/[^A-Za-z0-9]/)
+    .withMessage('Password must include a special character'),
   body('passwordConfirm').optional().isString(),
   body('phone').optional({ checkFalsy: true }).trim().isLength({ max: 30 }),
   body('institution').optional({ checkFalsy: true }).trim().isLength({ max: 160 }),

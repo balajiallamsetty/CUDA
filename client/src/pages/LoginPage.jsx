@@ -60,9 +60,6 @@ export default function LoginPage() {
         <p className="mt-4 text-sm text-muted">
           New here? <Link className="font-semibold text-accent" to={registerLink}>Create an account</Link>
         </p>
-        <p className="mt-2 text-sm text-muted">
-          Staff? <Link className="font-semibold text-accent" to="/admin/login">Admin sign in</Link>
-        </p>
       </div>
     </div>
   );

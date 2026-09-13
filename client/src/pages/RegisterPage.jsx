@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { CUSTOMER_TYPE_VALUES, CUSTOMER_TYPE_LABELS, CUSTOMER_TYPES, SERVICE_SLUGS } from '@vignak/shared';
 import Button from '../components/ui/Button';
@@ -21,6 +21,18 @@ const initial = {
   customerType: CUSTOMER_TYPES.STUDENT,
 };
 
+const PASSWORD_RULES = [
+  { id: 'length', label: 'At least 8 characters', test: (p) => p.length >= 8 },
+  { id: 'upper', label: 'One uppercase letter (A–Z)', test: (p) => /[A-Z]/.test(p) },
+  { id: 'lower', label: 'One lowercase letter (a–z)', test: (p) => /[a-z]/.test(p) },
+  { id: 'number', label: 'One number (0–9)', test: (p) => /[0-9]/.test(p) },
+  { id: 'special', label: 'One special character', test: (p) => /[^A-Za-z0-9]/.test(p) },
+];
+
+function passwordMeetsPolicy(password) {
+  return PASSWORD_RULES.every((rule) => rule.test(password));
+}
+
 export default function RegisterPage() {
   const { register } = useAuth();
   const { push } = useToast();
@@ -31,6 +43,12 @@ export default function RegisterPage() {
   const [form, setForm] = useState(initial);
   const [submitting, setSubmitting] = useState(false);
 
+  const passwordChecks = useMemo(
+    () => PASSWORD_RULES.map((rule) => ({ ...rule, ok: rule.test(form.password) })),
+    [form.password],
+  );
+  const strengthScore = passwordChecks.filter((c) => c.ok).length;
+
   function onChange(e) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -40,6 +58,10 @@ export default function RegisterPage() {
     e.preventDefault();
     if (form.password !== form.passwordConfirm) {
       push('Passwords do not match.', 'error');
+      return;
+    }
+    if (!passwordMeetsPolicy(form.password)) {
+      push('Password must be at least 8 characters and include uppercase, lowercase, a number, and a special character.', 'error');
       return;
     }
     setSubmitting(true);
@@ -91,8 +113,33 @@ export default function RegisterPage() {
             <option value="M.Tech">M.Tech</option>
             <option value="Other">Other</option>
           </Select>
-          <Input label="Password" type="password" name="password" value={form.password} onChange={onChange} required hint="At least 12 characters" />
+          <Input
+            label="Password"
+            type="password"
+            name="password"
+            value={form.password}
+            onChange={onChange}
+            required
+            hint="8+ characters with upper, lower, number, and special character"
+          />
           <Input label="Confirm password" type="password" name="passwordConfirm" value={form.passwordConfirm} onChange={onChange} required />
+          <div className="sm:col-span-2 space-y-2" aria-live="polite">
+            <div className="h-1.5 overflow-hidden rounded-full bg-line-soft">
+              <div
+                className={`h-full transition-all ${
+                  strengthScore <= 2 ? 'bg-red-500' : strengthScore <= 4 ? 'bg-amber-500' : 'bg-emerald-600'
+                }`}
+                style={{ width: `${(strengthScore / PASSWORD_RULES.length) * 100}%` }}
+              />
+            </div>
+            <ul className="grid gap-1 text-xs text-muted sm:grid-cols-2">
+              {passwordChecks.map((check) => (
+                <li key={check.id} className={check.ok ? 'text-emerald-700' : undefined}>
+                  {check.ok ? '✓' : '○'} {check.label}
+                </li>
+              ))}
+            </ul>
+          </div>
           <div className="sm:col-span-2">
             <Button type="submit" disabled={submitting} className="w-full sm:w-auto">
               {submitting ? 'Creating account…' : 'Create Account'}
