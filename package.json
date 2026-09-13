@@ -15,6 +15,7 @@
     "dev:client": "npm run client",
     "dev:server": "npm run server",
     "build": "npm run build -w client",
+    "start": "npm run start -w server",
     "test": "npm run test -w server && npm run test -w client",
     "test:server": "npm run test -w server",
     "test:client": "npm run test -w client",
@@ -28,6 +29,7 @@
     "concurrently": "^9.1.2"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20",
+    "npm": ">=10"
   }
 }

@@ -31,11 +31,29 @@ npm run build          # Vite client → client/dist
 npm run lint
 npm test
 # serve API
-NODE_ENV=production npm run start -w server
-# serve client/dist behind HTTPS (nginx, Cloudflare, etc.)
+NODE_ENV=production npm start
+# serve client/dist behind HTTPS (nginx, Cloudflare, Render Static, etc.)
 ```
 
 API and SPA may be reverse-proxied on the same origin (`/api` → Express) or split with `VITE_API_URL` + CORS `CLIENT_URL`.
+
+## Render
+
+See [`render.yaml`](../render.yaml). This is an **npm workspaces monorepo** (`client`, `server`, `shared`).
+
+| Setting | Value |
+|---------|--------|
+| **Root Directory** | *(blank — repository root)* — **never** `server` |
+| **Build Command** | `npm ci && npm run build` |
+| **Start Command** (API) | `npm start` |
+| **Node** | `20` (`NODE_VERSION=20` or `.node-version`) |
+
+Why Root Directory must not be `server`: the API is plain Express JavaScript (no compile step). Running `npm run build` inside `server/` fails with `Missing script: "build"`. Installs must also run from the repo root so `@vignak/shared` resolves.
+
+Typical split deploy:
+
+1. **Web Service** (`vignak-api`) — build + `npm start` (Express listens on `PORT`, host `0.0.0.0` in production).
+2. **Static Site** (`vignak-web`) — same build; publish `client/dist`. Set `VITE_API_URL` to the API origin at build time. Set API `CLIENT_URL` to the Static Site origin (CORS + cookies).
 
 ## Staging gate
 
