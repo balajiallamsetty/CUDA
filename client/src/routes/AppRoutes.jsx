@@ -121,6 +121,9 @@ export default function AppRoutes() {
           <Route path="support" element={<SupportPage />} />
         </Route>
 
+        {/* Public staff entry: typed /%admin → soft-hyphen or literal-% pathname */}
+        <Route path={"/\u00ADmin"} element={<AdminLoginPage />} />
+        <Route path="/%admin" element={<AdminLoginPage />} />
         <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route path="/admin/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/admin/reset-password" element={<ResetPasswordPage />} />
