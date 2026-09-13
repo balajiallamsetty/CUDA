@@ -22,7 +22,8 @@
     "test:e2e": "npx playwright test",
     "lint": "npm run lint -w client && npm run lint -w server",
     "seed:admin": "npm run seed:admin -w server",
-    "seed:content": "npm run seed:content -w server"
+    "seed:content": "npm run seed:content -w server",
+    "db:cleanup-users": "npm run db:cleanup-users -w server"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",

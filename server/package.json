@@ -10,7 +10,8 @@
     "test": "node --experimental-vm-modules ../node_modules/jest/bin/jest.js --runInBand --forceExit",
     "lint": "eslint src",
     "seed:admin": "node src/utils/seedAdmin.js",
-    "seed:content": "node src/utils/seedContent.js"
+    "seed:content": "node src/utils/seedContent.js",
+    "db:cleanup-users": "node src/utils/cleanupUsers.js"
   },
   "dependencies": {
     "@eslint/js": "^9.39.5",
