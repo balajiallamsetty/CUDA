@@ -5,12 +5,13 @@ import react from '@vitejs/plugin-react';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const sharedRoot = path.resolve(__dirname, '../shared');
+const sharedEntry = path.resolve(sharedRoot, 'index.js');
 
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@vignak/shared': sharedRoot,
+      '@vignak/shared': sharedEntry,
     },
   },
   server: {
