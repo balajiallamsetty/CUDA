@@ -9,6 +9,7 @@ import ProtectedRoute from '../components/auth/ProtectedRoute';
 import { PERMISSIONS } from '@vignak/shared';
 
 const ServicesCatalogPage = lazy(() => import('../pages/ServicesCatalogPage'));
+const ComingSoonPage = lazy(() => import('../pages/ComingSoonPage'));
 const ServiceDetailPage = lazy(() => import('../pages/ServiceDetailPage'));
 const HomePage = lazy(() => import('../pages/HomePage'));
 const ProjectAssistancePage = lazy(() => import('../pages/ProjectAssistancePage'));
@@ -76,6 +77,7 @@ export default function AppRoutes() {
           <Route path="project-assistance/domains/:domainId" element={<DomainLandingPage />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="services" element={<ServicesCatalogPage />} />
+          <Route path="services/coming-soon" element={<ComingSoonPage />} />
           <Route path="services/:slug" element={<ServiceDetailPage />} />
           <Route path="solutions" element={<Navigate to="/services" replace />} />
           <Route path="solutions/web-services" element={<Navigate to="/services/web-development" replace />} />

@@ -6,6 +6,7 @@ import { Loading } from '../components/ui/Loading';
 import { ErrorState } from '../components/ui/States';
 import * as api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { isLiveService } from '../constants/liveServices';
 
 export default function ServiceDetailPage() {
   const { slug } = useParams();
@@ -26,9 +27,15 @@ export default function ServiceDetailPage() {
   if (error) return <div className="p-12"><ErrorState description={error} /></div>;
   if (!svc) return null;
 
+  const live = isLiveService(svc.slug);
+  // Restore for all services: always use requestTo below and drop the Coming soon branch.
+  // const requestTo = user
+  //   ? `/dashboard/requests/new?service=${svc.slug}`
+  //   : `/register?next=/dashboard/requests/new&service=${svc.slug}`;
   const requestTo = user
     ? `/dashboard/requests/new?service=${svc.slug}`
     : `/register?next=/dashboard/requests/new&service=${svc.slug}`;
+  const comingSoonTo = `/services/coming-soon?service=${encodeURIComponent(svc.slug)}`;
 
   return (
     <>
@@ -39,9 +46,15 @@ export default function ServiceDetailPage() {
           <h1 className="mt-2 max-w-3xl !text-white">{svc.title}</h1>
           <p className="mt-4 max-w-2xl text-lg text-white/80">{svc.summary}</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button as={Link} to={requestTo} variant="inverse" size="lg">
-              {svc.ctaLabel || 'Request this service'}
-            </Button>
+            {live ? (
+              <Button as={Link} to={requestTo} variant="inverse" size="lg">
+                {svc.ctaLabel || 'Request this service'}
+              </Button>
+            ) : (
+              <Button as={Link} to={comingSoonTo} variant="inverse" size="lg">
+                Coming soon
+              </Button>
+            )}
             <Button as={Link} to="/services" variant="outlineInverse" size="lg">All services</Button>
           </div>
         </div>

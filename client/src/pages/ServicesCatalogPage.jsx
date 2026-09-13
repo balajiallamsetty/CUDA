@@ -6,6 +6,7 @@ import { Loading } from '../components/ui/Loading';
 import { ErrorState, EmptyState } from '../components/ui/States';
 import * as api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { isLiveService } from '../constants/liveServices';
 
 export default function ServicesCatalogPage() {
   const { user } = useAuth();
@@ -44,25 +45,38 @@ export default function ServicesCatalogPage() {
             <EmptyState title="No services published" description="Check back soon." />
           )}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {items.map((svc) => (
-              <article key={svc.slug} className="flex flex-col border-b border-line-soft pb-6">
-                <p className="text-xs font-semibold uppercase tracking-wide text-accent">{svc.category || 'Service'}</p>
-                <h2 className="mt-1 !font-sans !text-xl">{svc.title}</h2>
-                <p className="mt-2 flex-1 text-sm text-muted">{svc.summary}</p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Button as={Link} to={`/services/${svc.slug}`} size="sm" variant="secondary">
-                    Learn more
-                  </Button>
-                  <Button
-                    as={Link}
-                    to={user ? `/dashboard/requests/new?service=${svc.slug}` : `/register?next=/dashboard/requests/new&service=${svc.slug}`}
-                    size="sm"
-                  >
-                    {svc.ctaLabel || 'Request'}
-                  </Button>
-                </div>
-              </article>
-            ))}
+            {items.map((svc) => {
+              const live = isLiveService(svc.slug);
+              // Restore live request for all services: remove the Coming soon branch and use:
+              // to={user ? `/dashboard/requests/new?service=${svc.slug}` : `/register?next=/dashboard/requests/new&service=${svc.slug}`}
+              // label={svc.ctaLabel || 'Request'}
+              const requestTo = user
+                ? `/dashboard/requests/new?service=${svc.slug}`
+                : `/register?next=/dashboard/requests/new&service=${svc.slug}`;
+              const comingSoonTo = `/services/coming-soon?service=${encodeURIComponent(svc.slug)}`;
+
+              return (
+                <article key={svc.slug} className="flex flex-col border-b border-line-soft pb-6">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-accent">{svc.category || 'Service'}</p>
+                  <h2 className="mt-1 !font-sans !text-xl">{svc.title}</h2>
+                  <p className="mt-2 flex-1 text-sm text-muted">{svc.summary}</p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Button as={Link} to={`/services/${svc.slug}`} size="sm" variant="secondary">
+                      Learn more
+                    </Button>
+                    {live ? (
+                      <Button as={Link} to={requestTo} size="sm">
+                        {svc.ctaLabel || 'Request'}
+                      </Button>
+                    ) : (
+                      <Button as={Link} to={comingSoonTo} size="sm">
+                        Coming soon
+                      </Button>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
