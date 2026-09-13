@@ -41,7 +41,7 @@ export default function AdminWorkProjectsPage() {
       <header className={styles.header}>
         <div>
           <h1>Work projects</h1>
-          <p className={styles.sub}>Active Project Assistance delivery work orders.</p>
+          <p className={styles.sub}>Active Project Assistance client projects.</p>
         </div>
       </header>
       {loading && <Loading />}

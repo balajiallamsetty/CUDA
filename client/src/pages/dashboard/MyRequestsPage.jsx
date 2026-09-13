@@ -29,8 +29,13 @@ export default function MyRequestsPage() {
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="eyebrow">Service requests</p>
-          <h1 className="!text-3xl">My project requests</h1>
-          <p className="text-sm text-muted">Request status is intake status — not development progress.</p>
+          <h1 className="!text-3xl">My requests</h1>
+          <div className="mt-3 max-w-2xl rounded-xl border border-accent/20 bg-accent-soft/50 p-4 text-sm text-ink">
+            <p className="m-0 font-semibold">Request status is intake status — not development progress.</p>
+            <p className="mt-2 mb-0 text-slate-vignak">
+              A project workspace appears under Projects only after Vignak accepts a request. Until then, track review status here.
+            </p>
+          </div>
         </div>
         <Button as={Link} to="/dashboard/requests/new">New request</Button>
       </div>

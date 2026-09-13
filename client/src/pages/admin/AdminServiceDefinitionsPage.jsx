@@ -163,15 +163,26 @@ export default function AdminServiceDefinitionsPage() {
                 <option value="1">Yes</option>
               </Select>
               <Textarea
-                label="Milestones (title|weight|stage per line)"
+                label="Milestones"
                 value={form.milestonesText}
                 onChange={(e) => setForm({ ...form, milestonesText: e.target.value })}
+                hint="One milestone per line. Format: title|weight|stage — example: Kickoff|10|intake"
               />
+              <p className="text-sm text-muted" style={{ marginTop: '-0.5rem' }}>
+                Example lines:<br />
+                Scope lock|15|planning<br />
+                Core build|40|build<br />
+                Demo prep|20|delivery
+              </p>
               <Textarea
-                label="Request fields (key|label|type|required 0/1)"
+                label="Request fields"
                 value={form.fieldsText}
                 onChange={(e) => setForm({ ...form, fieldsText: e.target.value })}
+                hint="One field per line. Format: key|label|type|required(0/1) — example: title|Project title|text|1"
               />
+              <p className="text-sm text-muted" style={{ marginTop: '-0.5rem' }}>
+                Common types: text, textarea, pa_domain, tags, timeline, date. Required flag is 1 or 0.
+              </p>
               <Button onClick={save}>Save service</Button>
               <Link to={`/services/${selected.slug}`}>View public page</Link>
             </div>

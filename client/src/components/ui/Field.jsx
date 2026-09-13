@@ -10,7 +10,7 @@ export function Input({ label, id, error, hint, className = '', ...props }) {
         }`}
         {...props}
       />
-      {hint && !error && <span className="text-xs text-muted">{hint}</span>}
+      {hint && !error && <span className="text-sm text-muted">{hint}</span>}
       {error && <span className="text-xs text-danger">{error}</span>}
     </label>
   );
@@ -28,7 +28,7 @@ export function Textarea({ label, id, error, hint, className = '', ...props }) {
         }`}
         {...props}
       />
-      {hint && !error && <span className="text-xs text-muted">{hint}</span>}
+      {hint && !error && <span className="text-sm text-muted">{hint}</span>}
       {error && <span className="text-xs text-danger">{error}</span>}
     </label>
   );
@@ -48,7 +48,7 @@ export function Select({ label, id, error, hint, children, className = '', ...pr
       >
         {children}
       </select>
-      {hint && !error && <span className="text-xs text-muted">{hint}</span>}
+      {hint && !error && <span className="text-sm text-muted">{hint}</span>}
       {error && <span className="text-xs text-danger">{error}</span>}
     </label>
   );

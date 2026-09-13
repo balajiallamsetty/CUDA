@@ -27,7 +27,7 @@ export default function Button({
 }) {
   const classes = [
     'inline-flex items-center justify-center gap-2 rounded-md font-semibold transition duration-150',
-    'disabled:opacity-55 disabled:cursor-not-allowed disabled:transform-none',
+    'disabled:cursor-not-allowed disabled:transform-none disabled:opacity-60 disabled:bg-line-soft disabled:text-muted disabled:border disabled:border-line disabled:shadow-none',
     'hover:enabled:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40',
     variants[variant] || variants.primary,
     sizes[size] || sizes.md,

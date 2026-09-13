@@ -42,13 +42,14 @@ export default function NewRequestPage() {
   async function onSubmit(body) {
     setSubmitting(true);
     try {
-      await api.createMyServiceRequest({
+      const res = await api.createMyServiceRequest({
         ...body,
         serviceSlug,
         customerType: user?.customerType,
       });
+      const id = res.data?._id || res.data?.id;
       push('Request submitted. We will review it shortly.', 'success');
-      navigate('/dashboard/requests');
+      navigate(id ? `/dashboard/requests/${id}` : '/dashboard/requests');
     } catch (err) {
       push(err.message || 'Unable to submit request', 'error');
     } finally {
@@ -62,9 +63,16 @@ export default function NewRequestPage() {
   return (
     <div>
       <PageMeta title="New request" path="/dashboard/requests/new" />
-      <p className="eyebrow">New request</p>
+      <p className="eyebrow">Tracked service request</p>
       <h1 className="!text-3xl">{svc?.title || 'Service request'}</h1>
-      <p className="lead mb-6">{svc?.summary || 'Share your requirements.'}</p>
+      <p className="lead mb-2">{svc?.summary || 'Share your requirements.'}</p>
+      <div className="mb-6 max-w-2xl rounded-xl border border-accent/20 bg-accent-soft/60 p-4 text-sm text-ink">
+        <p className="m-0 font-semibold">You are submitting a service request — not starting the project yet.</p>
+        <p className="mt-2 mb-0 text-slate-vignak">
+          Vignak reviews your request first. After it is accepted, your project workspace appears under Projects
+          with milestones, documents, and messages.
+        </p>
+      </div>
       <ServiceRequestForm
         fields={fields}
         initialValues={initialValues}

@@ -50,6 +50,9 @@ export default function DeliverablesPage() {
       <PageMeta title="Deliverables" path="/dashboard/deliverables" />
       <p className="eyebrow">Delivery</p>
       <h1 className="!text-3xl">Deliverables</h1>
+      <p className="lead mb-4 max-w-2xl text-sm">
+        Files or outputs submitted for your approval. Project documents still live on each project&apos;s Documents tab after work starts.
+      </p>
       {loading && <Loading />}
       {error && <ErrorState description={error} onRetry={load} />}
       {!loading && !error && !items.length && (

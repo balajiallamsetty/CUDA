@@ -76,7 +76,8 @@ export default function ProjectAssistancePage() {
 
       <section className="border-y border-line-soft bg-white py-16">
         <div className="mx-auto max-w-container px-4 sm:px-6">
-          <h2>What students receive</h2>
+          <h2>{pa.deliverablesHeading || 'What you receive'}</h2>
+          {pa.deliverablesIntro && <p className="lead mt-2 max-w-2xl">{pa.deliverablesIntro}</p>}
           <ul className="mt-6 grid gap-2 sm:grid-cols-2">
             {pa.deliverables.map((item) => (
               <li key={item} className="rounded-lg bg-accent-soft/60 px-4 py-3 text-sm font-medium text-ink">{item}</li>
@@ -129,7 +130,7 @@ export default function ProjectAssistancePage() {
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Button as={Link} to={cta} variant="inverse">Create Account / Submit</Button>
-            <Button as={Link} to="/start-project" variant="outlineInverse">Public inquiry form</Button>
+            <Button as={Link} to="/start-project" variant="outlineInverse">General inquiry (not tracked)</Button>
           </div>
         </div>
       </section>

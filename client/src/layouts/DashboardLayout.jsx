@@ -1,18 +1,34 @@
+import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, Navigate } from 'react-router-dom';
 import { isStaffRole } from '@vignak/shared';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/ui/Button';
 import Logo from '../components/brand/Logo';
 import { dashboardNavForUser } from '../constants/site';
+import * as api from '../services/api';
 
 export default function DashboardLayout() {
   const { user, logout } = useAuth();
+  const [overview, setOverview] = useState(null);
+
+  useEffect(() => {
+    if (!user || isStaffRole(user.role)) return undefined;
+    let cancelled = false;
+    api.getMyOverview()
+      .then((res) => {
+        if (!cancelled) setOverview(res.data);
+      })
+      .catch(() => {
+        if (!cancelled) setOverview(null);
+      });
+    return () => { cancelled = true; };
+  }, [user]);
 
   if (user && isStaffRole(user.role)) {
     return <Navigate to="/admin/dashboard" replace />;
   }
 
-  const links = dashboardNavForUser(user);
+  const links = dashboardNavForUser(user, overview);
 
   return (
     <div className="min-h-screen bg-surface">
@@ -34,13 +50,18 @@ export default function DashboardLayout() {
                 key={link.to}
                 to={link.to}
                 end={link.end}
+                title={link.hint}
+                aria-description={link.hint}
                 className={({ isActive }) =>
                   `rounded-md px-3 py-2.5 text-sm font-semibold ${
                     isActive ? 'bg-accent-soft text-accent-hover' : 'text-slate-vignak hover:bg-line-soft'
                   }`
                 }
               >
-                {link.label}
+                <span className="block">{link.label}</span>
+                {link.hint && (
+                  <span className="mt-0.5 block text-[11px] font-medium leading-snug text-muted">{link.hint}</span>
+                )}
               </NavLink>
             ))}
           </nav>

@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   LEAD_SERVICE_VALUES,
   ORGANIZATION_TYPE_VALUES,
   CONTACT_METHOD_VALUES,
   BUDGET_RANGES,
   TIMELINE_OPTIONS,
+  SERVICE_SLUGS,
 } from '@vignak/shared';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
@@ -15,6 +17,7 @@ import { useToast } from '../components/ui/Toast';
 import { createLead } from '../services/api';
 import { validateEmail, validateRequired } from '../utils/validation';
 import PageMeta from '../components/common/PageMeta';
+import { useAuth } from '../context/AuthContext';
 
 const initial = {
   name: '',
@@ -32,6 +35,7 @@ const initial = {
 
 export default function StartProjectPage() {
   const { push } = useToast();
+  const { user } = useAuth();
   const [form, setForm] = useState(initial);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -58,7 +62,7 @@ export default function StartProjectPage() {
       await createLead(form);
       setDone(true);
       setForm(initial);
-      push('Project inquiry submitted.', 'success');
+      push('General inquiry submitted.', 'success');
     } catch (err) {
       if (err.details) {
         const mapped = {};
@@ -73,20 +77,27 @@ export default function StartProjectPage() {
     }
   }
 
+  const trackedTo = user
+    ? `/dashboard/requests/new?service=${SERVICE_SLUGS.PROJECT_ASSISTANCE}`
+    : `/register?next=${encodeURIComponent('/dashboard/requests/new')}&service=${SERVICE_SLUGS.PROJECT_ASSISTANCE}`;
+
   return (
     <>
       <PageMeta
-        title="Start a Project"
-        description="Share your project brief with Vignak Solutions — websites, custom apps, gifts, kits, and talks."
+        title="General Inquiry"
+        description="Send a general inquiry to Vignak Solutions. For tracked Project Assistance, create an account and submit a service request."
         path="/start-project"
       />
       <section className="page-hero">
         <Container>
-          <p className="eyebrow">Start a Project</p>
-          <h1>Share your brief. We will take it from there.</h1>
+          <p className="eyebrow">General inquiry</p>
+          <h1>Share a brief. We will follow up.</h1>
           <p className="lead">
-            Tell us about your website, application, customized materials, conference kit, event, or Vignak Talks idea.
+            This form is a general inquiry — it is not a tracked dashboard request. For Project Assistance with status updates, start a tracked request instead.
           </p>
+          <div className="mt-4">
+            <Button as={Link} to={trackedTo} variant="secondary">Start a tracked request</Button>
+          </div>
         </Container>
       </section>
       <Section>
@@ -94,8 +105,16 @@ export default function StartProjectPage() {
           {done ? (
             <Card>
               <h3>Inquiry received</h3>
-              <p>Thank you. A Vignak team member will follow up using your preferred contact method.</p>
-              <Button onClick={() => setDone(false)} variant="secondary">Submit another inquiry</Button>
+              <p className="font-semibold text-ink">This is a general inquiry (not tracked).</p>
+              <p>
+                Thank you. A Vignak team member will follow up using your preferred contact method. You will not see this inquiry in your dashboard.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Button as={Link} to="/register">Create account</Button>
+                <Button as={Link} to={trackedTo} variant="secondary">Start tracked request</Button>
+                <Button as={Link} to="/contact" variant="ghost">Contact</Button>
+              </div>
+              <Button className="mt-4" onClick={() => setDone(false)} variant="ghost">Submit another inquiry</Button>
             </Card>
           ) : (
             <form className="stack" onSubmit={onSubmit} noValidate>
@@ -166,7 +185,7 @@ export default function StartProjectPage() {
                 aria-hidden="true"
               />
               <Button type="submit" disabled={submitting}>
-                {submitting ? 'Submitting…' : 'Submit project inquiry'}
+                {submitting ? 'Submitting…' : 'Submit general inquiry'}
               </Button>
             </form>
           )}

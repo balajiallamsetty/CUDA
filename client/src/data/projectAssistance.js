@@ -4,7 +4,7 @@ export const PROJECT_ASSISTANCE = {
     headline: 'Turn your project idea into a working technical project.',
     support:
       'Technical guidance, development assistance, documentation support, and demo preparation for B.Tech, B.E., and M.Tech students.',
-    primaryCta: { label: 'Start Your Project', to: '/register' },
+    primaryCta: { label: 'Start Your Project', to: '/register?next=%2Fdashboard%2Frequests%2Fnew&service=project-assistance' },
     secondaryCta: { label: 'Explore Project Assistance', to: '/project-assistance' },
     tertiaryCta: { label: 'Create Account', to: '/register' },
   },
@@ -32,6 +32,8 @@ export const PROJECT_ASSISTANCE = {
     'Documentation structure and review',
     'Presentation and demo preparation',
   ],
+  deliverablesHeading: 'What you receive',
+  deliverablesIntro: 'Support and outputs that help you finish a working academic project — not a guaranteed grade.',
   audiences: [
     'B.Tech / B.E. 4th-year students',
     'M.Tech students',
@@ -49,7 +51,7 @@ export const PROJECT_ASSISTANCE = {
     },
     {
       q: 'Do I need an account?',
-      a: 'Creating an account lets you submit requirements and track request status. You can also start with a public inquiry form.',
+      a: 'Creating an account lets you submit requirements and track request status. You can also send a general inquiry (not tracked) if you are not ready to register yet.',
     },
     {
       q: 'What technologies do you support?',

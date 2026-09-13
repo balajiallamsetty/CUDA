@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { WORK_PROJECT_STATUS_LABELS, PA_DOMAIN_LABELS } from '@vignak/shared';
 import * as api from '../../services/api';
@@ -14,6 +14,8 @@ const TABS = ['Overview', 'Milestones', 'Tasks', 'Documents', 'Messages', 'Activ
 export default function MyProjectDetailPage() {
   const { id } = useParams();
   const { push } = useToast();
+  const tabListId = useId();
+  const tabRefs = useRef([]);
   const [tab, setTab] = useState('Overview');
   const [bundle, setBundle] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -46,11 +48,24 @@ export default function MyProjectDetailPage() {
     }
   }
 
+  function onTabKeyDown(e, index) {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft' && e.key !== 'Home' && e.key !== 'End') return;
+    e.preventDefault();
+    let next = index;
+    if (e.key === 'ArrowRight') next = (index + 1) % TABS.length;
+    if (e.key === 'ArrowLeft') next = (index - 1 + TABS.length) % TABS.length;
+    if (e.key === 'Home') next = 0;
+    if (e.key === 'End') next = TABS.length - 1;
+    setTab(TABS[next]);
+    tabRefs.current[next]?.focus();
+  }
+
   if (loading) return <Loading />;
   if (error) return <ErrorState description={error} onRetry={load} />;
   if (!bundle) return null;
 
   const { project, milestones, tasks, documents, messages, activity } = bundle;
+  const panelId = `${tabListId}-panel`;
 
   return (
     <div>
@@ -62,31 +77,55 @@ export default function MyProjectDetailPage() {
           {PA_DOMAIN_LABELS[project.domain] || project.domain} · {WORK_PROJECT_STATUS_LABELS[project.status]}
         </p>
         <div className="mt-4 h-2 overflow-hidden rounded-full bg-line-soft">
-          <div className="h-full rounded-full bg-accent-cyan" style={{ width: `${project.progress || 0}%`, background: '#06B6D4' }} />
+          <div className="h-full rounded-full bg-accent-cyan" style={{ width: `${project.progress || 0}%` }} />
         </div>
         <p className="mt-2 text-sm font-semibold">{project.progress || 0}% complete</p>
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        {TABS.map((t) => (
-          <button
-            key={t}
-            type="button"
-            onClick={() => setTab(t)}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold ${tab === t ? 'bg-accent text-white' : 'bg-line-soft'}`}
-          >
-            {t}
-          </button>
-        ))}
+      <div
+        className="mt-4 flex flex-wrap gap-2"
+        role="tablist"
+        aria-label="Project sections"
+        id={tabListId}
+      >
+        {TABS.map((t, index) => {
+          const selected = tab === t;
+          const tabId = `${tabListId}-tab-${t}`;
+          return (
+            <button
+              key={t}
+              ref={(el) => { tabRefs.current[index] = el; }}
+              id={tabId}
+              type="button"
+              role="tab"
+              aria-selected={selected}
+              aria-controls={panelId}
+              tabIndex={selected ? 0 : -1}
+              onClick={() => setTab(t)}
+              onKeyDown={(e) => onTabKeyDown(e, index)}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold ${selected ? 'bg-accent text-white' : 'bg-line-soft'}`}
+            >
+              {t}
+            </button>
+          );
+        })}
       </div>
 
-      <div className="mt-6 rounded-2xl border border-line-soft bg-white p-6 shadow-soft">
+      <div
+        className="mt-6 rounded-2xl border border-line-soft bg-white p-6 shadow-soft"
+        role="tabpanel"
+        id={panelId}
+        aria-labelledby={`${tabListId}-tab-${tab}`}
+      >
         {tab === 'Overview' && (
           <div>
             <h2 className="!font-sans !text-xl">Overview</h2>
             <p className="mt-2 whitespace-pre-wrap text-sm">{project.summary}</p>
             <p className="mt-4 text-sm text-muted">
               Assignees: {(project.assignees || []).map((a) => a.name).join(', ') || 'Pending assignment'}
+            </p>
+            <p className="mt-3 text-sm text-muted">
+              Shared project files live on the Documents tab. Deliverables for approval may also appear under Deliverables in the sidebar when available.
             </p>
           </div>
         )}
@@ -117,7 +156,11 @@ export default function MyProjectDetailPage() {
         )}
         {tab === 'Documents' && (
           <ul className="grid gap-2">
-            {documents.length === 0 && <p className="text-sm text-muted">No documents shared yet.</p>}
+            {documents.length === 0 && (
+              <p className="text-sm text-muted">
+                No documents shared yet. This tab is the authoritative place for project files once Vignak starts delivery.
+              </p>
+            )}
             {documents.map((d) => (
               <li key={d._id}>
                 <a className="font-semibold text-accent" href={api.downloadMyDocumentUrl(d._id)} target="_blank" rel="noreferrer">

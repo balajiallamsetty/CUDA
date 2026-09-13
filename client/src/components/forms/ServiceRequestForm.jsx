@@ -87,7 +87,11 @@ export default function ServiceRequestForm({
     }
     if (field.type === 'pa_domain') {
       return (
-        <Select key={field.key} {...common}>
+        <Select
+          key={field.key}
+          {...common}
+          hint="Pick the closest academic domain. You can clarify stack details in Technologies."
+        >
           <option value="">Select domain</option>
           {(PROJECT_CATEGORY_OPTIONS.length ? PROJECT_CATEGORY_OPTIONS : PA_DOMAIN_VALUES.map((v) => ({
             value: v,
@@ -99,7 +103,16 @@ export default function ServiceRequestForm({
       );
     }
     if (field.type === 'tags') {
-      return <Input key={field.key} {...common} hint="Comma-separated" />;
+      return <Input key={field.key} {...common} hint="Comma-separated tags (for example: react, mongodb, nlp)." />;
+    }
+    if (field.key === 'technologies' || field.type === 'technologies') {
+      return (
+        <Input
+          key={field.key}
+          {...common}
+          hint="Comma-separated technologies you prefer or already use (for example: React, Node.js, Python)."
+        />
+      );
     }
     if (field.type === 'date') {
       return <Input key={field.key} type="date" {...common} />;

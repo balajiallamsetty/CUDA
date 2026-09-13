@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import { SERVICE_SLUGS } from '@vignak/shared';
 import { NAV_LINKS, SITE } from '../../constants/site';
 import { useAuth } from '../../context/AuthContext';
 import Logo from '../brand/Logo';
 import Button from '../ui/Button';
+
+const startGuestTo = `/register?next=${encodeURIComponent('/dashboard/requests/new')}&service=${SERVICE_SLUGS.PROJECT_ASSISTANCE}`;
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -15,6 +18,8 @@ export default function Navbar() {
       document.body.style.overflow = '';
     };
   }, [open]);
+
+  const startTo = user ? '/dashboard/requests/new' : startGuestTo;
 
   return (
     <header className="sticky top-0 z-[100] h-[72px] border-b border-line-soft/90 bg-surface/85 backdrop-blur-md">
@@ -53,27 +58,24 @@ export default function Navbar() {
               </Button>
             </>
           ) : (
-            <>
-              <Button as={Link} to="/login" size="sm" variant="ghost" className="hidden sm:inline-flex">
-                Log in
-              </Button>
-              <Button as={Link} to="/register" size="sm" className="hidden sm:inline-flex">
-                Create Account
-              </Button>
-            </>
+            <Button as={Link} to="/login" size="sm" variant="secondary" className="hidden sm:inline-flex">
+              Log in
+            </Button>
           )}
-          <Button as={Link} to={user ? '/dashboard/requests/new' : '/register'} size="sm">
+          <Button as={Link} to={startTo} size="sm">
             Start Your Project
           </Button>
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-line bg-white lg:hidden"
+            className="inline-flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-md border border-line bg-white lg:hidden"
             aria-expanded={open}
             aria-controls="mobile-nav"
+            aria-label={open ? 'Close menu' : 'Open menu'}
             onClick={() => setOpen((v) => !v)}
           >
-            <span className="sr-only">Menu</span>
-            <span className="block h-0.5 w-4 bg-ink" />
+            <span className="block h-0.5 w-4 bg-ink" aria-hidden="true" />
+            <span className="block h-0.5 w-4 bg-ink" aria-hidden="true" />
+            <span className="block h-0.5 w-4 bg-ink" aria-hidden="true" />
           </button>
         </div>
       </div>
@@ -97,11 +99,13 @@ export default function Navbar() {
             {!user && (
               <>
                 <Button as={Link} to="/login" onClick={() => setOpen(false)} variant="secondary">Log in</Button>
-                <Button as={Link} to="/register" onClick={() => setOpen(false)}>Create Account</Button>
+                <Button as={Link} to={startGuestTo} onClick={() => setOpen(false)}>Start Your Project</Button>
+                <Button as={Link} to="/register" onClick={() => setOpen(false)} variant="ghost">Create Account</Button>
               </>
             )}
             {user && (
               <>
+                <Button as={Link} to={startTo} onClick={() => setOpen(false)}>Start Your Project</Button>
                 <Button as={Link} to={isStaff ? '/admin/dashboard' : '/dashboard'} onClick={() => setOpen(false)} variant="secondary">
                   {isStaff ? 'Admin' : 'Dashboard'}
                 </Button>

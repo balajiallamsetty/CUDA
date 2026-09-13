@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { CUSTOMER_TYPE_VALUES, CUSTOMER_TYPE_LABELS, CUSTOMER_TYPES } from '@vignak/shared';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { CUSTOMER_TYPE_VALUES, CUSTOMER_TYPE_LABELS, CUSTOMER_TYPES, SERVICE_SLUGS } from '@vignak/shared';
 import Button from '../components/ui/Button';
 import { Input, Select } from '../components/ui/Field';
 import Logo from '../components/brand/Logo';
 import PageMeta from '../components/common/PageMeta';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/ui/Toast';
+import { buildPostAuthPath } from '../utils/safeRedirect';
 
 const initial = {
   name: '',
@@ -24,6 +25,9 @@ export default function RegisterPage() {
   const { register } = useAuth();
   const { push } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const next = searchParams.get('next');
+  const service = searchParams.get('service');
   const [form, setForm] = useState(initial);
   const [submitting, setSubmitting] = useState(false);
 
@@ -42,13 +46,21 @@ export default function RegisterPage() {
     try {
       await register(form);
       push('Account created. Welcome to Vignak.', 'success');
-      navigate('/dashboard', { replace: true });
+      const dest = buildPostAuthPath({
+        next,
+        service: service || SERVICE_SLUGS.PROJECT_ASSISTANCE,
+      });
+      navigate(dest, { replace: true });
     } catch (err) {
       push(err.message || 'Registration failed', 'error');
     } finally {
       setSubmitting(false);
     }
   }
+
+  const serviceHint = service
+    ? 'After you create an account, we will take you to your selected service request form.'
+    : 'Submit a tracked service request and follow progress in your dashboard.';
 
   return (
     <div className="min-h-screen bg-accent-panel px-4 py-16">
@@ -61,7 +73,7 @@ export default function RegisterPage() {
         <Logo className="mb-6" />
         <p className="eyebrow">Get started</p>
         <h1 className="!text-3xl">Create your account</h1>
-        <p className="lead mb-6">Submit service requests and track delivery in one place.</p>
+        <p className="lead mb-6">{serviceHint}</p>
         <form className="grid gap-4 sm:grid-cols-2" onSubmit={onSubmit} noValidate>
           <Input className="sm:col-span-2" label="Full name" name="name" value={form.name} onChange={onChange} required />
           <Input className="sm:col-span-2" label="Email" type="email" name="email" value={form.email} onChange={onChange} required />
@@ -88,7 +100,13 @@ export default function RegisterPage() {
           </div>
         </form>
         <p className="mt-4 text-sm text-muted">
-          Already have an account? <Link className="font-semibold text-accent" to="/login">Log in</Link>
+          Already have an account?{' '}
+          <Link
+            className="font-semibold text-accent"
+            to={`/login${searchParams.toString() ? `?${searchParams.toString()}` : ''}`}
+          >
+            Log in
+          </Link>
         </p>
       </div>
     </div>

@@ -24,19 +24,43 @@ export default function MyRequestDetailPage() {
   if (error) return <ErrorState description={error} />;
   if (!item) return null;
 
+  const statusLabel = SERVICE_REQUEST_STATUS_LABELS[item.status] || item.status;
+  const hasProject = Boolean(item.workProject);
+  const shortId = String(item._id || id).slice(-8).toUpperCase();
+
   return (
     <div>
       <PageMeta title={item.title} path={`/dashboard/requests/${id}`} />
-      <Link className="text-sm font-semibold text-accent" to="/dashboard/requests">← Back</Link>
+      <Link className="text-sm font-semibold text-accent" to="/dashboard/requests">← Back to requests</Link>
+
+      {!hasProject && (
+        <div className="mt-4 rounded-2xl border border-accent/25 bg-accent-soft/70 p-5">
+          <p className="m-0 text-sm font-semibold text-accent-hover">Request received</p>
+          <p className="mt-1 text-xs text-muted">Reference: VGN-{shortId}</p>
+          <p className="mt-3 mb-1 text-sm font-semibold">What happens next?</p>
+          <ol className="m-0 list-decimal space-y-1 pl-5 text-sm text-slate-vignak">
+            <li>Vignak reviews your request.</li>
+            <li>Our team may contact you if clarification is needed.</li>
+            <li>Once accepted, your project workspace appears under Projects.</li>
+          </ol>
+          <p className="mt-3 mb-0 text-sm">
+            Current status: <strong>{statusLabel}</strong>
+            {' — '}
+            your project has not started yet.
+          </p>
+        </div>
+      )}
+
       <div className="mt-4 rounded-2xl border border-line-soft bg-white p-6 shadow-soft">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <h1 className="!m-0 !text-3xl">{item.title}</h1>
           <span className="rounded-full bg-accent-soft px-3 py-1 text-xs font-semibold text-accent-hover">
-            {SERVICE_REQUEST_STATUS_LABELS[item.status] || item.status}
+            {statusLabel}
           </span>
         </div>
         <p className="text-sm text-muted">
-          {PA_DOMAIN_LABELS[item.domain] || item.domain} · Project Assistance
+          {item.serviceSlug || 'project-assistance'}
+          {item.domain ? ` · ${PA_DOMAIN_LABELS[item.domain] || item.domain}` : ''}
         </p>
         <p className="mt-4 whitespace-pre-wrap">{item.description}</p>
         {item.requirements && (
@@ -53,11 +77,17 @@ export default function MyRequestDetailPage() {
           </div>
         )}
         <div className="mt-6 flex flex-wrap gap-3">
-          {item.workProject && (
+          {hasProject && (
             <Button as={Link} to={`/dashboard/projects/${item.workProject}`}>Open project</Button>
           )}
-          <Button as={Link} to="/dashboard/support" variant="secondary">Contact support</Button>
+          {!hasProject && (
+            <Button as={Link} to="/dashboard" variant="secondary">Back to overview</Button>
+          )}
+          <Button as={Link} to="/dashboard/support" variant="secondary">Get help</Button>
         </div>
+        <p className="mt-4 text-sm text-muted">
+          Documents and messages appear on your project after Vignak accepts this request.
+        </p>
       </div>
     </div>
   );

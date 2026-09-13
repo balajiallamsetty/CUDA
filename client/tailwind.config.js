@@ -11,7 +11,7 @@ export default {
         slate: {
           vignak: '#334155',
         },
-        muted: '#64748B',
+        muted: '#475569',
         line: {
           DEFAULT: '#E2E8F0',
           soft: '#F1F5F9',

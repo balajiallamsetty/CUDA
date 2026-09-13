@@ -189,43 +189,43 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-20">
+      <section className="py-14">
         <div className="mx-auto max-w-container px-4 sm:px-6">
           <p className="eyebrow">All services</p>
           <h2>Beyond Project Assistance.</h2>
-          <p className="lead mt-2 max-w-2xl">
-            Explore the catalog for web, AI, campus, events, and business delivery — same account, same platform.
+          <p className="mt-2 max-w-xl text-sm text-slate-vignak">
+            Same account for web, AI, campus, events, and business delivery.
           </p>
-          <div className="mt-8">
+          <div className="mt-6">
             <Button as={Link} to="/services" size="lg">Browse all services</Button>
           </div>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <div className="mt-6 grid gap-3 md:grid-cols-3">
             {[
               { title: 'Web & digital', text: 'Sites and applications for teams beyond academic projects.', to: '/services/web-development' },
               { title: 'AI solutions', text: 'Custom AI systems with measured results — no invented accuracy claims.', to: '/services/ai-solutions' },
               { title: 'Vignak Talks', text: 'Sessions on technology, careers, and practical building.', to: '/talks' },
             ].map((item) => (
-              <Link key={item.to} to={item.to} className="border-b border-line-soft pb-4 hover:border-accent/40">
+              <Link key={item.to} to={item.to} className="border-b border-line-soft pb-3 hover:border-accent/40">
                 <h3 className="!font-sans !text-lg">{item.title}</h3>
-                <p className="mt-2 text-sm">{item.text}</p>
+                <p className="mt-1 text-sm">{item.text}</p>
               </Link>
             ))}
           </div>
-          <p className="mt-10 max-w-2xl text-sm text-muted">{pa.ecosystemNote}</p>
+          <p className="mt-8 max-w-2xl text-sm text-muted">{pa.ecosystemNote}</p>
         </div>
       </section>
 
-      <section className="bg-accent-panel py-20">
+      <section className="border-y border-line-soft bg-accent-panel py-14">
         <div className="mx-auto max-w-container px-4 sm:px-6">
           <p className="eyebrow">Why Vignak</p>
           <h2>Structured help without over-promising outcomes.</h2>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
             {[
-              ['Clear intake', 'Submit requirements once, track request status, then move into a real work project.'],
+              ['Clear intake', 'Submit requirements once, track request status, then move into a real project.'],
               ['Transparent progress', 'Milestones and progress come from delivery state — not marketing CRM labels.'],
               ['Broader ecosystem', 'Project Assistance is flagship today; web, talks, and future services share one platform.'],
             ].map(([title, text]) => (
-              <article key={title} className="rounded-2xl border border-line-soft bg-white p-5 shadow-soft">
+              <article key={title} className="border-b border-line-soft pb-4 md:border-0 md:pb-0">
                 <h3 className="!font-sans !text-lg">{title}</h3>
                 <p className="mt-2 text-sm">{text}</p>
               </article>

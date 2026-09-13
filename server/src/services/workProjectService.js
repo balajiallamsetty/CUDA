@@ -21,6 +21,7 @@ import { Activity } from '../models/Activity.js';
 import { Quotation } from '../models/Quotation.js';
 import { Deliverable } from '../models/Deliverable.js';
 import { Payment } from '../models/Payment.js';
+import { ServiceRequest } from '../models/ServiceRequest.js';
 import { getServiceWorkflow } from '../models/ServiceDefinition.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { parsePagination, buildMeta } from '../utils/pagination.js';
@@ -531,6 +532,9 @@ export async function dashboardOverview(userId) {
     activeProjects,
     completedProjects,
     unread,
+    deliverablesCount,
+    quotationsCount,
+    paymentsCount,
   ] = await Promise.all([
     ServiceRequest.countDocuments({
       user: userId,
@@ -550,6 +554,9 @@ export async function dashboardOverview(userId) {
     }),
     WorkProject.countDocuments({ client: userId, archived: false, status: 'COMPLETED' }),
     (await import('./notificationService.js')).unreadNotificationCount(userId),
+    Deliverable.countDocuments({ client: userId }),
+    Quotation.countDocuments({ client: userId }),
+    Payment.countDocuments({ client: userId }),
   ]);
 
   const upcomingMilestones = await Milestone.find({
@@ -572,5 +579,11 @@ export async function dashboardOverview(userId) {
     unreadNotifications: unread,
     upcomingMilestones,
     recentProjects,
+    deliverablesCount,
+    quotationsCount,
+    paymentsCount,
+    hasDeliverables: deliverablesCount > 0,
+    hasQuotations: quotationsCount > 0,
+    hasPayments: paymentsCount > 0,
   };
 }
